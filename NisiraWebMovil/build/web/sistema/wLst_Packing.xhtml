@@ -1,0 +1,59 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:f="http://java.sun.com/jsf/core"
+                template="templatebanco.xhtml"
+                xmlns:pm="http://primefaces.org/mobile"
+                xmlns:cmp="http://java.sun.com/jsf/composite/cmp">
+    <ui:define name="metadata">
+    </ui:define>
+    <ui:define name="body">
+        #{PackingAction.buscarTodo()} 
+        <h:form id="datos">
+
+            <p:panelGrid id="principal" columns="1" columnClasses="no-border, no-border">
+                <cmp:barra_lst bean="#{PackingAction}" mostrar_opciones="false" />
+                <p:dataTable id="tbl" var="listreglas" value="#{PackingAction.listaDatos}" widgetVar="listTipoZona" paginatorTemplate="{FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink}" paginatorPosition="top"
+                             paginator="true" rows="15" style="margin-bottom:20px" selectionMode="single" selection="#{PackingAction.datoSeleccionado}" rowKey="#{listreglas.IDPACKING}" resizableColumns="true">
+
+                    <p:column headerText="Codigo Empresa" style="width:30%;" filterBy="#{listreglas.IDEMPRESA}" filterMatchMode="contains" sortBy="#{listreglas.IDEMPRESA}">
+                        <h:outputText value="#{listreglas.IDEMPRESA}" />
+                    </p:column>
+                    <p:column headerText="Codigo Empresa" style="width:30%;" filterBy="#{listreglas.IDSUCURSAL}" filterMatchMode="contains" sortBy="#{listreglas.IDSUCURSAL}">
+                        <h:outputText value="#{listreglas.IDSUCURSAL}" />
+                    </p:column>
+                    <p:column headerText="Codigo Empresa" style="width:30%;" filterBy="#{listreglas.IDPACKING}" filterMatchMode="contains" sortBy="#{listreglas.IDPACKING}">
+                        <h:outputText value="#{listreglas.IDPACKING}" />
+                    </p:column>
+                    <p:column headerText="Codigo Empresa" style="width:30%;" filterBy="#{listreglas.FECHA}" filterMatchMode="contains" sortBy="#{listreglas.FECHA}">
+                        <h:outputText value="#{listreglas.FECHA}" />
+                    </p:column>
+                    <p:column headerText="Codigo Empresa" style="width:30%;" filterBy="#{listreglas.CONTENEDOR}" filterMatchMode="contains" sortBy="#{listreglas.CONTENEDOR}">
+                        <h:outputText value="#{listreglas.CONTENEDOR}" />
+                    </p:column>
+                    <p:column headerText="Codigo Empresa" style="width:30%;">
+                        <h:outputText value="#{listreglas.IDDOCUMENTO}-#{listreglas.SERIE}-#{listreglas.NUMERO}" />
+                    </p:column>
+                    <p:column headerText="Codigo Empresa" style="width:30%;" filterBy="#{listreglas.IDRESPONSABLE}" filterMatchMode="contains" sortBy="#{listreglas.IDRESPONSABLE}">
+                        <h:outputText value="#{listreglas.IDRESPONSABLE}" />
+                    </p:column>
+                    <p:column headerText="Codigo Empresa" style="width:30%;" filterBy="#{listreglas.ESTADO}" filterMatchMode="contains" sortBy="#{listreglas.ESTADO}">
+                        <h:outputText value="#{listreglas.ESTADO==1? 'ACTIVO':'Inactivo'}" />
+                    </p:column>
+                    <p:column headerText="Codigo Empresa" style="width:30%;" filterBy="#{listreglas.IDPUERTODESTINO}" filterMatchMode="contains" sortBy="#{listreglas.IDPUERTODESTINO}">
+                        <h:outputText value="#{listreglas.IDPUERTODESTINO}" />
+                    </p:column>
+                    <p:column headerText="Codigo Empresa" style="width:30%;" filterBy="#{listreglas.IDMOTIVO}" filterMatchMode="contains" sortBy="#{listreglas.IDMOTIVO}">
+                        <h:outputText value="#{listreglas.IDMOTIVO}" />
+                    </p:column>
+                    <p:column headerText="Codigo Empresa" style="width:30%;" filterBy="#{listreglas.IDCLIENTE}" filterMatchMode="contains" sortBy="#{listreglas.IDCLIENTE}">
+                        <h:outputText value="#{listreglas.IDCLIENTE}" />
+                    </p:column>
+                </p:dataTable>
+                <p:growl id="growl" life="4000" showDetail="false"  />
+                <cmp:mDialogElimina_lst id="cmpDialog" bean="#{PackingAction}" ventana="LST" />
+            </p:panelGrid>
+        </h:form>
+    </ui:define>
+</ui:composition>

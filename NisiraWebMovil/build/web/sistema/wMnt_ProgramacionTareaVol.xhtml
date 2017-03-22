@@ -1,0 +1,178 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:f="http://java.sun.com/jsf/core"
+                template="templatebanco.xhtml"
+                xmlns:pm="http://primefaces.org/mobile"
+                xmlns:cmp="http://java.sun.com/jsf/composite/cmp"
+                xmlns:c="http://java.sun.com/jsp/jstl/core">>
+    <ui:define name="metadata">
+    </ui:define>
+    <ui:define name="body">
+        <h:form id="datos">
+            #{ProgramacionTareaVolcadoAction.findetalle()}
+            <cmp:barra_mnt bean="#{ProgramacionTareaVolcadoAction}"/>
+            <p:panelGrid columns="1" style="width:100%; text-align: left" id="pnl_reprogramar" columnClasses="no-border">
+                <f:facet name="header">
+                    <p:outputLabel value="#{ProgramacionTareaVolcadoAction.tituloHead}"/>
+                </f:facet>
+                <div class="ui-grid ">
+                    <div class="ui-grid-row">
+                        <p:fieldset legend="Datos" style="margin-bottom:20px">
+                            <div class="ui-grid-col-5">
+                                <p:panelGrid  columns="2" columnClasses="no-border, no-border" style="width: 100%">
+                                    <p:outputLabel value="Id Tarea" escape="false" />
+                                    <p:inputText value="#{ProgramacionTareaVolcadoAction.datoEdicion.idprogramaciontarea}" disabled="true"/>
+                                    <p:outputLabel for="proceso"  value="Proceso:" />
+                                    <p:selectOneMenu id="proceso" value="#{ProgramacionTareaVolcadoAction.datoEdicion.idproceso}"  disabled="#{!ProgramacionTareaVolcadoAction.edicion}"> 
+                                        <p:ajax listener="#{ProgramacionTareaVolcadoAction.onProcesoSelect()}" update="datos:tab:tbllle datos:tab:cbozon" />
+                                        <f:selectItem itemLabel="Seleccione Proceso" itemValue="#{0}"/>                        
+                                        <f:selectItems value="#{ProgramacionTareaVolcadoAction.lstproceso}" var="tipoProceso" itemLabel="#{tipoProceso.descripcion}" itemValue="#{tipoProceso.idproceso}" />
+                                    </p:selectOneMenu>
+                                    <p:outputLabel for="generacion"  value="Generacion" />
+                                    <p:selectOneMenu id="generacion" value="#{ProgramacionTareaVolcadoAction.datoEdicion.generacion}" disabled="true">                        
+                                        <f:selectItem itemLabel="Manual" itemValue="#{0}"/>   
+                                        <f:selectItem itemLabel="Automativa" itemValue="#{1}"/> 
+                                    </p:selectOneMenu>
+                                    <p:outputLabel for="Estado"  value="Estado" />
+                                    <p:selectOneMenu id="Estado" value="#{ProgramacionTareaVolcadoAction.datoEdicion.estado}"  disabled="#{!ProgramacionTareaVolcadoAction.edicion}"> 
+                                        <f:selectItem itemLabel="Seleccione Estado" itemValue=""/>     
+                                        <f:selectItems value="#{ProgramacionTareaVolcadoAction.listMultitabla}" var="tipoEstado" itemLabel="#{tipoEstado.DESCRIPCION}" itemValue="#{tipoEstado.VALOR}" />
+                                    </p:selectOneMenu>   
+                                </p:panelGrid>
+                            </div>
+                            <div class="ui-grid-col-6">
+                                <p:panelGrid  columns="2" columnClasses="no-border, no-border" >
+                                    <p:outputLabel value="Documentos"/>
+                                    <p:panelGrid  columns="3" columnClasses="no-border, no-border,no-border">
+                                        <p:selectOneMenu id="cboiddoc" value="#{ProgramacionTareaVolcadoAction.datoEdicion.iddocumento}" style="width:150px">
+                                            <p:ajax listener="#{ProgramacionTareaVolcadoAction.oncDocChange}" update="cboserie num" />
+                                            <f:selectItems value="#{ProgramacionTareaVolcadoAction.lstdocs}" var="iddocs" itemLabel="#{iddocs.DESCRIPCION}" itemValue="#{iddocs.IDDOCUMENTO}"/>
+                                        </p:selectOneMenu>
+                                        <p:selectOneMenu id="cboserie" value="#{ProgramacionTareaVolcadoAction.datoEdicion.serie}" style="width:150px">
+                                            <f:selectItems value="#{ProgramacionTareaVolcadoAction.lstnume}" var="nume" itemLabel="#{nume.SERIE}" itemValue="#{nume.SERIE}"/>
+                                        </p:selectOneMenu>
+                                        <p:inputText id="num" maxlength="4" style="width: 100px !important;font-size: 11px" value="#{ProgramacionTareaVolcadoAction.numero}"/>
+                                    </p:panelGrid>
+                                    <p:outputLabel value="Montacarga" escape="false" />
+                                    <h:panelGrid id="cntMont" cellpadding="0" cellspacing="0" columns="3">
+                                        <p:commandButton styleClass="boton_buscar" ajax="true" actionListener="#{ProgramacionTareaVolcadoAction.verCntMontacarga()}" disabled="#{!ProgramacionTareaVolcadoAction.edicion}"  icon="ui-icon-search">
+                                            <p:ajax event="dialogReturn" listener="#{ProgramacionTareaVolcadoAction.valorMontaarga}" update="cntMont"/>
+                                        </p:commandButton>
+                                        <p:inputText  style="text-align: center" size="3" readonly="true"  value="#{ProgramacionTareaVolcadoAction.mo.IDMONTACARGA}"/>
+                                        <p:inputText size="41" readonly="true" value="#{ProgramacionTareaVolcadoAction.mo.DESCRIPCION}" />
+                                    </h:panelGrid>
+                                    <p:outputLabel for="obs" value="Observaciones"/>
+                                    <p:inputTextarea id="obs" value="#{ProgramacionTareaVolcadoAction.datoEdicion.observacion}" style="width: 100%" />
+                                </p:panelGrid>
+                                <p:panelGrid columns="2" style="width: 100%" columnClasses="no-border, no-border,no-border">
+
+                                    <p:outputLabel value="Fecha Prog" escape="false"/>
+                                    <p:calendar id="button1" value="#{ProgramacionTareaVolcadoAction.fechaprogramaciont}" showOn="button" pattern="dd/MM/yyyy" mask="true" disabled="true">
+                                        <!--<p:ajax event="dateSelect" listener="{planventaAction.updateCampañas}" update="lstCampaña"/>-->
+                                    </p:calendar>
+                                    <p:outputLabel value="Fecha Ejecucion" escape="false"/>
+                                    <p:calendar id="button2" value="#{ProgramacionTareaVolcadoAction.fechaejecuciont}" showOn="button" pattern="dd/MM/yyyy" mask="true" disabled="#{!ProgramacionTareaVolcadoAction.edicion}">
+                                        <!--<p:ajax event="dateSelect" listener="{planventaAction.updateCampañas}" update="lstCampaña"/>-->
+                                    </p:calendar>
+                                    <p:outputLabel value="Fecha Finaliza" escape="false"/>
+                                    <p:calendar id="button3" value="#{ProgramacionTareaVolcadoAction.fechafinalizaciont}" showOn="button" pattern="dd/MM/yyyy" mask="true" disabled="#{!ProgramacionTareaVolcadoAction.edicion}">
+                                        <!--<p:ajax event="dateSelect" listener="{planventaAction.updateCampañas}" update="lstCampaña"/>-->
+                                    </p:calendar>
+                                </p:panelGrid>
+                            </div> 
+                        </p:fieldset> 
+                    </div>
+                </div>
+                <div class="ui-grid-row">
+                    <p:fieldset legend="Detalle de Programacion"  style="width: 100%">
+                        <p:tabView id="tab" style="width: 100%">
+                            <p:tab id="tbn1" title="Punto de Inicio">
+                                <p:panelGrid columns="4" style="width: 100%">
+                                    <p:outputLabel value="Filtro"/>
+                                    <p:commandButton icon="ui-icon-search" onclick="PF('filt').show()"/>
+                                    <p:outputLabel value="Zonas"/>
+                                    <p:selectOneMenu id="cbozon" value="#{ProgramacionTareaVolcadoAction.idzona}" style="width:300px">
+                                        <p:ajax listener="#{ProgramacionTareaVolcadoAction.onZonaSelec()}" update="tblpart" />
+                                        <f:selectItem itemLabel="Seleccione Zona" itemValue=""/>   
+                                        <f:selectItems value="#{ProgramacionTareaVolcadoAction.lstzonas}" var="idzoacc" itemLabel="#{idzoacc.DESCRIPCION}" itemValue="#{idzoacc.IDZONA}"/>
+                                    </p:selectOneMenu>
+                                </p:panelGrid>
+                                <p:dataTable id="tblpart" widgetVar="tblpart" value="#{ProgramacionTareaVolcadoAction.lstdprogtpart}" var="dppart" selectionMode="single"
+                                             selection="#{ProgramacionTareaVolcadoAction.slcdprogtpart}" rowKey="#{dppart.item}"  style="width: 100%">
+                                    <f:facet name="header">
+                                        Detalle
+                                    </f:facet>
+                                    <p:column headerText="Item" sortBy="#{dppart.item}">
+                                        <h:outputText value="#{dppart.item}" />
+                                    </p:column>
+                                    <p:column headerText="Codigo" sortBy="#{dppart.NROPALETA}">
+                                        <h:outputText value="#{dppart.NROPALETA}" />
+                                    </p:column>
+                                    <p:column headerText="Ubicacion" sortBy="#{dppart.idubicacion}">
+                                        <h:outputText value="#{dppart.idubicacion}" />
+                                    </p:column>
+                                    <p:columns value="#{ProgramacionTareaVolcadoAction.dataTableColumns}" var="column"  resizable="true" style="width:100px; white-space: nowrap;" columnIndexVar="ivar" filterStyle="width: 75%">
+                                        <f:facet name="header">
+                                            <h:outputText value="#{column.header}" />
+                                        </f:facet>
+                                        <h:outputText value="#{dppart.getValor(column.header)}" />
+                                    </p:columns>
+                                </p:dataTable>
+                            </p:tab>
+                            <p:tab id="tbn2" title="Punto de Fin">
+                                <p:dataTable id="tbllle" widgetVar="tbllle" value="#{ProgramacionTareaVolcadoAction.lstdprogtlleg}" var="dpllega" 
+                                             selection="#{ProgramacionTareaVolcadoAction.slcdprogtlleg}" rowKey="#{dpllega.item}" rowSelectMode="checkbox" style="width: 100%">
+                                    <f:facet name="header">
+                                        Forma Llenado
+                                    </f:facet>
+                                    <p:column headerText="Asignado" selectionMode="multiple" style="width:16px;text-align:center"/>
+                                    <p:column headerText="Codigo" sortBy="#{dpllega.idprogramaciontarea}">
+                                        <h:outputText value="#{dpllega.idprogramaciontarea}" />
+                                    </p:column> 
+                                    <p:column headerText="Descripcion" sortBy="#{dpllega.descripcion}">
+                                        <h:outputText value="#{dpllega.descripcion}" />
+                                    </p:column>  
+                                    <p:column headerText="Proceso" sortBy="#{dpllega.proceso}">
+                                        <h:outputText value="#{dpllega.idproceso}" />
+                                    </p:column> 
+                                    <p:column headerText="Codigo de Barra" sortBy="#{dpllega.codigoBarra}">
+                                        <h:outputText value="#{dpllega.codigoBarra}" />
+                                    </p:column> 
+                                    <p:column headerText="Reglas" sortBy="#{dpllega.regla}">
+                                        <h:outputText value="#{dpllega.regla}" />
+                                    </p:column> 
+                                </p:dataTable>
+                            </p:tab>
+                        </p:tabView>
+                    </p:fieldset>
+                </div>
+            </p:panelGrid>
+            <p:dialog id="filt" widgetVar="filt" header="Filtros" modal="true" closable="true">
+                <p:fieldset legend="Filtro" style="margin-bottom:20px">
+                    <p:selectManyCheckbox id="grid" value="#{ProgramacionTareaVolcadoAction.slcfiltro}" layout="pageDirection" columns="3">
+                        <f:selectItems value="#{ProgramacionTareaVolcadoAction.filtro}" var="fi" itemLabel="#{fi.descripcion}" itemValue="#{fi.descripcion},#{fi.valor}" />
+                    </p:selectManyCheckbox>                    
+                </p:fieldset>
+                <p:commandButton value="Acepta" actionListener="#{ProgramacionTareaVolcadoAction.listFiltros()}"/>
+                <p:commandButton value="Cancela" onclick="PF('filt').hide()"/>
+            </p:dialog>
+            <p:dialog id="dfilt" widgetVar="dfilt" header="Filtros" modal="true">
+                <h:panelGrid columns="#{ProgramacionTareaVolcadoAction.detfil.size()}" >
+                    <c:forEach items="#{ProgramacionTareaVolcadoAction.detfil}" var="entry">
+                        <p:fieldset legend="#{entry.header}" style="margin-bottom:20px">
+                            <p:selectManyCheckbox id="detfiltro" value="#{entry.seleccion}" layout="pageDirection" columns="1">
+                                <f:selectItems value="#{entry.boxes}" var="dfi" itemLabel="#{dfi.abrev}" itemValue="#{dfi.abrev}" />
+                            </p:selectManyCheckbox>
+                        </p:fieldset>
+                    </c:forEach>
+                </h:panelGrid>
+                <p:commandButton value="Acepta" actionListener="#{ProgramacionTareaVolcadoAction.ejecFiltros()}"/>
+                <p:commandButton value="Cancela" onclick="PF('dfilt').hide()"/>
+            </p:dialog>
+            <p:growl id="growl" life="4000" showDetail="false"  />
+            <cmp:mDialogElimina_lst id="cmpDialog" bean="#{ProgramacionTareaVolcadoAction}" ventana="MNT" />
+        </h:form>
+    </ui:define>
+</ui:composition>

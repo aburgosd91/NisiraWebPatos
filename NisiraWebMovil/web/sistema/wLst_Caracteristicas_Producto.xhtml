@@ -1,0 +1,54 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:f="http://java.sun.com/jsf/core"
+                template="templatebanco.xhtml"
+                xmlns:pm="http://primefaces.org/mobile"
+                xmlns:cmp="http://java.sun.com/jsf/composite/cmp">
+    <ui:define name="metadata">
+    </ui:define>
+    <ui:define name="body">
+        #{caracteristicasProducto.buscarTodo()} 
+        <h:form id="datos">
+            <p:panelGrid id="principal" columns="1" columnClasses="no-border, no-border">
+                 <cmp:barra_lst bean="#{caracteristicasProducto}" mostrar_opciones="false" />
+                 <p:dataTable id="tbl" var="lstCaract" value="#{caracteristicasProducto.listaDatos}" filteredValue="#{caracteristicasProducto.filtroDatos}" widgetVar="lstCaract"
+                             paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink}"
+                             paginator="true" rows="15" style="margin-bottom:20px;text-align: center;" selectionMode="single" selection="#{caracteristicasProducto.datoSeleccionado}" rowKey="#{lstCaract.idcaracteristicas}" resizableColumns="true">
+                    <f:facet name="header">
+                        <h:outputText value="#{caracteristicasProducto.tituloHead}" />
+                    </f:facet>
+                    <p:column headerText="Codigo Caracteristicca" style="width:30%;" filterBy="#{lstCaract.idcaracteristicas}" filterMatchMode="contains" sortBy="#{lstCaract.idcaracteristicas}">
+                        <h:outputText value="#{lstCaract.idcaracteristicas}" />
+                    </p:column>
+                    <p:column headerText="Valor" style="width:30%;" filterBy="#{lstCaract.valor}" filterMatchMode="contains" sortBy="#{lstCaract.valor}">
+                        <h:outputText value="#{lstCaract.valor}" />
+                    </p:column>
+                    <p:column headerText="Descripcion" style="width:30%;" filterBy="#{lstCaract.descripcion}" filterMatchMode="contains" sortBy="#{lstCaract.descripcion}">
+                        <h:outputText value="#{lstCaract.descripcion}" />
+                    </p:column>
+                    <p:column headerText="Abreviaruea" style="width:30%;" filterBy="#{lstCaract.abrev}" filterMatchMode="contains" sortBy="#{lstCaract.abrev}">
+                        <h:outputText value="#{lstCaract.abrev}" />
+                    </p:column>
+                    <p:column style="width:30%;" filterBy="#{lstCaract.estado}">
+                        <f:facet name="header">
+                            <h:outputText value="ESTADO"/>
+                        </f:facet>
+                        <f:facet name="filter">
+                            <p:selectOneButton onchange="PF('lstCaract').filter()">
+                                <f:selectItem  itemLabel="Activo" itemValue="#{1}" />
+                                <f:selectItem itemLabel="Inactivo" itemValue="#{0}" />
+                            </p:selectOneButton>
+                        </f:facet>
+                        <h:graphicImage value="../images/img/#{lstCaract.estado == 1?'activo':'inactivo'}.png"/>
+                        <h:outputText value="#{lstCaract.estado == 1?'Activo':'Inactivo'}" />
+                    </p:column>
+                </p:dataTable>
+            </p:panelGrid> 
+            
+            <p:growl id="growl" life="4000" showDetail="false"  />
+            <cmp:mDialogElimina_lst id="cmpDialog" bean="#{caracteristicasProducto}" ventana="LST" />
+        </h:form>
+    </ui:define>
+</ui:composition>

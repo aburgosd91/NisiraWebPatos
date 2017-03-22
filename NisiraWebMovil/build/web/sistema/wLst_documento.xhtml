@@ -1,0 +1,57 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:f="http://java.sun.com/jsf/core"
+                template="templatebanco.xhtml"
+                xmlns:pm="http://primefaces.org/mobile"
+                xmlns:cmp="http://java.sun.com/jsf/composite/cmp">
+    <ui:define name="metadata">
+    </ui:define>
+    <ui:define name="body">
+        <h:form id="datos">
+            #{documentoAction.buscarTodo()}
+            <p:panelGrid id="principal" columns="2" columnClasses="no-border, no-border">
+                <p:panelGrid style="font-size: 12px;text-align:center;" id="panel1" columns="1" columnClasses="no-border, no-border">
+                   <cmp:barra_lst bean="#{documentoAction}" mostrar_opciones="false" />
+                   <p:dataTable id="tbl" var="listDocumento" value="#{documentoAction.listaDatos}" filteredValue="#{documentoAction.filtroDatos}" widgetVar="listDocumento" 
+                        paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink}"
+                        paginator="true" rows="15" style="margin-bottom:20px" selectionMode="single" selection="#{documentoAction.datoSeleccionado}" rowKey="#{listDocumento.IDDOCUMENTO}" resizableColumns="true">
+                        <f:facet name="header">
+                            <h:outputText value="MANTENIMIENTO DOCUMENTO" />
+                        </f:facet>
+                        <p:column style="width:10%;" filterBy="#{listDocumento.IDDOCUMENTO}" filterMatchMode="contains" sortBy="#{listDocumento.IDDOCUMENTO}">
+                           <f:facet name="header">
+                               <h:outputText value="#{documentoAction.tituloHead}" />
+                           </f:facet>
+                           <h:outputText value="#{listDocumento.IDDOCUMENTO}" />
+                       </p:column>
+                       <p:column style="width:60%;" filterBy="#{listDocumento.DESCRIPCION}" filterMatchMode="contains" sortBy="#{listDocumento.DESCRIPCION}">
+                           <f:facet name="header" >
+                               <h:outputText value="DESCRIPCION" />
+                           </f:facet>
+                           <h:outputText value="#{listDocumento.DESCRIPCION}" />
+                       </p:column>
+                       
+                       <p:column style="width:30%;" filterBy="#{listDocumento.ESTADO}">
+                           <f:facet name="header">
+                               <h:outputText value="ESTADO"/>
+                           </f:facet>
+                           <f:facet name="filter">
+                                <p:selectOneButton onchange="PF('listDocumento').filter()">
+                                    <f:selectItem  itemLabel="Activo" itemValue="#{1}" />
+                                    <f:selectItem itemLabel="Anulado" itemValue="#{0}" />
+                                </p:selectOneButton>
+                            </f:facet>
+                           <h:graphicImage value="../images/img/#{listDocumento.ESTADO eq 1?'activo':'inactivo'}.png"/>
+                           <h:outputText value="#{listDocumento.ESTADO eq 1?'Activo':'Anulado'}" />
+                       </p:column>
+                    </p:dataTable>  
+                </p:panelGrid>
+            </p:panelGrid>
+            <p:growl id="growl" life="4000" showDetail="false"  />
+            <cmp:mDialogElimina_lst id="cmpDialog" bean="#{documentoAction}" ventana="LST" />
+        </h:form>
+        <!--        -->
+    </ui:define>
+</ui:composition>

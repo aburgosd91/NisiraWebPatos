@@ -1,0 +1,399 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:f="http://java.sun.com/jsf/core"
+                template="templatebanco.xhtml"
+                >
+    <ui:define name="metadata">
+    </ui:define>
+    <ui:define name="body">
+        <script type="text/javascript">
+            function start() {
+                PF('statusDialog').show();
+            }
+
+            function stop() {
+                PF('statusDialog').hide();
+            }
+        </script>
+        #{registroPaleta.buscarTodo()}
+        <h:form style="font-size: 15px" id="datos">
+            <p:dataTable id="tbl" var="listPaleta" value="#{registroPaleta.listaDatos}"
+                         paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {Exporters}"
+                         paginator="true" rows="20" style="margin-bottom:20px">
+                <f:facet name="{Exporters}">
+                    <p:commandButton value="Excel" ajax="false" image="ui-icon-excel">
+                        <p:dataExporter type="xls" target="tbl" fileName="listPaleta" postProcessor="#{registroPaleta.postProcessXLS}"/>
+                    </p:commandButton>
+                    <p:commandButton value="Pdf" ajax="false" image="ui-icon-pdf">
+                        <p:dataExporter type="pdf" target="tbl" fileName="listPaleta"/>
+                    </p:commandButton>
+                    <p:commandButton value="Csv" ajax="false" image="ui-icon-csv">
+                        <p:dataExporter type="csv" target="tbl" fileName="listPaleta"/>
+                    </p:commandButton>
+                    <p:commandButton value="Xml" ajax="false" image="ui-icon-xml">
+                        <p:dataExporter type="xml" target="tbl" fileName="listPaleta"/>
+                    </p:commandButton>
+                </f:facet>
+                <p:column>
+                    <f:facet name="header">
+                        <h:outputText value="IdEmpresa" />
+                    </f:facet>
+                    <h:outputText value="#{listPaleta.idempresa}" />
+                </p:column>
+                <p:column style="width: 10%">
+                    <f:facet name="header">
+                        <h:outputText value="IdRegistro" />
+                    </f:facet>
+                    <h:outputText value="#{listPaleta.idregistropaleta}" />
+                </p:column>
+                <p:column style="width: 6%">
+                    <f:facet name="header">
+                        <h:outputText value="NroPaleta" />
+                    </f:facet>
+                    <h:outputText value="#{listPaleta.nropaleta}" />
+                </p:column>
+                <p:column style="width: 3%">
+                    <f:facet name="header">
+                        <h:outputText value="IdOpe"/>
+                    </f:facet>
+                    <h:outputText value="#{listPaleta.idoperacion}" />
+                </p:column>
+                <p:column style="width: 7%">
+                    <f:facet name="header">
+                        <h:outputText value="Nro-Oper" />
+                    </f:facet>
+                    <h:outputText value="#{listPaleta.numoperacion}" />
+                </p:column>
+                <p:column style="width: 3%">
+                    <f:facet name="header">
+                        <h:outputText value="Doc" />
+                    </f:facet>
+                    <h:outputText value="#{listPaleta.iddocumento}" />
+                </p:column>
+                <p:column>
+                    <f:facet name="header">
+                        <h:outputText value="Fecha" />
+                    </f:facet>
+                    <h:outputText value="#{listPaleta.fecha.substring(0,10)}" />
+                </p:column>
+                <p:column style="width:7%">
+                    <f:facet name="header">
+                        <h:outputText value="Clie-Prov" />
+                    </f:facet>
+                    <h:outputText value="#{listPaleta.idclieprov}" />
+                </p:column>
+                <p:column>
+                    <f:facet name="header">
+                        <h:outputText value="IdSuc" />
+                    </f:facet>
+                    <h:outputText value="#{listPaleta.idsucursal}" />
+                </p:column>
+                <p:column>
+                    <f:facet name="header">
+                        <h:outputText value="idalmacen" />
+                    </f:facet>
+                    <h:outputText value="#{listPaleta.idalmacen}"/>
+                </p:column>
+                <p:column>
+                    <f:facet name="header">
+                        <h:outputText value="idembalaje" />
+                    </f:facet>
+                    <h:outputText value="#{listPaleta.idembalaje}"/>
+                </p:column>
+                <p:column>
+                    <f:facet name="header">
+                        <h:outputText value="idcultivo" />
+                    </f:facet>
+                    <h:outputText value="#{listPaleta.idcultivo}"/>
+                </p:column>
+                <p:column>
+                    <f:facet name="header">
+                        <h:outputText value="idvariedad" />
+                    </f:facet>
+                    <h:outputText value="#{listPaleta.idvariedad}"/>
+                </p:column>
+                <p:column>
+                    <f:facet name="header">
+                        <h:outputText value="cantidad" />
+                    </f:facet>
+                    <h:outputText value="#{listPaleta.cantidad}"/>
+                </p:column>
+                <p:column>
+                    <f:facet name="header">
+                        <h:outputText value="cerrado" />
+                    </f:facet>
+                    <h:outputText value="#{listPaleta.cerrado}"/>
+                </p:column>
+            </p:dataTable>
+            <p:commandButton value="Formato de Subida" ajax="false" onclick="PrimeFaces.monitorDownload(start, stop);" icon="ui-icon-arrowthick-1-s">
+                <p:fileDownload value="#{registroPaleta.downFormatExcel()}" />
+            </p:commandButton>
+            <p:commandButton value="Cargar Archivo" ajax="true" onclick="PF('dlgImportExcel').show();"/>
+            <p:growl id="growl" life="4000" showDetail="false"  />
+            <p:dialog header="Importar Datos de Excel" dynamic="true" resizable="false" widgetVar="dlgImportExcel" width="1200px" height="700px" closeOnEscape="#{registroPaleta.listPaletaUp.clear()}">
+                <p:tabView dynamic="true" cache="true">
+                    <p:tab title="Importar productos">
+                        <div style="text-align: center; padding: 5px;">
+                            <p:fileUpload disabled="#{registroPaleta.anuevo==1?true:false}" style="width: 100%" fileUploadListener="#{registroPaleta.upExcel}" allowTypes="/(\.|\/)(xls|xlsx)$/" sizeLimit="1000000" label="Seleccionar Excel" uploadLabel="Procesar" cancelLabel="Cancelar" update="tblImport,tblDImport"/>
+                        </div>                
+                        <p:dataTable style="width: 100%; font-size: 11px" id="tblImport" var="ve" value="#{registroPaleta.listPaletaUp}" 
+                                     rowKey="#{ve.idregistropaleta}"  
+                                     emptyMessage="#{titulos.noRegistros}"
+                                     paginatorAlwaysVisible="false"
+                                     paginator="true"
+                                     rows="10"
+                                     styleClass="mystyle"
+                                     sortOrder="descending">
+                            <p:column>
+                                <f:facet name="header">
+                                    <h:outputText value="IdEmpresa" />
+                                </f:facet>
+                                <h:outputText value="#{ve.idempresa}" />
+                            </p:column>
+                            <p:column style="width: 10%">
+                                <f:facet name="header">
+                                    <h:outputText value="IdRegistro" />
+                                </f:facet>
+                                <h:outputText value="#{ve.idregistropaleta}" />
+                            </p:column>
+                            <p:column style="width: 6%">
+                                <f:facet name="header">
+                                    <h:outputText value="NroPaleta" />
+                                </f:facet>
+                                <h:outputText value="#{ve.nropaleta}" />
+                            </p:column>
+                            <p:column style="width: 3%">
+                                <f:facet name="header">
+                                    <h:outputText value="IdOpe"/>
+                                </f:facet>
+                                <h:outputText value="#{ve.idoperacion}" />
+                            </p:column>
+                            <p:column style="width: 7%">
+                                <f:facet name="header">
+                                    <h:outputText value="Nro-Oper" />
+                                </f:facet>
+                                <h:outputText value="#{ve.numoperacion}" />
+                            </p:column>
+                            <p:column style="width: 3%">
+                                <f:facet name="header">
+                                    <h:outputText value="Doc" />
+                                </f:facet>
+                                <h:outputText value="#{ve.iddocumento}" />
+                            </p:column>
+                            <p:column>
+                                <f:facet name="header">
+                                    <h:outputText value="Fecha" />
+                                </f:facet>
+                                <h:outputText value="#{ve.fecha.substring(0,10)}" />
+                            </p:column>
+                            <p:column style="width:7%">
+                                <f:facet name="header">
+                                    <h:outputText value="Clie-Prov" />
+                                </f:facet>
+                                <h:outputText value="#{ve.idclieprov}" />
+                            </p:column>
+                            <p:column>
+                                <f:facet name="header">
+                                    <h:outputText value="IdSuc" />
+                                </f:facet>
+                                <h:outputText value="#{ve.idsucursal}" />
+                            </p:column>
+                            <p:column>
+                                <f:facet name="header">
+                                    <h:outputText value="idalmacen" />
+                                </f:facet>
+                                <h:outputText value="#{ve.idalmacen}"/>
+                            </p:column>
+                            <p:column>
+                                <f:facet name="header">
+                                    <h:outputText value="idembalaje" />
+                                </f:facet>
+                                <h:outputText value="#{ve.idembalaje}"/>
+                            </p:column>
+                            <p:column>
+                                <f:facet name="header">
+                                    <h:outputText value="idcultivo" />
+                                </f:facet>
+                                <h:outputText value="#{ve.idcultivo}"/>
+                            </p:column>
+                            <p:column>
+                                <f:facet name="header">
+                                    <h:outputText value="idvariedad" />
+                                </f:facet>
+                                <h:outputText value="#{ve.idvariedad}"/>
+                            </p:column>
+                            <p:column>
+                                <f:facet name="header">
+                                    <h:outputText value="cantidad" />
+                                </f:facet>
+                                <h:outputText value="#{ve.cantidad}"/>
+                            </p:column>
+                            <p:column>
+                                <f:facet name="header">
+                                    <h:outputText value="cerrado" />
+                                </f:facet>
+                                <h:outputText value="#{ve.cerrado}"/>
+                            </p:column>
+                        </p:dataTable>
+                        <div style="text-align: center; padding: 5px">
+                            <p:commandButton value="Limpiar Cuadro" ajax="true" icon="ui-icon-disk" actionListener="#{registroPaleta.listPaletaUp.clear()}" update="tblImport"/>
+                            <p:commandButton value="Grabar Registros" ajax="true" icon="ui-icon-disk" actionListener="#{registroPaleta.saveExcel}" update="tblImport,:datos:growl,:datos:tbl" onclick="PrimeFaces.monitorDownload(start, stop);"/>
+                        </div>
+                    </p:tab>
+                    <p:tab title="Importar Detalle de productos">
+                        <p:dataTable style="width: 100%; font-size: 11px" id="tblDImport" var="ve" value="#{registroPaleta.listDPaletaUp}" 
+                                     rowKey="#{ve.idregistropaleta}"  
+                                     emptyMessage="#{titulos.noRegistros}"
+                                     paginatorAlwaysVisible="false"
+                                     paginator="true"
+                                     rows="20"
+                                     styleClass="mystyle"
+                                     sortOrder="descending">
+                            <p:column style="width: 10%">
+                                <f:facet name="header">
+                                    <h:outputText value="Idempresa" />
+                                </f:facet>
+                                <h:outputText value="#{ve.idempresa}" />
+                            </p:column>
+                            <p:column style="width: 10%">
+                                <f:facet name="header">
+                                    <h:outputText value="IdRegistro" />
+                                </f:facet>
+                                <h:outputText value="#{ve.idregistropaleta}" />
+                            </p:column>
+                            <p:column style="width: 10%">
+                                <f:facet name="header">
+                                    <h:outputText value="Item" />
+                                </f:facet>
+                                <h:outputText value="#{ve.item}" />
+                            </p:column>
+                            <p:column style="width: 10%">
+                                <f:facet name="header">
+                                    <h:outputText value="idclieprov" />
+                                </f:facet>
+                                <h:outputText value="#{ve.idclieprov}" />
+                            </p:column>
+                            <p:column style="width: 10%">
+                                <f:facet name="header">
+                                    <h:outputText value="idlote" />
+                                </f:facet>
+                                <h:outputText value="#{ve.idlote}" />
+                            </p:column>
+                            <p:column style="width: 10%">
+                                <f:facet name="header">
+                                    <h:outputText value="Idcondicion" />
+                                </f:facet>
+                                <h:outputText value="#{ve.idcondicion}" />
+                            </p:column>
+                            <p:column style="width: 10%">
+                                <f:facet name="header">
+                                    <h:outputText value="Idtalla" />
+                                </f:facet>
+                                <h:outputText value="#{ve.idtalla}" />
+                            </p:column>
+                            <p:column style="width: 10%">
+                                <f:facet name="header">
+                                    <h:outputText value="Idcolor" />
+                                </f:facet>
+                                <h:outputText value="#{ve.idcolor}" />
+                            </p:column>
+                            <p:column style="width: 10%">
+                                <f:facet name="header">
+                                    <h:outputText value="Idcantidad" />
+                                </f:facet>
+                                <h:outputText value="#{ve.cantidad}" />
+                            </p:column>
+                            <p:column style="width: 10%">
+                                <f:facet name="header">
+                                    <h:outputText value="Idembalaje" />
+                                </f:facet>
+                                <h:outputText value="#{ve.idembalaje}" />
+                            </p:column>
+                            <p:column style="width: 10%">
+                                <f:facet name="header">
+                                    <h:outputText value="Idproducto" />
+                                </f:facet>
+                                <h:outputText value="#{ve.idproducto}" />
+                            </p:column>
+                            <p:column style="width: 10%">
+                                <f:facet name="header">
+                                    <h:outputText value="Idlotep" />
+                                </f:facet>
+                                <h:outputText value="#{ve.idlotep}" />
+                            </p:column>
+                            <p:column style="width: 10%">
+                                <f:facet name="header">
+                                    <h:outputText value="idconsumidor" />
+                                </f:facet>
+                                <h:outputText value="#{ve.idconsumidor}" />
+                            </p:column>
+                            <p:column style="width: 10%">
+                                <f:facet name="header">
+                                    <h:outputText value="idlotecampo" />
+                                </f:facet>
+                                <h:outputText value="#{ve.idlotecampo}" />
+                            </p:column>
+                            <p:column style="width: 10%">
+                                <f:facet name="header">
+                                    <h:outputText value="idpresentacion" />
+                                </f:facet>
+                                <h:outputText value="#{ve.idpresentacion}" />
+                            </p:column>
+                        </p:dataTable>
+                    </p:tab>
+                </p:tabView>
+            </p:dialog>
+            <p:dialog header="Lista de Errores" resizable="false" widgetVar="dlgIngrPro" width="800px" height="450px">
+                <p:tabView dynamic="true" cache="true"  id="tbas">
+                    <p:tab title="Registro Paleta">
+                        <p:dataTable style="width: 100%; font-size: 11px" id="tblRepet" var="prod" value="#{registroPaleta.listerros}" 
+                                     rowKey="#{prod[0]}"  
+                                     emptyMessage="#{titulos.noRegistros}"
+                                     paginatorAlwaysVisible="false"
+                                     paginator="true"
+                                     rows="12"
+                                     resizableColumns="true"
+                                     styleClass="mystyle"
+                                     sortOrder="descending">
+                            <p:column  headerText="Fila Excel">  
+                                <h:outputText value="#{prod[0]}" escape="false"/>
+                            </p:column>
+                            <p:column headerText="Id Reg Pale">  
+                                <h:outputText value="#{prod[1]}" escape="false"/>
+                            </p:column>
+                            <p:column  headerText="Error">  
+                                <h:outputText value="#{prod[2]}" escape="false"/>
+                            </p:column>
+                        </p:dataTable>
+                        <p:commandButton value="Grabar Registros" ajax="true" icon="ui-icon-disk" update="tblRepet"/>
+                    </p:tab>
+                    <p:tab title="Detalle Registro Paleta">
+                        <p:dataTable style="width: 100%; font-size: 11px" id="tblDRepet" var="dprod" value="#{registroPaleta.listderros}" 
+                                     rowKey="#{dprod[0]}"  
+                                     emptyMessage="#{titulos.noRegistros}"
+                                     paginatorAlwaysVisible="false"
+                                     paginator="true"
+                                     rows="12"
+                                     resizableColumns="true"
+                                     styleClass="mystyle"
+                                     sortOrder="descending">
+                            <p:column  headerText="Fila Excel">  
+                                <h:outputText value="#{dprod[0]}" escape="false"/>
+                            </p:column>
+                            <p:column  headerText="Id Reg Pale">  
+                                <h:outputText value="#{dprod[1]}" escape="false"/>
+                            </p:column>
+                            <p:column  headerText="Error">  
+                                <h:outputText value="#{dprod[2]}" escape="false"/>
+                            </p:column>
+                        </p:dataTable>
+                    </p:tab>
+                </p:tabView>
+
+            </p:dialog>
+        </h:form>
+        <!--        -->
+    </ui:define>
+</ui:composition>

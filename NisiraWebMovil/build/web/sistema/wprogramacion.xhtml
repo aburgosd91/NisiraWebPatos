@@ -1,0 +1,61 @@
+ <ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:f="http://java.sun.com/jsf/core"
+                template="templatebanco.xhtml"
+                xmlns:cmp="http://xmlns.jcp.org/jsf/composite/cmp">
+    
+    <ui:define name="metadata">
+    </ui:define>
+    <ui:define name="body">
+        <!--script src="../js/jquery-2.1.1.js"></script-->
+        <script src="../js/fabric.js"></script>
+        <script src="../js/bootstrap.js"></script>
+        <script src="../js/bootstrap-colorpicker.js"></script>
+        <script src="../js/plant_design.js" type="text/javascript"></script>
+        <!--script src="../js/coffee-script.js"></script-->
+        <!--script src="../js/floorplanner.coffee" type="text/coffeescript"></script-->
+        <div class="ui-grid">
+            <div class="ui-grid-row">
+                <h:form id="datos"> 
+                    <cmp:barra_mnt bean="#{designPlantAction}"/>
+                    <p:panelGrid columns="2" columnClasses="no-border,no-border">
+                        <p:outputLabel value="Tipo Estanteria: " />
+                        <p:selectOneMenu  id="tipoEstanteria" style="width: 220px !important;font-size: 11px" 
+                                          value="#{designPlantAction.selectTipoEstanteria}" 
+                                          disabled="#{!designPlantAction.edicion}">        
+                            <f:selectItem itemLabel="Seleccione Tipo Estanteria" itemValue=""/>                        
+                            <f:selectItems value="#{designPlantAction.listTipoEstanteria}" var="tipoEstructura" itemLabel="#{tipoEstructura.descripcion}" itemValue="#{tipoEstructura.idtipoestanteria}" />
+                        </p:selectOneMenu>
+                        <p:commandButton value="Sincronizar" ajax="true" image="ui-icon-sincronizar"/>
+                    </p:panelGrid>
+                    <p:growl id="growl" life="4000" showDetail="false"  />
+                    <cmp:mDialogElimina_lst id="cmpDialog" bean="#{designPlantAction}" ventana="MNT" />
+                </h:form>
+            </div>
+            <div class="ui-grid-row">
+                <div class="ui-grid-col-9">
+                    <div id="tools">
+                        <div id="shapes">
+                            <button class="btn btn-default" id="undo">Undo</button>
+                            <button class="btn btn-default" id="redo">Redo</button>
+                            <button class="btn btn-danger" id="clear">Clear</button>
+                            <button class="btn btn-danger" id="clearall">Clear All</button>
+                            <button class="btn btn-success" id="save">Save</button>
+                            <button class="btn btn-success" id="zoom_mas">Zoom(+)</button>
+                            <button class="btn btn-success" id="zoom_menos">Zoom(-)</button>
+                        </div>
+                        <div id="properties"></div>
+                    </div>
+                    <div id="work">
+                        <canvas id="c"></canvas>
+                    </div>
+                </div>
+                <div class="ui-grid-col-3">
+                    
+                </div>
+            </div>
+        </div>
+    </ui:define>    
+</ui:composition>

@@ -1,0 +1,80 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:pm="http://primefaces.org/mobile"
+      xmlns:c="http://xmlns.jcp.org/jsp/jstl/core"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
+    <f:view renderKitId="PRIMEFACES_MOBILE" />  
+
+    <h:head>
+        <f:loadBundle basename="titulos" var="titulos" />
+    </h:head>
+    <h:body>
+    <pm:page title="Menu">        
+            <pm:header title="Bienvenido" fixed="true" transient="true" >
+                <f:facet name="right">
+                    <p:button value="Salir" icon="delete" onclick="PF('dlg').show()" />
+                </f:facet>
+                <script type="text/javascript" src="../js/validadispositivo.js"></script>                
+                <p:dialog header="Advertencia" widgetVar="dlg" showEffect="pop">
+                    <p:outputPanel id="noteDetail" layout="block"  style="padding:4px 10px">
+                        <h:outputText value="Desea Salir?"/>
+                        <p:button value="Si" onclick="window.location = '#{facesContext.externalContext.requestContextPath}/faces/Sistema/CerrarSesion.xhtml';" icon="check"/>
+                    </p:outputPanel>
+                </p:dialog>
+            </pm:header>
+            
+            <pm:content>
+                <b style="font-size: 15px">USUARIO: </b> 
+                <b><h:outputText value="#{usuarioBean.usr_nombres}" style="color: darkorange; font-size: 15px; " /></b>
+                <h:form id="form">
+                    <p:dataGrid var="car" value="#{dataGridView.cars}" columns="3" layout="grid"
+                        rows="12" paginator="true" id="cars"
+                        paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+                        rowsPerPageTemplate="6,12,16">
+                        <f:facet name="header">
+                            Cars for Sale
+                        </f:facet>
+                        <p:panel header="#{car.id}" style="text-align:center">
+                            <h:panelGrid columns="1" style="width:100%">
+                                <h:outputText value="#{car.brand}" />
+                                <h:outputText value="#{car.year}" />
+                                <p:commandLink oncomplete="PF('carDialog').show()" title="View Detail">
+                                    <h:outputText  styleClass="ver" style="margin:0 auto;" />
+                                    <f:setPropertyActionListener value="#{car}" target="#{dataGridView.selectedCar}" />
+                                </p:commandLink>
+                            </h:panelGrid>
+                        </p:panel>
+                    </p:dataGrid>
+                    <p:dialog header="Car Info" widgetVar="carDialog" modal="true" showEffect="fade" hideEffect="fade" resizable="false">
+                        <p:outputPanel id="carDetail" style="text-align:center;">
+                            <p:panelGrid  columns="2" rendered="#{not empty dataGridView.selectedCar}" columnClasses="label,value">
+                                <h:outputText value="Id:" />
+                                <h:outputText value="#{dataGridView.selectedCar.id}" />
+
+                                <h:outputText value="Year" />
+                                <h:outputText value="#{dataGridView.selectedCar.year}" />
+
+                                <h:outputText value="Color:" />
+                                <h:outputText value="#{dataGridView.selectedCar.color}" style="color:#{dataGridView.selectedCar.color}"/>
+
+                                <h:outputText value="Price" />
+                                <h:outputText value="$#{dataGridView.selectedCar.price}" />
+                            </p:panelGrid>
+                        </p:outputPanel>
+                    </p:dialog>
+                </h:form>
+                <br></br><br></br><br></br><br></br><br></br><br></br><br></br><br></br><br></br><br></br><br></br><br></br>
+            </pm:content>
+            <pm:footer fixed="true">
+                <h1 style="font-size: x-small" >© 2015 <img border="0" height="10px" src="../images/logoWeb.png"/> Nisira Systems SAC </h1>         
+            </pm:footer> 
+    </pm:page>
+    </h:body> 
+</html>
+
+
+

@@ -1,0 +1,107 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:f="http://java.sun.com/jsf/core"
+                template="templatebanco.xhtml"
+                xmlns:pm="http://primefaces.org/mobile"
+                xmlns:cmp="http://java.sun.com/jsf/composite/cmp">
+    <ui:define name="metadata">
+    </ui:define>
+    <ui:define name="body">
+        #{reglallenadoAction.findDetalle()}
+        <h:form id="datos">
+            <div style="width:100%;text-align: center; padding: 0px">
+                <cmp:barra_mnt bean="#{reglallenadoAction}"/>
+                <p:panelGrid columns="3" style="width:100%; text-align: left" id="pnl_reprogramar" layout="grid" columnClasses="no-border">
+                    <f:facet name="header">
+                        <p:outputLabel value="#{reglallenadoAction.tituloHead}"/>
+                    </f:facet>
+                    <h:panelGrid columns="2">
+                        <p:outputLabel value="Codigo"/>
+                        <p:inputText value="#{reglallenadoAction.datoEdicion.idreglas}" disabled="true"/>
+                        <p:outputLabel for="proceso"  value="Proceso:" />
+                        <p:selectOneMenu id="proceso" value="#{reglallenadoAction.datoEdicion.idproceso}" style="width: 100%"  disabled="#{!reglallenadoAction.edicion}"> 
+                            <p:ajax listener="#{reglallenadoAction.onProcesoSelect}" update="datos:barcode" />
+                            <f:selectItem itemLabel="Seleccione Proceso" itemValue=""/>                        
+                            <f:selectItems value="#{reglallenadoAction.listProces}" var="tipoProceso" itemLabel="#{tipoProceso.descripcion}" itemValue="#{tipoProceso.idproceso}" />
+                        </p:selectOneMenu>
+                        <p:outputLabel value="Descripcion"/>
+                        <p:inputText value="#{reglallenadoAction.datoEdicion.descripcion}" disabled="#{!reglallenadoAction.edicion}"/>
+                        <h:outputText value="Estado?:" />
+                        <p:selectBooleanCheckbox value="#{reglallenadoAction.datoEdicion.BEstado}" />
+                    </h:panelGrid>
+
+                    <h:panelGrid columns="1" style="width:50%; text-align: left">
+                        <h:panelGrid columns="3">
+                            <p:outputLabel for="barcode"  value="Cod. Barra" />
+                            <p:selectOneMenu id="barcode" value="#{reglallenadoAction.idgen}" disabled="#{!reglallenadoAction.edicion}"> 
+                                <p:ajax listener="#{reglallenadoAction.onGenSelect()}" update="datos:tblDgen datos:btnDgen"/>
+                                <f:selectItem itemLabel="Seleccione Codgio Barra" itemValue=""/>                        
+                                <f:selectItems value="#{reglallenadoAction.lstgen}" var="tipoG" itemLabel="#{tipoG.DESCRIPCION}" itemValue="#{tipoG.IDGENERACION}" />
+                            </p:selectOneMenu>
+                            <p:commandButton id="btnDgen" value="Llenar" onclick="PF('dgendialog').show()" disabled="#{reglallenadoAction.lstdgen.size()==0}"/>
+                        </h:panelGrid>
+                        <p:dataTable id="tbldrgl" widgetVar="tbldrgl" value="#{reglallenadoAction.lstdreglall}" var="drgl" 
+                                     selection="#{reglallenadoAction.dreglall}" selectionMode="single" rowKey="#{drgl.idregistrocodigo}" rowIndexVar="roIndex">
+                            <p:ajax event="rowSelect" listener="#{reglallenadoAction.onRowSelectDGeneracionCodigo}" update="datos:numeros" />
+                            <p:ajax event="rowUnselect" listener="#{reglallenadoAction.onRowUnselectDGeneracionCodigo}" update="datos:numeros" />
+                            <p:column headerText="#Inicio" style="width:30%;" filterBy="#{drgl.dinicio}" filterMatchMode="contains" sortBy="#{drgl.dinicio}">
+                                <h:outputText value="#{drgl.dinicio}" />
+                            </p:column>
+                            <p:column headerText="#Fin" style="width:30%;" filterBy="#{drgl.dfin}" filterMatchMode="contains" sortBy="#{drgl.dfin}">
+                                <h:outputText value="#{drgl.dfin}" />
+                            </p:column>
+                            <p:column headerText="Parametro" style="width:30%;" filterBy="#{drgl.parametro}" filterMatchMode="contains" sortBy="#{drgl.parametro}">
+                                <h:outputText value="#{drgl.parametro}" />
+                            </p:column>
+                            <p:column style="width:32px;text-align: center" headerText="Valores">
+                                <p:commandButton actionListener="#{reglallenadoAction.verValores(roIndex)}" icon="ui-icon-search" title="Valores"/>
+                            </p:column>
+                        </p:dataTable>
+                        <h:panelGrid id="numeros" columns="6">
+                            <p:outputLabel value="# inicio"/>
+                            <p:spinner id="inicio" value="#{reglallenadoAction.nincio}" min="0" disabled="true">
+                                <p:ajax update="datos:tbldrgl datos:numeros" listener="#{reglallenadoAction.llenarNumeros()}" />
+                            </p:spinner>
+                            <p:outputLabel value="# inicio"/>
+                            <p:spinner id="fin" value="#{reglallenadoAction.nfin}" min="0"  disabled="true">
+                                <p:ajax update="datos:tbldrgl datos:numeros" listener="#{reglallenadoAction.llenarNumeros()}" process="@this" />
+                            </p:spinner>
+                            <p:outputLabel value="total"/>
+                            <p:inputText value="#{reglallenadoAction.nincio + reglallenadoAction.nfin}" disabled="true"/>
+                        </h:panelGrid>
+                    </h:panelGrid>
+                </p:panelGrid>  
+            </div>
+            <p:dialog id="dgendialog" widgetVar="dgendialog" style="width: 300px; height: 300px" modal="true" closable="true">
+                <p:panelGrid columns="1" columnClasses="no-border, no-border,no-border">
+                    <p:dataTable style="width: 300px; height: 300px" id="tblDgen" widgetVar="tblDgen" value="#{reglallenadoAction.lstdgen}" var="ldgen" selection="#{reglallenadoAction.slclstdgen}" rowKey="#{ldgen.IDREGISTROCODIGO}" rowSelectMode="checkbox">
+                        <f:facet name="header">
+                            Detalle de Generacion de Codigo
+                        </f:facet>
+                        <p:column selectionMode="multiple" style="width:16px;text-align:center"/>
+                        <p:column headerText="Parametro" style="width:30%;" filterBy="#{ldgen.PARAMETRO}" filterMatchMode="contains" sortBy="#{ldgen.PARAMETRO}">
+                            <h:outputText value="#{ldgen.PARAMETRO}" />
+                        </p:column>                   
+                    </p:dataTable>
+                </p:panelGrid>
+                <p:commandButton value="Insertar" actionListener="#{reglallenadoAction.llenarDreglal()}" update="datos:tbldrgl"/>
+            </p:dialog>            
+            <p:growl id="growl" life="4000" showDetail="false"  />
+            <cmp:mDialogElimina_lst id="cmpDialog" bean="#{reglallenadoAction}" ventana="MNT" />
+        </h:form>
+        <p:dialog id="dialogVal" widgetVar="dialogVal" closable="true" modal="true"  style="width: 350px; height: 350px">
+            <h:form id="ddform">
+                <p:commandButton value="Llenar" actionListener="#{reglallenadoAction.addValores()}" />
+                <p:dataTable id="lstddgr" style="width: 350px; height: 350px"  value="#{reglallenadoAction.dreglall.lstddreglallenado}" selection="#{reglallenadoAction.ddreglall}" 
+                             var="ddrg" editable="true" selectionMode="single" rowKey="#{ddrg.item}">
+                    <p:column headerText="Valor" style="width:30%;" filterBy="#{ddrg.valor}" filterMatchMode="contains" sortBy="#{ddrg.valor}">
+                        <p:inputText style="width: 80% !important;font-size: 11px" value="#{ddrg.valor}" />
+                    </p:column>
+                </p:dataTable>
+                <p:commandButton value="Grabar" onclick="PF('dialogVal').hide()"/>
+            </h:form>
+        </p:dialog>
+    </ui:define>
+</ui:composition>

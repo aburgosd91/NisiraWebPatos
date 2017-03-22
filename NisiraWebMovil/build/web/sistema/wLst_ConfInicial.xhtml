@@ -1,0 +1,40 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:f="http://java.sun.com/jsf/core"
+                template="templatebanco.xhtml"
+                xmlns:pm="http://primefaces.org/mobile"
+                xmlns:cmp="http://java.sun.com/jsf/composite/cmp">
+    <ui:define name="metadata">
+    </ui:define>
+    <ui:define name="body">
+        <h:form id="datos">            
+            #{confIniAction.buscarTodo()}  
+            <p:panelGrid id="principal" columns="1" columnClasses="no-border, no-border">
+                <cmp:barra_lst bean="#{confIniAction}" mostrar_opciones="false" />
+                <p:dataTable id="tbl" var="listconfin" value="#{confIniAction.listaDatos}" filteredValue="#{confIniAction.filtroDatos}" widgetVar="listconfin" paginatorTemplate="{FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink}" paginatorPosition="top"
+                             paginator="true" rows="15" style="margin-bottom:20px" selectionMode="single" selection="#{confIniAction.datoSeleccionado}" rowKey="#{listconfin.IDCONFIG}" resizableColumns="true">
+                    <f:facet name="header">
+                        #{confIniAction.tituloHead}
+                    </f:facet>
+                    <p:column headerText="Codigo Empresa" filterBy="#{listconfin.IDEMPRESA}" filterMatchMode="contains" sortBy="#{listconfin.IDEMPRESA}">
+                        <h:outputText value="#{listconfin.IDEMPRESA}" />
+                    </p:column>
+                    <p:column headerText="Codigo Sucursal" filterBy="#{listconfin.IDSUCURSAL}" filterMatchMode="contains" sortBy="#{listconfin.IDSUCURSAL}">
+                        <h:outputText value="#{listconfin.IDSUCURSAL}" />
+                    </p:column>
+                    <p:column headerText="Codigo Configuracion"  filterBy="#{listconfin.IDCONFIG}" filterMatchMode="contains" sortBy="#{listconfin.IDCONFIG}">
+                        <h:outputText value="#{listconfin.IDCONFIG}" />
+                    </p:column>
+                    <p:column headerText="Descripcion"  filterBy="#{listconfin.DESCRIPCION}" filterMatchMode="contains" sortBy="#{listconfin.DESCRIPCION}">
+                        <h:outputText value="#{listconfin.DESCRIPCION}" />
+                    </p:column>
+                </p:dataTable>
+            </p:panelGrid>
+            <p:growl id="growl" life="4000" showDetail="false"  />
+            <cmp:mDialogElimina_lst id="cmpDialog" bean="#{confIniAction}" ventana="LST" />
+
+        </h:form>
+    </ui:define>
+</ui:composition>

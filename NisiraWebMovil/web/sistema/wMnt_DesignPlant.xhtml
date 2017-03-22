@@ -1,0 +1,192 @@
+ <ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:f="http://java.sun.com/jsf/core"
+                template="templatebanco.xhtml"
+                xmlns:cmp="http://xmlns.jcp.org/jsf/composite/cmp">
+    
+    <ui:define name="metadata">
+    </ui:define>
+    <ui:define name="body">
+        <!--script src="../js/jquery-2.1.1.js"></script-->
+        <script src="../js/fabric.js"></script>
+        <script src="../js/bootstrap.js"></script>
+        <script src="../js/bootstrap-colorpicker.js"></script>
+        <script src="../js/plant_design.js" type="text/javascript"></script>
+        <!--script src="../js/coffee-script.js"></script-->
+        <!--script src="../js/floorplanner.coffee" type="text/coffeescript"></script-->
+        <h:form id="datos"> 
+            <cmp:barra_mnt bean="#{designPlantAction}"/>
+            <p:panelGrid columns="2" columnClasses="no-border,no-border">
+                <p:outputLabel value ="Planta"/>
+                <p:panelGrid columns="2" columnClasses="no-border,no-border">
+                    <p:inputText id="imgplant" value="#{designPlantAction.datoEdicion.nameimg}" style="width: 280px !important;"  disabled="#{!designPlantAction.edicion}"/>
+                    <p:commandButton value="Upload" ajax="true" image="ui-icon-zomm-upload" actionListener="#{designPlantAction.getActionAbrirShow()}"/>
+                </p:panelGrid>
+                <p:outputLabel value ="Type"/>
+                <p:panelGrid columns="5" columnClasses="no-border,no-border,no-border,no-border,no-border">
+                    <p:inputText id="type" value="#{designPlantAction.datoEdicion.type}" style="width: 280px !important;"  disabled="true"/>
+                    <p:outputLabel value ="H:"/>
+                    <p:inputText id="img_height" value="#{designPlantAction.datoEdicion.height}" style="width: 100px !important;"  disabled="true"/>
+                    <p:outputLabel value ="L:"/>
+                    <p:inputText id="img_width" value="#{designPlantAction.datoEdicion.width}" style="width: 100px !important;"  disabled="true"/>
+                </p:panelGrid>
+                <p:outputLabel value ="Dimension Cuadrante:"/>
+                <p:panelGrid columns="5" columnClasses="no-border,no-border,no-border,no-border,no-border">
+                    <p:spinner id="dimension" value="#{designPlantAction.dimension}" min="1" />
+                    <p:commandButton value="Reload" ajax="true" image="ui-icon-reload" actionListener="#{designPlantAction.getInitTools()}"/>
+                </p:panelGrid>
+            </p:panelGrid>
+            <p:growl id="growl" life="4000" showDetail="false"  />
+            <cmp:mDialogElimina_lst id="cmpDialog" bean="#{designPlantAction}" ventana="MNT" />
+            <p:dialog id="dlg_uploadPlant" header="..:: Cargar Planta ::." widgetVar="dlg_uploadPlant" modal="true"  showEffect="popup" closable="true" width="600" height="200" >
+                <p:panelGrid columns="1" columnClasses="no-border">
+                    <p:fileUpload value="#{designPlantAction.file}" mode="advanced" allowTypes="/(\.|\/)(gif|jpe?g|png)$/" fileLimit="1" 
+                                  skinSimple="true" fileUploadListener="#{designPlantAction.handleFileUpload}"/>
+                    <br/>              
+                </p:panelGrid>                      
+            </p:dialog>
+            <p:dialog id="dlg_asignarRack" header="..:: Asignar Rack ::." widgetVar="dlg_asignarRack" modal="true"  showEffect="popup" closable="true" width="800" height="470" >
+                #{designPlantAction.findTipoEstanteria()}
+                #{designPlantAction.findZona()}
+                <div class="ui-grid">
+                    <div class="ui-grid-row">
+                        <div class="ui-grid-col-6" >
+                            <p:panelGrid id="infomation" columns="1">
+                                <p:toolbar>
+                                    <f:facet name="left">
+                                        <div style="color:#069; font-size: 12px; padding-top: 5px">
+                                            <p:outputLabel id="title" value="   #{designPlantAction.title}" />
+                                        </div>
+                                    </f:facet>
+                                </p:toolbar>
+                                <p:outputLabel id="parrafo" value="#{designPlantAction.parrafo}" />
+                                <p:graphicImage id="graphic" value="#{designPlantAction.rutaImage}"/>
+                            </p:panelGrid>
+                        </div>
+                        <div class="ui-grid-col-6">
+                            <p:panelGrid columns="1">
+                                <p:toolbar>
+                                    <f:facet name="left">
+                                        <div style="color:#069; font-size: 12px; padding-top: 5px">
+                                            <p:outputLabel value="  Editar estanteria" />
+                                        </div>
+                                    </f:facet>
+                                </p:toolbar>
+                                <p:panelGrid columns="2" columnClasses="no-border,no-border">
+                                    <p:outputLabel value="Tipo Estanteria: " />
+                                    <p:selectOneMenu  id="tipoEstanteria" style="width: 220px !important;font-size: 11px" 
+                                                      value="#{designPlantAction.selectTipoEstanteria}" 
+                                                      disabled="#{!designPlantAction.edicion}">        
+                                        <f:selectItem itemLabel="Seleccione Tipo Estanteria" itemValue=""/>                        
+                                        <f:selectItems value="#{designPlantAction.listTipoEstanteria}" var="tipoEstructura" itemLabel="#{tipoEstructura.descripcion}" itemValue="#{tipoEstructura.idtipoestanteria}" />
+                                    </p:selectOneMenu>
+                                    <p:outputLabel value="N° Pisos(HT): " />
+                                    <p:spinner id="pisos" value="#{designPlantAction.pisos}" min="1">
+                                        <p:ajax event="focus" update=":datos:infomation" listener="#{designPlantAction.getFocusPiso()}"/>
+                                    </p:spinner>
+                                    <p:outputLabel value="N° Filas: " />
+                                    <p:spinner id="filas" value="#{designPlantAction.filas}" min="1" >
+                                        <p:ajax event="focus" update=":datos:infomation" listener="#{designPlantAction.getFocusFila()}"/>
+                                    </p:spinner>
+                                    <p:outputLabel value="N° Columnas(L): " />
+                                    <p:spinner id="columnas" value="#{designPlantAction.columnas}" min="1" >
+                                        <p:ajax event="focus" update=":datos:infomation" listener="#{designPlantAction.getFocusColumna()}"/>
+                                    </p:spinner>
+                                    <p:outputLabel value="Zona: " />
+                                    <p:selectOneMenu  id="zona" style="width: 220px !important;font-size: 11px" 
+                                                      value="#{designPlantAction.selectZona}" 
+                                                      disabled="#{!designPlantAction.edicion}">        
+                                        <f:selectItem itemLabel="Seleccione Zona" itemValue=""/>                        
+                                        <f:selectItems value="#{designPlantAction.listZona}" var="zona" itemLabel="#{zona.DESCRIPCION}" itemValue="#{zona.IDZONA}" />
+                                    </p:selectOneMenu>
+                                </p:panelGrid>
+                                <p:panelGrid columns="1">
+                                    <p:panelGrid columns="3" columnClasses="no-border,no-border,no-border">
+                                        <p:outputLabel value="Altura(H): " />
+                                        <p:spinner id="altura" value="#{designPlantAction.altura}" min="1" >
+                                            <p:ajax event="focus" update=":datos:infomation" listener="#{designPlantAction.getFocusAltura()}"/>
+                                        </p:spinner>
+                                        <p:outputLabel value="(mm)" />
+                                        
+                                        <p:outputLabel value="Fondo(D): " />
+                                        <p:spinner id="fondo" value="#{designPlantAction.fondo}" min="1" >
+                                            <p:ajax event="focus" update=":datos:infomation" listener="#{designPlantAction.getFocusFondo()}"/>
+                                        </p:spinner>
+                                        <p:outputLabel value="(mm)" />
+                                    </p:panelGrid>
+                                    <p:panelGrid columns="3" columnClasses="no-border,no-border,no-border">
+                                        <p:outputLabel value="Peso máx.: " />
+                                        <p:spinner id="peso" value="#{designPlantAction.peso}" min="1" >
+                                            <p:ajax event="focus" update=":datos:infomation" listener="#{designPlantAction.getFocusPeso()}"/>
+                                        </p:spinner>
+                                        <p:outputLabel value="(Kg)" />
+                                        
+                                        <p:outputLabel value="Ancho(L): " />
+                                        <p:spinner id="ancho" value="#{designPlantAction.ancho}" min="1" >
+                                            <p:ajax event="focus" update=":datos:infomation" listener="#{designPlantAction.getFocusAncho()}"/>
+                                        </p:spinner>
+                                        <p:outputLabel value="(mm)" />
+                                    </p:panelGrid>
+                                </p:panelGrid>
+                            </p:panelGrid>
+                            
+                        </div>
+                    </div>
+                    <p:toolbar>
+                        <f:facet name="right">
+                            <p:commandButton value="Aceptar" ajax="true" actionListener="#{designPlantAction.getComponenteAceptar()}" image="ui-icon-grabar" />
+                            <p:commandButton value="Cancelar" image="ui-icon-cancelar" onclick="PF('dlg_asignarRack').hide()">
+                            </p:commandButton>
+                        </f:facet>
+                    </p:toolbar>
+                </div>                  
+            </p:dialog>
+            <p:ribbon id="ribbon" >
+                <p:tab title="File">
+                    <p:ribbonGroup label="Edition">
+                        <p:commandButton id="undo" value="Undo" icon="ui-icon-undo" styleClass="ui-ribbon-bigbutton" type="button"/>
+                        <p:commandButton id="redo" value="Redo" icon="ui-icon-redo" styleClass="ui-ribbon-bigbutton" type="button"/>
+                    </p:ribbonGroup>
+                    <p:ribbonGroup label="Options">
+                        <p:commandButton id="clear" value="Clear" icon="ui-icon-clear" styleClass="ui-ribbon-bigbutton" type="button"/>
+                        <p:commandButton id="save" value="Save" icon="ui-icon-save" styleClass="ui-ribbon-bigbutton" type="button"/>
+                    </p:ribbonGroup>
+                    <p:ribbonGroup label="Estructura">
+                        <p:commandButton id="componenteRack" value="Rack" icon="ui-icon-componente" styleClass="ui-ribbon-bigbutton" ajax="true" actionListener="#{designPlantAction.getDialogEstucturaRack()}" />
+                    </p:ribbonGroup>
+                </p:tab>
+                <p:tab title="Ver">
+                    <p:ribbonGroup label="Zoom">
+                        <p:commandButton widgetVar="zoom_mas" id="zoom_mas" value="In" icon="ui-icon-zomm-mas" styleClass="ui-ribbon-bigbutton"  ajax="true" actionListener="#{designPlantAction.getZoomMas()}"/>
+                        <p:commandButton widgetVar="zoom_menos" id="zoom_menos" value="Out" icon="ui-icon-zomm-menos" styleClass="ui-ribbon-bigbutton"  ajax="true" actionListener="#{designPlantAction.getZoomMenos()}"/>
+                    </p:ribbonGroup>
+                </p:tab>
+            </p:ribbon>
+        </h:form>
+        <div class="ui-grid">
+            <div class="ui-grid-row">
+                <div class="ui-grid-col-9">
+                    <div id="tools">
+                        <div id="shapes">
+                            <!--button class="btn btn-default" id="undo">Undo</button-->
+                            <!--button class="btn btn-default" id="redo">Redo</button-->
+                            <!--button class="btn btn-danger" id="clear">Clear</button-->
+                            <button class="btn btn-danger" id="clearall">Clear All</button>
+                            <!--button class="btn btn-success" id="save">Save</button-->
+                            <!--button class="btn btn-success" id="zoom_mas">Zoom(+)</button-->
+                            <!--button class="btn btn-success" id="zoom_menos">Zoom(-)</button-->
+                        </div>
+                        <div id="properties"></div>
+                    </div>
+                    <div id="work" style="overflow:scroll;">
+                        <canvas id="c" style="border: 1px solid #ff0000; position: absolute;"></canvas>
+                    </div>
+                </div>
+                <div class="ui-grid-col-3">
+                </div>
+            </div>
+        </div>
+    </ui:define>    
+</ui:composition>

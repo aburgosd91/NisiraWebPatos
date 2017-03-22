@@ -1,0 +1,62 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:f="http://java.sun.com/jsf/core"
+                template="templatebanco.xhtml"
+                xmlns:pm="http://primefaces.org/mobile"
+                xmlns:cmp="http://java.sun.com/jsf/composite/cmp">
+    <ui:define name="metadata">
+    </ui:define>
+    <ui:define name="body">        
+        <h:form id="datos">
+            <div style="width:100%;text-align: center; padding: 0px">
+                <cmp:barra_mnt bean="#{mSysFormularioAction}"/>
+                <p:panelGrid style="width:  100%" columns="1" id="pnl_reprogramar" columnClasses="no-border, no-border">
+                    <f:facet name="header">
+                        <p:outputLabel value="#{mSysFormularioAction.tituloHead}"/>
+                    </f:facet>
+                    <p:panelGrid columns="2" columnClasses="no-border, no-border">
+                        <p:outputLabel value="Cod Formulario"/>
+                        <p:inputText maxlength="8" style="width: 100px !important;font-size: 11px" value="#{mSysFormularioAction.datoEdicion.idformulario}" disabled="#{!mSysFormularioAction.edicion}"/>
+                    </p:panelGrid>
+                    <p:panelGrid columns="2" columnClasses="no-border, no-border">
+                        <p:outputLabel value="Descripcion"/>
+                        <p:inputText maxlength="8" style="width: 100px !important;font-size: 11px" value="#{mSysFormularioAction.datoEdicion.descripcion}" disabled="#{!mSysFormularioAction.edicion}"/>
+                    </p:panelGrid>
+                    <p:panelGrid columns="2" columnClasses="no-border, no-border">
+                        <p:outputLabel value="Paquete"/>
+                        <p:inputText maxlength="8" style="width: 100px !important;font-size: 11px" value="#{mSysFormularioAction.datoEdicion.paquete}" disabled="#{!mSysFormularioAction.edicion}"/>
+                    </p:panelGrid>
+                    <p:panelGrid columns="2" columnClasses="no-border, no-border">
+                        <p:outputLabel value="Clase"/>
+                        <p:inputText maxlength="8" style="width: 100px !important;font-size: 11px" value="#{mSysFormularioAction.datoEdicion.clase}" disabled="#{!mSysFormularioAction.edicion}"/>
+                    </p:panelGrid>                    
+                    <p:panelGrid columns="2" columnClasses="no-border, no-border">
+                        <p:outputLabel value="Imagen"/>
+                        <p:inputText maxlength="8" style="width: 100px !important;font-size: 11px" value="#{mSysFormularioAction.datoEdicion.imagen}" disabled="#{!mSysFormularioAction.edicion}"/>
+                    </p:panelGrid>
+                    <p:panelGrid columns="2" columnClasses="no-border, no-border">
+                        <p:outputLabel value="Es Lista"/>
+                        <p:selectBooleanCheckbox value="#{mSysFormularioAction.datoEdicion.bandLista}" disabled="#{!mSysFormularioAction.edicion}">
+                            <p:ajax update="pnl" />
+                        </p:selectBooleanCheckbox>
+                    </p:panelGrid>
+                    <p:panelGrid id="pnl" columns="1" columnClasses="no-border, no-border">
+                        <p:panelGrid columns="2" columnClasses="no-border, no-border" rendered="#{mSysFormularioAction.datoEdicion.eslista==1}">
+                            <p:outputLabel value="Paquete"/>
+                            <p:inputText maxlength="8" style="width: 100px !important;font-size: 11px" value="#{mSysFormularioAction.datoEdicion.paquetedoc}" disabled="#{!mSysFormularioAction.edicion}"/>
+                        </p:panelGrid>
+                        <p:panelGrid columns="2" columnClasses="no-border, no-border" rendered="#{mSysFormularioAction.datoEdicion.eslista==1}">
+                            <p:outputLabel value="Id Empresa"/>
+                            <p:inputText maxlength="8" style="width: 100px !important;font-size: 11px" value="#{mSysFormularioAction.datoEdicion.clasedoc}" disabled="#{!mSysFormularioAction.edicion}"/>
+                        </p:panelGrid>
+                    </p:panelGrid>
+                </p:panelGrid>
+            </div>
+            <p:growl id="growl" life="4000" showDetail="false"  />
+            <cmp:mDialogElimina_lst id="cmpDialog" bean="#{mSysFormularioAction}" ventana="MNT" />
+        </h:form>
+
+    </ui:define>
+</ui:composition>

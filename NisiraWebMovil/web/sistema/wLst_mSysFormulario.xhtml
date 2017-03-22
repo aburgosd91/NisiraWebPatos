@@ -1,0 +1,79 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:f="http://java.sun.com/jsf/core"
+                template="templatebanco.xhtml"
+                xmlns:pm="http://primefaces.org/mobile"
+                xmlns:cmp="http://java.sun.com/jsf/composite/cmp">
+    <ui:define name="metadata">
+    </ui:define>
+    <ui:define name="body">
+        #{mSysFormularioAction.buscarTodo()}
+        <h:form id="datos">
+            <cmp:barra_lst bean="#{mSysFormularioAction}" mostrar_opciones="false" />
+            <p:dataTable id="tbl" var="listfrm" value="#{mSysFormularioAction.listaDatos}" filteredValue="#{mSysFormularioAction.filtroDatos}" widgetVar="listTipoZona" paginatorTemplate="{FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {Exporters}" paginatorPosition="top"
+                         paginator="true" rows="15" style="margin-bottom:20px" selectionMode="single" selection="#{mSysFormularioAction.datoSeleccionado}" rowKey="#{listfrm.idformulario}" resizableColumns="true">
+                <f:facet name="header">
+                    <h:outputText value="#{mSysFormularioAction.tituloHead}" />
+                </f:facet>
+                <p:column style="width:15%;" filterBy="#{listfrm.idformulario}" filterMatchMode="contains" sortBy="#{listfrm.idformulario}">
+                    <f:facet name="header">
+                        <h:outputText value="Cod Formulario" />
+                    </f:facet>
+                    <h:outputText value="#{listfrm.idformulario}"/>
+                </p:column>
+                <p:column style="width:15%;" filterBy="#{listfrm.clase}" filterMatchMode="contains" sortBy="#{listfrm.clase}">
+                    <f:facet name="header">
+                        <h:outputText value="Clase" />
+                    </f:facet>
+                    <h:outputText value="#{listfrm.clase}"/>
+                </p:column>
+                <p:column style="width:15%;" filterBy="#{listfrm.clasedoc}" filterMatchMode="contains" sortBy="#{listfrm.clasedoc}">
+                    <f:facet name="header">
+                        <h:outputText value="Clase Documento" />
+                    </f:facet>
+                    <h:outputText value="#{listfrm.clasedoc}"/>
+                </p:column>
+                <p:column style="width:15%;" filterBy="#{listfrm.descripcion}" filterMatchMode="contains" sortBy="#{listfrm.descripcion}">
+                    <f:facet name="header">
+                        <h:outputText value="Descripcion" />
+                    </f:facet>
+                    <h:outputText value="#{listfrm.descripcion}"/>
+                </p:column>
+                <p:column style="width:15%;" filterBy="#{listfrm.eslista}" filterMatchMode="contains" sortBy="#{listfrm.eslista}">
+                    <f:facet name="header">
+                        <h:outputText value="Lista" />
+                    </f:facet>
+                    <h:outputText value="#{listfrm.eslista==1?'SI':'NO'}"/>
+                </p:column>
+                <p:column style="width:15%;" filterBy="#{listfrm.imagen}" filterMatchMode="contains" sortBy="#{listfrm.imagen}">
+                    <f:facet name="header">
+                        <h:outputText value="Imagen" />
+                    </f:facet>
+                    <h:outputText value="#{listfrm.imagen}"/>
+                </p:column>
+                <p:column style="width:15%;" filterBy="#{listfrm.paquete}" filterMatchMode="contains" sortBy="#{listfrm.paquete}">
+                    <f:facet name="header">
+                        <h:outputText value="Paquete" />
+                    </f:facet>
+                    <h:outputText value="#{listfrm.paquete}"/>
+                </p:column>
+                <p:column style="width:15%;" filterBy="#{listfrm.paquetedoc}" filterMatchMode="contains" sortBy="#{listfrm.paquetedoc}">
+                    <f:facet name="header">
+                        <h:outputText value="Paquete Documento" />
+                    </f:facet>
+                    <h:outputText value="#{listfrm.paquetedoc}"/>
+                </p:column>
+                <p:column style="width:15%;" filterBy="#{listfrm.opcion}" filterMatchMode="contains" sortBy="#{listfrm.opcion}">
+                    <f:facet name="header">
+                        <h:outputText value="Opcion" />
+                    </f:facet>
+                    <h:outputText value="#{listfrm.opcion}"/>
+                </p:column>
+            </p:dataTable>
+            <p:growl id="growl" life="4000" showDetail="false"  />
+            <cmp:mDialogElimina_lst id="cmpDialog" bean="#{mSysFormularioAction}" ventana="LST" />
+        </h:form>
+    </ui:define>
+</ui:composition>

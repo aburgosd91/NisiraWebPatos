@@ -1,0 +1,83 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:f="http://java.sun.com/jsf/core"
+                template="templatebanco.xhtml"
+                xmlns:cmp="http://java.sun.com/jsf/composite/cmp">
+    <ui:define name="metadata">
+    </ui:define>
+    <ui:define name="body">          
+        <h:form id="datos">
+            #{procesosAction.buscarTodo()}  
+            <p:panelGrid id="principal" columns="1" columnClasses="no-border, no-border">
+                <cmp:barra_lst bean="#{procesosAction}" mostrar_opciones="false" />
+                <p:dataTable id="tbl" var="listOperario" value="#{procesosAction.listaDatos}" filteredValue="#{procesosAction.filtroDatos}" widgetVar="listOperario" 
+                             paginatorTemplate="{FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink}" paginatorPosition="top"
+                             paginator="true" rows="15" style="margin-bottom:20px" selectionMode="single" selection="#{procesosAction.datoSeleccionado}" rowKey="#{listOperario.idproceso}" resizableColumns="true">
+                    <f:facet name="header">
+                        <h:outputText value="#{procesosAction.tituloHead}" />
+                    </f:facet>
+                    <p:ajax event="rowDblselect" listener="#{procesosAction.ver()}" />
+                    <p:column style="width:15%;" filterBy="#{listOperario.idproceso}" filterMatchMode="contains" sortBy="#{listOperario.idproceso}">
+                        <f:facet name="header">
+                            <h:outputText value="Codigo Proceso" />
+                        </f:facet>
+                        <h:outputText value="#{listOperario.idproceso}"/>
+                    </p:column>
+                    <p:column style="width:15%;" filterBy="#{listOperario.descripcion}" filterMatchMode="contains" sortBy="#{listOperario.descripcion}">
+                        <f:facet name="header">
+                            <h:outputText value="Descripcion" />
+                        </f:facet>
+                        <h:outputText value="#{listOperario.descripcion}"/>
+                    </p:column>
+                    <p:column style="width:15%;" filterBy="#{listOperario.fechainicio}" filterMatchMode="contains" sortBy="#{listOperario.fechainicio}">
+                        <f:facet name="header">
+                            <h:outputText value="Fecha Incio" />
+                        </f:facet>
+                        <h:outputText value="#{listOperario.fechainicio}"   escape="false">
+                            <f:convertDateTime pattern="dd-MM-yyyy" />
+                        </h:outputText>
+                    </p:column>                 
+                    <p:column style="width:20%;" filterBy="#{listOperario.estado}">
+                        <f:facet name="header">
+                            <h:outputText value="ESTADO"/>
+                        </f:facet>
+                        <f:facet name="filter">
+                            <p:selectOneButton onchange="PF('listOperario').filter()">
+                                <f:selectItem  itemLabel="Activo" itemValue="#{1}"/>
+                                <f:selectItem itemLabel="Inactivo" itemValue="#{0}"/>
+                            </p:selectOneButton>
+                        </f:facet>
+                        <h:graphicImage value="../images/img/#{listOperario.estado==1?'activo':'inactivo'}.png"/>
+                        <h:outputText value="#{listOperario.estado==1?'Activo':'Inactivo'}" />
+                    </p:column>
+                </p:dataTable>
+            </p:panelGrid>
+            <p:dialog id="dlGuardarProceso" header="..:: MANTENEDOR PROCESO ::." widgetVar="dlGuardarProceso" modal="true" showEffect="popup" closable="false">
+                <p:messages id="messages" autoUpdate="true" closable="true" style="font-size:10px"/>
+                <p:panelGrid columns="2" columnClasses="no-border, no-border,no-border">
+                    <p:outputLabel value="Id: " />
+                    <p:inputText value="#{procesosAction.datoEdicion.idproceso}" disabled="true"/>
+                    <p:outputLabel value="Descripcion " />
+                    <p:inputTextarea value="#{procesosAction.datoEdicion.descripcion}" disabled="#{!procesosAction.edicion}"/>
+
+                    <p:outputLabel value="Fecha Inicio" escape="false"/>
+                    <p:calendar id="button1" value="#{procesosAction.fechainicio}" showOn="button" pattern="dd/MM/yyyy" mask="true" disabled="#{!procesosAction.edicion}">
+                        <!--<p:ajax event="dateSelect" listener="{planventaAction.updateCampañas}" update="lstCampaña"/>-->
+                    </p:calendar>
+
+                </p:panelGrid>
+                <br/>
+                <p:toolbar>
+                    <f:facet name="right">
+                        <p:commandButton id="buttonGuardar" value="Grabar" ajax="true" actionListener="#{procesosAction.grabar()}" image="ui-icon-grabar" />
+                        <p:commandButton id="buttonCancelar" value="Cancelar" image="ui-icon-cancelar" onclick="PF('dlGuardarProceso').hide()"/>
+                    </f:facet>
+                </p:toolbar>
+            </p:dialog>
+            <p:growl id="growl" life="4000" showDetail="false"  />
+            <cmp:mDialogElimina_lst id="cmpDialog" bean="#{procesosAction}" ventana="LST" />
+        </h:form>
+    </ui:define>
+</ui:composition>

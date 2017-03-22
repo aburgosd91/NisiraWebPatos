@@ -1,0 +1,239 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:f="http://java.sun.com/jsf/core"
+                template="templatebanco.xhtml"
+                xmlns:pm="http://primefaces.org/mobile"
+                xmlns:cmp="http://java.sun.com/jsf/composite/cmp">
+    <ui:define name="metadata">
+    </ui:define>
+    <ui:define name="body">        
+        <h:form id="datos">
+            #{programacioLlenadoAction.findDetatlle()}
+            <cmp:barra_mnt bean="#{programacioLlenadoAction}"/>
+            <p:panelGrid columns="2" columnClasses="no-border, no-border,no-border">
+                <f:facet name="header">
+                    <p:outputLabel value="#{programacioLlenadoAction.tituloHead}"/>
+                </f:facet>
+                <p:panelGrid columns="2" columnClasses="no-border, no-border,no-border">
+                    <p:outputLabel value="Codigo" escape="false" />
+                    <p:inputText value="#{programacioLlenadoAction.datoEdicion.idprogramacionllenado}"  disabled="true"/>
+                    <p:outputLabel for="descripcion"  value="Descripcion:" />
+                    <p:inputTextarea id="descripcion"  cols="60" rows="2" value="#{programacioLlenadoAction.datoEdicion.descripcion}" onkeyup="javascript:this.value = this.value.toUpperCase();"  disabled="#{!programacioLlenadoAction.edicion}">
+                    </p:inputTextarea>
+                    <p:outputLabel for="proceso"  value="Proceso:" />
+                    <p:selectOneMenu id="proceso" value="#{programacioLlenadoAction.datoEdicion.idproceso}" disabled="#{!programacioLlenadoAction.edicion}"> 
+                        <f:selectItem itemLabel="Seleccione Proceso" itemValue=""/>                        
+                        <f:selectItems value="#{programacioLlenadoAction.lstPro}" var="tipoProceso" itemLabel="#{tipoProceso.descripcion}" itemValue="#{tipoProceso.idproceso}" />
+                    </p:selectOneMenu>
+                    <p:outputLabel for="forma"  value="Forma:" />
+                    <p:selectOneMenu id="forma" value="#{programacioLlenadoAction.datoEdicion.idforma}" disabled="#{!programacioLlenadoAction.edicion}"> 
+                        <f:selectItem itemLabel="Seleccione Tipo Código" itemValue=""/>                        
+                        <f:selectItems value="#{programacioLlenadoAction.lstForma}" var="tipoForma" itemLabel="#{tipoForma.DESCRIPCION}" itemValue="#{tipoForma.VALOR}" />
+                    </p:selectOneMenu>
+                </p:panelGrid>
+                <p:panelGrid columns="2" columnClasses="no-border, no-border,no-border">
+                    <p:outputLabel value="Cod Barra" escape="false" />
+                    <h:panelGrid id="cntBarra" cellpadding="0" cellspacing="0" columns="3">
+                        <p:commandButton styleClass="boton_buscar" ajax="true" actionListener="#{programacioLlenadoAction.genlistGeneracion()}" disabled="#{!programacioLlenadoAction.edicion}"  icon="ui-icon-search"/>
+                        <p:inputText size="25" readonly="true" value="#{programacioLlenadoAction.slcgencod.DESCRIPCION}" />
+                    </h:panelGrid>
+                    <p:outputLabel value="Regla" escape="false" />
+                    <h:panelGrid id="cntRegla" cellpadding="0" cellspacing="0" columns="3">
+                        <p:commandButton styleClass="boton_buscar" ajax="true" actionListener="#{programacioLlenadoAction.genlistRegall()}" disabled="#{!programacioLlenadoAction.edicion}"  icon="ui-icon-search"/>
+                        <p:inputText size="25" readonly="true" value="#{programacioLlenadoAction.slcRegall.descripcion}" />
+                    </h:panelGrid>
+                    <p:outputLabel value="Fecha Inicio" escape="false"/>
+                    <p:calendar id="button2" value="#{programacioLlenadoAction.finicio}" showOn="button" pattern="dd/MM/yyyy" mask="true" disabled="true">
+                        <!--<p:ajax event="dateSelect" listener="{planventaAction.updateCampañas}" update="lstCampaña"/>-->
+                    </p:calendar>
+                    <p:outputLabel value="Fecha Fin" escape="false"/>
+                    <p:calendar id="button3" value="#{programacioLlenadoAction.ffin}" showOn="button" pattern="dd/MM/yyyy" mask="true"  disabled="true">
+                        <!--<p:ajax event="dateSelect" listener="{planventaAction.updateCampañas}" update="lstCampaña"/>-->
+                    </p:calendar>
+                    <h:outputText value="Activo:" />
+                    <p:selectBooleanCheckbox value="#{programacioLlenadoAction.datoEdicion.BEstado}" />
+                </p:panelGrid>
+            </p:panelGrid>
+            <p:panelGrid layout="grid"  columns="2">
+                <p:commandButton value="Cargar" actionListener="#{programacioLlenadoAction.generar()}" ajax="true" update=":datos:growl,:datos:tblDgen"/>
+                <p:commandButton value="Reset"/>
+            </p:panelGrid>
+            <div class="ui-grid">
+                <p:tree id="treeDist" value="#{programacioLlenadoAction.root1}" var="doc" orientation="horizontal"
+                        selectionMode="single"
+                        selection="#{programacioLlenadoAction.selectedNode}">
+                    <p:ajax event="select" listener="#{programacioLlenadoAction.asignaPrioridad()}"/>
+                    <p:treeNode expandedIcon="ui-icon-folder-open" collapsedIcon="ui-icon-folder-collapsed">
+                        <h:outputText value="#{doc.descripcion}" />
+                    </p:treeNode>
+                    <p:treeNode type="Almacen">
+                        <p:panel header="#{doc.descripcion}" style="alignment-adjust: central;text-align:center; background-color:#{doc.seleccionado?'#FFAAAA':'#FFFFFF'};font-size: 10px">
+                            <h:panelGrid columns="1" style="width: 100%">
+                                <h:outputText  value="#{doc.prioridad}" style="font-weight: bold; font-size: 24px;color: #D8000C;visibility:#{doc.seleccionado?'visible':'hidden'}"/>
+                            </h:panelGrid>
+                        </p:panel>
+                    </p:treeNode>
+                    <p:treeNode type="Rack" >
+                        <p:panel header="#{doc.descripcion}" style="alignment-adjust: central;text-align:center; background-color:#{doc.seleccionado?'#FFAAAA':'#FFFFFF'};font-size: 10px">
+                            <h:panelGrid columns="1" style="width: 100%">
+                                <h:outputText  value="#{doc.prioridad}" style="font-weight: bold; font-size: 24px;color: #D8000C;visibility:#{doc.seleccionado?'visible':'hidden'}"/>
+                            </h:panelGrid>
+                        </p:panel>
+                    </p:treeNode>
+                    <p:treeNode type="Piso" >
+                        <p:panel  header="#{doc.descripcion}" style="alignment-adjust: central;text-align:center; background-color:#{doc.seleccionado?'#FFAAAA':'#FFFFFF'};font-size: 10px">
+                            <h:panelGrid columns="1" style="width: 100%">
+                                <h:outputText  value="#{doc.prioridad}" style="font-weight: bold; font-size: 24px;color: #D8000C;visibility:#{doc.seleccionado?'visible':'hidden'}"/>
+                            </h:panelGrid>
+                        </p:panel>
+                    </p:treeNode>                    
+                </p:tree>
+                <p:contextMenu for="treeDist">
+                    <p:menuitem value="Ver Filas y Columnas" actionListener="#{programacioLlenadoAction.verFilaColumna()}" icon="ui-icon-search" />
+                </p:contextMenu>
+            </div>   
+            <p:dataTable   id="tblDgen"  widgetVar="tblDgen" value="#{programacioLlenadoAction.lsttablaprio}" var="tprio" selection="#{programacioLlenadoAction.slctablaprio}" rowKey="#{tprio.idcolumna}" rowSelectMode="checkbox">
+                <f:facet name="header">
+                    Tabla Prioridades
+                </f:facet>
+                <p:column selectionMode="multiple" style="width:16px;text-align:center"/>
+                <p:column headerText="Al" sortBy="#{tprio.idalmacen}">
+                    <h:outputText value="#{tprio.idalmacen}" />
+                </p:column>   
+                <p:column headerText="P.Al" sortBy="#{tprio.pidalmacen}">
+                    <h:outputText value="#{tprio.pidalmacen}" />
+                </p:column>  
+                <p:column headerText="R"  sortBy="#{tprio.idrack}">
+                    <h:outputText value="#{tprio.idrack}" />
+                </p:column>  
+                <p:column headerText="P.R"  sortBy="#{tprio.pidrack}">
+                    <h:outputText value="#{tprio.pidrack}" />
+                </p:column>  
+                <p:column headerText="P" sortBy="#{tprio.idpiso}">
+                    <h:outputText value="#{tprio.idpiso}" />
+                </p:column>  
+                <p:column headerText="P.P" sortBy="#{tprio.pidpiso}">
+                    <h:outputText value="#{tprio.pidpiso}" />
+                </p:column>  
+                <p:column headerText="F-C" >
+                    <h:outputText value="#{tprio.idfila}-#{tprio.idcolumna}" />
+                </p:column>  
+                <p:column headerText="PFC" >
+                    <h:outputText value="#{tprio.pidcolumna}" />
+                </p:column>  
+                <p:column headerText="Generacion" >
+                    <h:outputText value="#{programacioLlenadoAction.slcgencod.IDGENERACION}" />
+                </p:column>  
+                <p:column headerText="Regla" >
+                    <h:outputText value="#{programacioLlenadoAction.slcRegall.idreglas}" />
+                </p:column>
+            </p:dataTable>
+            <p:dialog id="dialogGen" widgetVar="dialogGen" closable="true" modal="true" resizable="false" width="500" height="500"> 
+                <p:dataTable id="tblG" var="listGeneracionCodigo" value="#{programacioLlenadoAction.lstGencod}" widgetVar="listGeneracionCodigo" 
+                             paginatorTemplate="{FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink}"
+                             paginator="true" rows="15" style="margin-bottom:20px;text-align: center" selectionMode="single" selection="#{programacioLlenadoAction.slcgencod}" rowKey="#{listGeneracionCodigo.IDGENERACION}">
+                    <f:facet name="header">
+                        <h:outputText value="CÓDIGO DE BARRA" />
+                    </f:facet>
+                    <p:ajax event="rowDblselect" oncomplete="PF('dialogGen').hide()" update="datos:cntBarra"/>
+                    <p:column style="width:10%;" filterBy="#{listGeneracionCodigo.IDGENERACION}" filterMatchMode="contains">
+                        <f:facet name="header">
+                            <h:outputText value="ID" />
+                        </f:facet>
+                        <h:outputText value="#{listGeneracionCodigo.IDGENERACION}" />
+                    </p:column>
+                    <p:column style="width:15%;" filterBy="#{listGeneracionCodigo.PARAMETRO}" filterMatchMode="contains">
+                        <f:facet name="header" >
+                            <h:outputText value="TIPO CÓDIGO" />
+                        </f:facet>
+                        <h:outputText value="#{listGeneracionCodigo.PARAMETRO}" />
+                    </p:column>
+                    <p:column style="width:60%;" filterBy="#{listGeneracionCodigo.DESCRIPCION}" filterMatchMode="contains">
+                        <f:facet name="header" >
+                            <h:outputText value="DESCRIPCION" />
+                        </f:facet>
+                        <h:outputText value="#{listGeneracionCodigo.DESCRIPCION}" />
+                    </p:column>
+                    <p:column style="width:30%;">
+                        <f:facet name="header" >
+                            <h:outputText value="N° Total" />
+                        </f:facet>
+                        <h:outputText value="#{listGeneracionCodigo.NUMDIGITOTOTAL}" />
+                    </p:column>
+                    <p:column style="width:30%;" filterBy="#{listGeneracionCodigo.ESTADO eq 1?true:false}">
+                        <f:facet name="header">
+                            <h:outputText value="ESTADO"/>
+                        </f:facet>
+                        <f:facet name="filter">
+                            <p:selectOneButton onchange="PF('listGeneracionCodigo').filter()">
+                                <f:converter converterId="javax.faces.Boolean" />
+                                <f:selectItem  itemLabel="Activo" itemValue="true" />
+                                <f:selectItem itemLabel="Inactivo" itemValue="false" />
+                            </p:selectOneButton>
+                        </f:facet>
+                        <h:graphicImage value="../images/img/#{listGeneracionCodigo.ESTADO eq 1?'activo':'inactivo'}.png"/>
+                        <h:outputText value="#{listGeneracionCodigo.ESTADO eq 1?'Activo':'Inactivo'}" />
+                    </p:column>
+                </p:dataTable>  
+            </p:dialog>
+            <p:dialog id="dialogRel" widgetVar="dialogRel" closable="true" modal="true">
+                <p:dataTable  id="tblR" var="listRl" value="#{programacioLlenadoAction.lstRegall}" widgetVar="listRl" paginatorTemplate="{FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink}" paginatorPosition="top"
+                              paginator="true" rows="15" style="margin-bottom:20px" selectionMode="single" selection="#{programacioLlenadoAction.slcRegall}" rowKey="#{listRl.idreglas}">
+                    <f:facet name="header">
+                        <h:outputText value="..::Reglas::.." />
+                    </f:facet>     
+                    <p:ajax event="rowDblselect" oncomplete="PF('dialogRel').hide()" update="datos:cntRegla"/>
+                    <p:column headerText="COdigo Empres" style="width:30%;" filterBy="#{listRl.idempresa}" filterMatchMode="contains" sortBy="#{listRl.idempresa}">
+                        <h:outputText value="#{listRl.idempresa}" />
+                    </p:column>
+                    <p:column headerText="Codigo Sucursal" style="width:30%;" filterBy="#{listRl.idsucursal}" filterMatchMode="contains" sortBy="#{listRl.idsucursal}">
+                        <h:outputText value="#{listRl.idsucursal}" />
+                    </p:column>
+                    <p:column headerText="Codigo Regla" style="width:30%;" filterBy="#{listRl.idreglas}" filterMatchMode="contains" sortBy="#{listRl.idreglas}">
+                        <h:outputText value="#{listRl.idreglas}" />
+                    </p:column>
+                    <p:column headerText="Descripcion" style="width:30%;" filterBy="#{listRl.descripcion}" filterMatchMode="contains" sortBy="#{listRl.descripcion}">
+                        <h:outputText value="#{listRl.descripcion}" />
+                    </p:column>
+                    <p:column headerText="Fecha Creacion" style="width:30%;" filterBy="#{listRl.fechacreacion}" filterMatchMode="contains" sortBy="#{listRl.fechacreacion}">
+                        <h:outputText value="#{listRl.fechacreacion}" />
+                    </p:column>
+                    <p:column style="width:20%;" filterBy="#{listRl.estado}">
+                        <f:facet name="header">
+                            <h:outputText value="ESTADO"/>
+                        </f:facet>
+                        <f:facet name="filter">
+                            <p:selectOneButton onchange="PF('listRl').filter()">
+                                <f:converter converterId="javax.faces.Boolean" />
+                                <f:selectItem  itemLabel="Activo" itemValue="true"/>
+                                <f:selectItem itemLabel="Inactivo" itemValue="false"/>
+                            </p:selectOneButton>
+                        </f:facet>
+                        <h:graphicImage value="../images/img/#{listRl.estado==1?'activo':'inactivo'}.png"/>
+                        <h:outputText value="#{listRl.estado==1?'Activo':'Inactivo'}" />
+                    </p:column>
+                </p:dataTable>
+            </p:dialog>
+            <p:dialog id="dialogFC" widgetVar="dialogFC" closable="true" modal="true" resizable="true" height="600" closeOnEscape="true" fitViewport="true" width="1300">
+                <p:panelGrid columns="1" columnClasses="no-border" style="width: 100%">
+                    <p:dataGrid var="listFC" value="#{programacioLlenadoAction.lstcolm}" columns="#{programacioLlenadoAction.COLUMNAS}"
+                                rows="#{(programacioLlenadoAction.FILAS * programacioLlenadoAction.COLUMNAS)}" paginator="true" id="listFC" style="text-align:center;width: 100%" 
+                                paginatorPosition="top">
+                        <p:panel id="cuadroNivelFC" header="F#{listFC.IDFILA} - C#{listFC.IDCOLUMNA}" style="alignment-adjust: central;text-align:center; background-color:#{listFC.SELECCIONADO?'#FFAAAA':'#FFFFFF'};font-size: 10px">
+                            <h:panelGrid columns="1" style="width: 100%">
+                                <h:outputText id="numeradorFC" value="#{listFC.PRIORIDAD}" style="font-weight: bold; font-size: 24px;color: #D8000C;visibility:#{listFC.SELECCIONADO?'visible':'hidden'}"/>
+                                <p:commandButton ajax="true" value="#{listFC.SELECCIONADO?'check':'no-check'}" action="#{programacioLlenadoAction.fcSeleccionado()}">
+                                    <f:setPropertyActionListener value="#{listFC}" target="#{programacioLlenadoAction.slcdalmcolum}"/>
+                                </p:commandButton>
+                            </h:panelGrid>
+                        </p:panel>
+                    </p:dataGrid>
+                </p:panelGrid>
+            </p:dialog>
+            <p:growl id="growl" life="4000" showDetail="false"  />
+            <cmp:mDialogElimina_lst id="cmpDialog" bean="#{programacioLlenadoAction}" ventana="MNT" />
+        </h:form>
+    </ui:define>
+</ui:composition>

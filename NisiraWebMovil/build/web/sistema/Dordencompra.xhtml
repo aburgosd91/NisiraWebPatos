@@ -1,0 +1,379 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+To change this template, choose Tools | Templates
+and open the template in the editor.
+-->
+<!DOCTYPE html>
+<f:view xmlns="http://www.w3.org/1999/xhtml"
+        xmlns:f="http://java.sun.com/jsf/core"
+        xmlns:h="http://java.sun.com/jsf/html"
+        xmlns:p="http://primefaces.org/ui"
+        xmlns:pm="http://primefaces.org/mobile"
+        contentType="text/html"
+        renderKitId="PRIMEFACES_MOBILE">
+
+
+    <pm:page title="Detalle Orden Compra">
+
+        <pm:view id="deta" title="Detalle" swatch="c">
+            <h:outputLabel value="#{ordencompraAction.DetalleOrdencompra()}" />
+            <pm:header title="Detalles" swatch="a" fixed="true">
+                <script type="text/javascript" src="../js/validadispositivo.js"></script>
+               
+                <link rel="stylesheet" type="text/css" href="../css/Style.css" />
+                <pm:navBar >
+                    <f:attribute name="data-iconpos" value="left" />
+                    <p:button   value="Atrás" icon="back" onclick="PrimeFaces.back()"/>
+                    <p:button value="Home" icon="home" href="/faces/sistema/menu.xhtml?faces-redirect=true" />
+                    <p:button value="Salir" icon="delete" onclick="dlg.show()" />
+                </pm:navBar>
+                <p:dialog header="Advertencia" widgetVar="dlg" modal="true">
+                    <f:attribute name="contentSwatch" value="a" />
+                    <p:outputPanel id="noteDetail" layout="block"  style="padding:4px 10px">
+                        <h:outputText value="Desea Salir?"/>
+                        <p:button value="Si" onclick="window.location = '#{facesContext.externalContext.requestContextPath}/faces/Sistema/CerrarSesion.xhtml';" icon="check"/>
+                    </p:outputPanel>
+                </p:dialog>
+            </pm:header>
+            
+            <pm:content>
+
+                <h:form id="detalles" style="width: 100%">
+                    <h:panelGrid columns="2" cellpadding="10" styleClass="ui-responsive">
+                        <p:panelGrid style="width: 100%" >
+                            <p:row>
+                                <p:column style="font-weight: bold;color: darkorange;width: 30%;">Documento:</p:column>  
+                                <p:column style="font-weight: bold;width: 75%">#{ordencompraAction.ordencompraSeleccionado.iddocumento}-#{ordencompraAction.ordencompraSeleccionado.serie}</p:column>  
+                            </p:row>
+                        </p:panelGrid>
+                        <p:panelGrid style="width: 100%" >
+                            <p:row>
+                                <p:column style="font-weight: bold;color: darkorange;width: 27%;">Proveedor:</p:column>  
+                                <p:column style="font-weight: bold;width: 62%">#{ordencompraAction.ordencompraSeleccionado.idclieprov}</p:column>  
+                            </p:row>
+                        </p:panelGrid>
+                        <p:panelGrid style="width: 100%" >
+                            <p:row>
+                                <p:column style="font-weight: bold;color: darkorange;width: 27%;">Estado:</p:column>  
+                                <p:column style="font-weight: bold;width: 62%">#{ordencompraAction.ordencompraSeleccionado.idestado}</p:column>  
+                            </p:row>
+                        </p:panelGrid>
+                    </h:panelGrid>
+
+                    <p:accordionPanel activeIndex="-1" > 
+
+                        <p:tab title="Datos Generales" >  
+                            <h:panelGrid columns="2" cellpadding="10" styleClass="ui-responsive tablaaa">  
+
+                                <p:panelGrid style="width: 100%" >
+                                    <p:row> 
+                                        <p:column styleClass="sombreado1">Documento:</p:column>  
+                                        <p:column styleClass="sombreado2">#{ordencompraAction.ordencompraSeleccionado.iddocumento}-#{ordencompraAction.ordencompraSeleccionado.serie}</p:column>  
+                                    </p:row>   
+                                </p:panelGrid>
+                                <p:panelGrid style="width: 100%" >
+                                    <p:row> 
+                                        <p:column styleClass="sombreado1">Punto Emi.:</p:column>  
+                                        <p:column styleClass="sombreado2">#{ordencompraAction.ordencompraSeleccionado.idemisor}</p:column>  
+                                    </p:row>   
+                                </p:panelGrid>
+                                <p:panelGrid style="width: 100%" >
+                                    <p:row> 
+                                        <p:column styleClass="sombreado1">Fecha:</p:column>  
+                                        <p:column styleClass="sombreado2">
+                                            <h:outputText value="#{ordencompraAction.ordencompraSeleccionado.fecha}" >  
+                                                <f:convertDateTime pattern="dd/MM/yyyy" timeZone="EST" />  
+                                            </h:outputText>
+                                        </p:column>
+                                    </p:row>   
+                                </p:panelGrid>
+                                <p:panelGrid style="width: 100%" >
+                                    <p:row> 
+                                        <p:column styleClass="sombreado1">T. Cambio:</p:column>  
+                                        <p:column styleClass="sombreado2">#{ordencompraAction.ordencompraSeleccionado.tipocambio}</p:column>  
+                                    </p:row>   
+                                </p:panelGrid>
+                                <p:panelGrid style="width: 100%" >
+                                    <p:row> 
+                                        <p:column styleClass="sombreado1">Moneda: </p:column>  
+                                        <p:column styleClass="sombreado2">#{ordencompraAction.ordencompraSeleccionado.mondesc}</p:column>  
+                                    </p:row>   
+                                </p:panelGrid>
+                                <p:panelGrid style="width: 100%" >
+                                    <p:row> 
+                                        <p:column styleClass="sombreado1">Proyecto:</p:column>  
+                                        <p:column styleClass="sombreado2">#{ordencompraAction.ordencompraSeleccionado.idproyecto}</p:column>  
+                                    </p:row>   
+                                </p:panelGrid>
+                                <p:panelGrid style="width: 100%" >
+                                    <p:row> 
+                                        <p:column styleClass="sombreado1">O/C Cliente:</p:column>  
+                                        <p:column styleClass="sombreado2">#{ordencompraAction.ordencompraSeleccionado.oc_cliente}</p:column>  
+                                    </p:row>   
+                                </p:panelGrid>
+                                <p:panelGrid style="width: 100%" >
+                                    <p:row> 
+                                        <p:column styleClass="sombreado1">Fecha O/C:</p:column>  
+                                        <p:column styleClass="sombreado2">#{ordencompraAction.ordencompraSeleccionado.fecha_occliente}</p:column>  
+                                    </p:row>   
+                                </p:panelGrid>
+                                <p:panelGrid style="width: 100%" >
+                                    <p:row> 
+                                        <p:column styleClass="sombreado1">Sucursal Destino:</p:column>  
+                                        <p:column styleClass="sombreado2">#{ordencompraAction.ordencompraSeleccionado.idsucursal}</p:column>  
+                                    </p:row>   
+                                </p:panelGrid>
+                                <p:panelGrid style="width: 100%" >
+                                    <p:row> 
+                                        <p:column styleClass="sombreado1">Almacén Destino:</p:column>  
+                                        <p:column styleClass="sombreado2">#{ordencompraAction.ordencompraSeleccionado.idalmacen}</p:column>  
+                                    </p:row>   
+                                </p:panelGrid>
+                                <p:panelGrid style="width: 100%" >
+                                    <p:row> 
+                                        <p:column styleClass="sombreado1">Solicita:</p:column>  
+                                        <p:column styleClass="sombreado2">#{ordencompraAction.ordencompraSeleccionado.solicitado}</p:column>  
+                                    </p:row>   
+                                </p:panelGrid>
+                                <p:panelGrid style="width: 100%" >
+                                    <p:row> 
+                                        <p:column styleClass="sombreado1">Lugar Entrega:</p:column>  
+                                        <p:column styleClass="sombreado2">#{ordencompraAction.ordencompraSeleccionado.lugar_entrega}</p:column>  
+                                    </p:row>   
+                                </p:panelGrid>
+                                <p:panelGrid style="width: 100%" >
+                                    <p:row> 
+                                        <p:column styleClass="sombreado1">Plazo Entrega:</p:column>  
+                                        <p:column styleClass="sombreado2">#{ordencompraAction.ordencompraSeleccionado.plazo}</p:column>  
+                                    </p:row>   
+                                </p:panelGrid>
+                                <p:panelGrid style="width: 100%" >
+                                    <p:row> 
+                                        <p:column styleClass="sombreado1">Obsevaciones:</p:column>  
+                                        <p:column styleClass="sombreado2">#{ordencompraAction.ordencompraSeleccionado.nota}</p:column>  
+                                    </p:row>   
+                                </p:panelGrid>
+
+
+                            </h:panelGrid>  
+                        </p:tab> 
+
+                        <p:tab title="Datos Proveedor">  
+                            <h:panelGrid columns="2" cellpadding="10" styleClass="ui-responsive tablaaa">  
+                                <p:panelGrid style="width: 100%" >
+                                    <p:row> 
+                                        <p:column styleClass="sombreado1">Proveedor:</p:column>  
+                                        <p:column styleClass="sombreado2">#{ordencompraAction.ordencompraSeleccionado.idclieprov}</p:column>  
+                                    </p:row>   
+                                </p:panelGrid >
+
+                                <p:panelGrid style="width: 100%" >
+                                    <p:row> 
+                                        <p:column styleClass="sombreado1">Dirección:</p:column>  
+                                        <p:column styleClass="sombreado2">#{ordencompraAction.ordencompraSeleccionado.prodireccion}</p:column>  
+                                    </p:row>   
+                                </p:panelGrid>
+                                <p:panelGrid style="width: 100%" >
+                                    <p:row> 
+                                        <p:column styleClass="sombreado1">Teléfono:</p:column>  
+                                        <p:column styleClass="sombreado2">#{ordencompraAction.ordencompraSeleccionado.protelefono}</p:column>  
+                                    </p:row>   
+                                </p:panelGrid>
+                                <p:panelGrid style="width: 100%" >
+                                    <p:row> 
+                                        <p:column styleClass="sombreado1">Fax: </p:column>  
+                                        <p:column styleClass="sombreado2">#{ordencompraAction.ordencompraSeleccionado.profax}</p:column>  
+                                    </p:row>   
+                                </p:panelGrid>
+                                <p:panelGrid style="width: 100%" >
+                                    <p:row> 
+                                        <p:column styleClass="sombreado1">Contacto:</p:column>  
+                                        <p:column styleClass="sombreado2">#{ordencompraAction.ordencompraSeleccionado.contacto}</p:column>  
+                                    </p:row>   
+                                </p:panelGrid>
+                                <p:panelGrid style="width: 100%" >
+                                    <p:row> 
+                                        <p:column styleClass="sombreado1">Referencia:</p:column>  
+                                        <p:column styleClass="sombreado2">#{ordencompraAction.ordencompraSeleccionado.referencia}</p:column>  
+                                    </p:row>   
+                                </p:panelGrid>
+                                <p:panelGrid style="width: 100%" >
+                                    <p:row> 
+                                        <p:column styleClass="sombreado1">Cta. Cte.:</p:column>  
+                                        <p:column styleClass="sombreado2">#{ordencompraAction.ordencompraSeleccionado.ctacte}</p:column>  
+                                    </p:row>   
+                                </p:panelGrid>
+                                <p:panelGrid style="width: 100%" >
+                                    <p:row> 
+                                        <p:column styleClass="sombreado1">Flete:</p:column>  
+                                        <p:column styleClass="sombreado2">#{ordencompraAction.ordencompraSeleccionado.idflete}</p:column>  
+                                    </p:row>   
+                                </p:panelGrid>
+                                <p:panelGrid style="width: 100%" >
+                                    <p:row> 
+                                        <p:column styleClass="sombreado1">Importe:</p:column>  
+                                        <p:column styleClass="sombreado2">#{ordencompraAction.ordencompraSeleccionado.importe_flete}</p:column>  
+                                    </p:row>   
+                                </p:panelGrid>
+                                <p:panelGrid style="width: 100%" >
+                                    <p:row> 
+                                        <p:column styleClass="sombreado1">Entrega:</p:column>  
+                                        <p:column styleClass="sombreado2">#{ordencompraAction.ordencompraSeleccionado.fecha_entrega}</p:column>  
+                                    </p:row>   
+                                </p:panelGrid>
+
+                            </h:panelGrid>   
+                        </p:tab> 
+                    </p:accordionPanel>
+
+
+                    <p:dataList var="orden" value="#{ordencompraAction.listaDordencompra}" style="width: 100%" type="inset"> 
+                        <p:column  style="width: 100%" >                              
+                            <p:accordionPanel activeIndex="-1">  
+                                <p:tab title="Item:#{orden.item} Total:#{ordencompraAction.ordencompraSeleccionado.idmoneda}#{orden.subtotalcondscto} "> 
+                                    <h:panelGrid columns="2" cellpadding="10" styleClass="ui-responsive tablaaa">  
+                                        <p:panelGrid style="width: 100%" >
+                                            <p:row> 
+                                                <p:column styleClass="sombreado1">Producto:</p:column>  
+                                                <p:column styleClass="sombreado2">#{orden.idproducto}</p:column>  
+                                            </p:row>   
+                                        </p:panelGrid >
+                                        <p:panelGrid style="width: 100%" >
+                                            <p:row> 
+                                                <p:column styleClass="sombreado1">Descripcion:</p:column>  
+                                                <p:column styleClass="sombreado2"><h:outputText value="#{orden.descripcion}" /></p:column>  
+                                            </p:row>   
+                                        </p:panelGrid >
+                                        <p:panelGrid style="width: 100%" >
+                                            <p:row> 
+                                                <p:column styleClass="sombreado1">U.M.</p:column>  
+                                                <p:column styleClass="sombreado2"><h:outputText value="#{orden.idmedida}" /></p:column>  
+                                            </p:row>   
+                                        </p:panelGrid >
+                                        <p:panelGrid style="width: 100%" >
+                                            <p:row> 
+                                                <p:column styleClass="sombreado1">Cantidad:</p:column>  
+                                                <p:column styleClass="sombreado2"><h:outputText value="#{orden.cantidad}" /></p:column>  
+                                            </p:row>   
+                                        </p:panelGrid >
+                                        <p:panelGrid style="width: 100%" >
+                                            <p:row> 
+                                                <p:column styleClass="sombreado1">P.Uni:</p:column>  
+                                                <p:column styleClass="sombreado2">  
+                                                    <p:commandLink value="#{ordencompraAction.ordencompraSeleccionado.idmoneda}#{orden.precio_unitario}" action="/faces/sistema/precioshistoricos.xhtml?faces-redirect=true"  >
+                                                        <f:setPropertyActionListener value="#{orden}" target="#{ordencompraAction.ordencompraSeleccionado3}" />
+                                                    </p:commandLink>
+                                                </p:column>   
+                                            </p:row>   
+                                        </p:panelGrid >
+                                        <p:panelGrid style="width: 100%" >
+                                            <p:row> 
+                                                <p:column styleClass="sombreado1">Subtotal:</p:column>  
+                                                <p:column styleClass="sombreado2"><h:outputText value="#{ordencompraAction.ordencompraSeleccionado.idmoneda}#{orden.subtotalsindscto}" /></p:column>  
+                                            </p:row>   
+                                        </p:panelGrid >
+
+                                        <p:panelGrid style="width: 100%" >
+                                            <p:row> 
+                                                <p:column styleClass="sombreado1">T.Dscto:</p:column>  
+                                                <p:column styleClass="sombreado2"><h:outputText value="#{ordencompraAction.ordencompraSeleccionado.idmoneda}#{orden.descuento_total}" /></p:column>  
+                                            </p:row>   
+                                        </p:panelGrid > 
+                                        <p:panelGrid style="width: 100%" >
+                                            <p:row> 
+                                                <p:column styleClass="sombreado1">Total</p:column>  
+                                                <p:column styleClass="sombreado2"><h:outputText value="#{ordencompraAction.ordencompraSeleccionado.idmoneda}#{orden.subtotalcondscto}" /></p:column>  
+                                            </p:row>   
+                                        </p:panelGrid >
+                                    </h:panelGrid>
+                                </p:tab>  
+                            </p:accordionPanel>  
+                        </p:column>  
+                        <p:column headerText="" style="width: 100%" >                              
+                        </p:column>  
+                    </p:dataList>             
+
+
+                    <h:panelGrid columns="3" cellpadding="0" styleClass="ui-responsive">
+                        <p:panelGrid style="width: 100%"  >
+                            <p:row> 
+                                <p:column styleClass="ultimo1">Subtotal:</p:column>  
+                                <p:column styleClass="ultimo2">
+                                    <p:dataList type="inset">
+                                        <h:outputText value="#{ordencompraAction.ordencompraSeleccionado.idmoneda}#{ordencompraAction.ordencompraSeleccionado.subtotalcondscto}" />
+                                    </p:dataList>
+                                </p:column>  
+
+                            </p:row>   
+                        </p:panelGrid >
+                        <p:panelGrid style="width: 100%" >
+                            <p:row> 
+                                <p:column styleClass="ultimo1">Impuesto:</p:column>  
+                                <p:column styleClass="ultimo2">
+                                    <p:dataList type="inset">
+                                        <h:outputText value="#{ordencompraAction.ordencompraSeleccionado.idmoneda}#{ordencompraAction.ordencompraSeleccionado.igv}" />
+                                    </p:dataList>
+                                </p:column>
+                            </p:row>   
+                        </p:panelGrid >
+                        <p:panelGrid style="width: 100%" >
+                            <p:row> 
+                                <p:column styleClass="ultimo1"><b>Total:</b></p:column>  
+                                <p:column styleClass="ultimo2">
+
+                                    <p:dataList type="inset">
+                                        <h:outputText  value="#{ordencompraAction.ordencompraSeleccionado.idmoneda}#{ordencompraAction.ordencompraSeleccionado.total}" />
+                                    </p:dataList>
+
+                                </p:column>  
+                            </p:row>   
+                        </p:panelGrid >
+                    </h:panelGrid>  
+                    <center>
+                        <pm:field>
+                            <h:selectOneMenu value="#{ordencompraAction.ordencompraSeleccionado2.idestado}"  >  
+                                <f:selectItems value="#{ordencompraAction.listaaprobar}"  />  
+                            </h:selectOneMenu>  
+
+                        </pm:field>
+
+                        <pm:buttonGroup orientation="horizontal">
+                            
+                            <p:commandButton value="Aceptar" oncomplete="confirmar.show()" update=":detalles:aprobar1" icon="check">
+                                <f:attribute name="swatch" value="b" />
+
+                            </p:commandButton> 
+                            <p:commandButton value="Cancelar" icon="delete" action="/faces/sistema/ordencompra.xhtml?faces-redirect=true" update=":detalles" >
+                                <f:attribute name="swatch" value="a" />
+                            </p:commandButton>
+                        </pm:buttonGroup>
+
+                    </center>
+                    <p:dialog id="aprobar" header="Advertencia" widgetVar="confirmar" modal="true">
+                        <f:attribute name="contentSwatch" value="a" />
+                        <p:outputPanel id="aprobar1" layout="block"  style="padding:4px 10px">
+
+                            <h:outputText style="font-weight: bold;" value="Está seguro de realizar esta operación? "/>
+                            <h:outputText style="font-weight: bold;" value="#{ordencompraAction.ordencompraSeleccionado2.idestado}"/>
+                            <center>
+                                <p:commandButton type="submit" value="Si" action="#{ordencompraAction.aprobar}" update=":error"  icon="check">
+                                    <f:attribute name="swatch" value="b" />
+                                    
+                                </p:commandButton>
+                                
+                            </center>
+                        </p:outputPanel>
+
+                    </p:dialog>
+                </h:form>
+                <h:form id="error">
+                    <center> <h:outputLabel style="color: red" id="msjError" styleClass="errorMsje" value="#{ordencompraAction.mensaje}"   /></center>
+                </h:form>
+                <br></br><br></br><br></br><br></br>
+            </pm:content>
+            <pm:footer swatch="a" fixed="true">
+                <h1 style="font-size: x-small" >© 2013 <img border="0" height="10px" src="../images/logoWeb.png"/> Nisira Systems SAC </h1>         
+            </pm:footer>  
+        </pm:view>
+    </pm:page>
+</f:view>

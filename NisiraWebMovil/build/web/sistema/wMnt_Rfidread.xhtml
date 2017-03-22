@@ -1,0 +1,173 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:f="http://java.sun.com/jsf/core"
+                template="templatebanco.xhtml"
+                xmlns:pm="http://primefaces.org/mobile"
+                xmlns:cmp="http://java.sun.com/jsf/composite/cmp">
+    <ui:define name="metadata">
+    </ui:define>
+    <ui:define name="body">
+        <h:form id="datos">
+            #{rfidreaderAction.findDetalles()}
+            <div class="ui-grid ">
+                <cmp:barra_mnt bean="#{rfidreaderAction}"/>
+                <div class="ui-grid-row">
+
+                    <div class="ui-grid-col-12">
+                        <p:panelGrid  columns="2" columnClasses="no-border, no-border" style="width: 100%">
+                            <f:facet name="header">
+                                <div style="color:#069; font-size: 14px; padding-top: 5px"><p:outputLabel  value="#{rfidreaderAction.tituloHead}" /></div>
+                            </f:facet>
+                            <p:outputLabel value="Mini - Cpu" escape="false" />
+                            <h:panelGrid id="cntEquipo" cellpadding="0" cellspacing="0" columns="3">                                
+                                <p:inputText size="10" readonly="true" value="#{rfidreaderAction.slccpumovil.idcpumovil}" />
+                                <p:inputText size="50" readonly="true" value="#{rfidreaderAction.slccpumovil.descripcion}" />
+                                <p:commandButton value="Seleccionar" ajax="true" onclick="PF('dlgCpumovil').show()" disabled="#{!rfidreaderAction.edicion}" />
+                            </h:panelGrid>
+                            <p:outputLabel value="Descripcion" escape="false" />
+                            <p:inputTextarea value="#{rfidreaderAction.datoEdicion.observacion}" autoResize="true" cols="25" rows="10" disabled="#{!rfidreaderAction.edicion}"/>
+                            <p:outputLabel value="Nro Serie" escape="false" />
+                            <p:inputText size="50" value="#{rfidreaderAction.datoEdicion.nroserie}" disabled="#{!rfidreaderAction.edicion}"/>
+                            <h:outputText value="Atenuacion de Antena" />
+                            <h:panelGrid columns="1" style="margin-bottom: 10px">
+                                <h:outputText id="output" value="#{rfidreaderAction.datoEdicion.atenuacion}" />
+                                <h:inputHidden id="txt2" value="#{rfidreaderAction.datoEdicion.atenuacion}" />
+                                <p:slider for="txt2" display="output" style="width: 200px" displayTemplate="{value}" maxValue="150" minValue="0" />
+                            </h:panelGrid>
+                            <h:outputText value="Activo:" />
+                            <p:selectBooleanCheckbox value="#{rfidreaderAction.datoEdicion.BEstado}" />
+
+                        </p:panelGrid>
+                    </div>
+                </div>
+                <div class="ui-grid-row">
+                    <div class="ui-grid-col-6">
+                        <p:panelGrid  columns="1" columnClasses="no-border" style="width: 100%">
+                            <f:facet name="header">
+                                <div style="color:#069; font-size: 14px; padding-top: 5px"><p:outputLabel  value="Detalle Puerto" /></div>
+                            </f:facet>
+                            <p:dataTable id="lstpcom" var="pcom" value="#{rfidreaderAction.lstdpuertocom}" 
+                                         selection="#{rfidreaderAction.slcdpuertocom}" selectionMode="single" rowKey="#{pcom.idpuertocom}">
+                                <p:column headerText="Item"  filterBy="#{pcom.orden}" filterMatchMode="contains" sortBy="#{pcom.orden}">
+                                    <h:outputText value="#{pcom.orden}" />
+                                </p:column>
+                                <p:column headerText="Descricpion" filterBy="#{pcom.descripcion}" filterMatchMode="contains" sortBy="#{pcom.descripcion}">
+                                    <h:outputText value="#{pcom.descripcion}" />
+                                </p:column>
+                                <p:column headerText="Estado">
+                                    <p:selectOneMenu value="#{pcom.activo}" disabled="#{!rfidreaderAction.edicion}">
+                                        <f:selectItem itemLabel="Activo" itemValue="#{1}"/>
+                                        <f:selectItem itemLabel="Desactivado" itemValue="#{0}"/>
+                                    </p:selectOneMenu>
+                                </p:column>
+                            </p:dataTable>
+                            <p:panelGrid  columns="2" columnClasses="no-border,no-border" >
+                                <p:commandButton value="Agregar" actionListener="#{rfidreaderAction.verDiaglogPort()}" disabled="#{!rfidreaderAction.edicion}"/>
+                                <p:commandButton value="Eliminar" actionListener="#{rfidreaderAction.deleteDantena()}" update=":datos" disabled="#{!rfidreaderAction.edicion}"/>
+                            </p:panelGrid>
+                        </p:panelGrid>
+                    </div>
+                    <div class="ui-grid-col-6">
+                        <p:panelGrid  columns="1" columnClasses="no-border" style="width: 100%">
+                            <f:facet name="header">
+                                <div style="color:#069; font-size: 14px; padding-top: 5px"><p:outputLabel  value="Detalle Antena" /></div>
+                            </f:facet>
+                            <p:dataTable id="lstdant" var="dant" value="#{rfidreaderAction.lstdantenas}" 
+                                         selection="#{rfidreaderAction.slcdantena}" selectionMode="single" rowKey="#{dant.idequipoantena}">
+                                <p:column headerText="Item"  filterBy="#{dant.orden}" filterMatchMode="contains" sortBy="#{dant.orden}">
+                                    <h:outputText value="#{dant.orden}" />
+                                </p:column>
+                                <p:column headerText="Descricpion" filterBy="#{dant.descripcion}" filterMatchMode="contains" sortBy="#{dant.descripcion}">
+                                    <h:outputText value="#{dant.descripcion}" />
+                                </p:column>
+                                <p:column headerText="Estado">
+                                    <p:selectOneMenu value="#{dant.activo}" disabled="#{!rfidreaderAction.edicion}">
+                                        <f:selectItem itemLabel="Activo" itemValue="#{1}"/>
+                                        <f:selectItem itemLabel="Desactivado" itemValue="#{0}"/>
+                                    </p:selectOneMenu>
+                                </p:column>
+                            </p:dataTable>
+                            <p:panelGrid  columns="2" columnClasses="no-border,no-border" >
+                                <p:commandButton value="Agregar" actionListener="#{rfidreaderAction.verDiaglogEpg()}" disabled="#{!rfidreaderAction.edicion}"/>
+                                <p:commandButton value="Eliminar" actionListener="#{rfidreaderAction.deleteDantena()}" update=":datos" disabled="#{!rfidreaderAction.edicion}"/>
+                            </p:panelGrid>
+                        </p:panelGrid>
+                    </div>
+                </div>  
+            </div>
+            <p:dialog id="dlgCpumovil" widgetVar="dlgCpumovil" closable="true" header="Lista de Mini - Pc" modal="true">
+                <p:dataTable id="tblG" var="lstcpumovil" value="#{rfidreaderAction.lstcpumovil}" widgetVar="lstcpumovil" 
+                             paginatorTemplate="{FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink}"
+                             paginator="true" rows="15" style="margin-bottom:20px;text-align: center" selectionMode="single" selection="#{rfidreaderAction.slccpumovil}" rowKey="#{lstcpumovil.idcpumovil}">
+                    <f:facet name="header">
+                        <h:outputText value="MINI - PC" />
+                    </f:facet>
+                    <p:ajax event="rowDblselect" oncomplete="PF('dlgCpumovil').hide()" update="datos"/>
+                    <p:column headerText="Codigo" style="width:30%;" filterBy="#{lstcpumovil.idcpumovil}" filterMatchMode="contains" sortBy="#{lstcpumovil.idcpumovil}">
+                        <h:outputText value="#{lstcpumovil.idcpumovil}" />
+                    </p:column>
+                    <p:column headerText="Descripcion" style="width:30%;" filterBy="#{lstcpumovil.descripcion}" filterMatchMode="contains" sortBy="#{lstcpumovil.descripcion}">
+                        <h:outputText value="#{lstcpumovil.descripcion}" />
+                    </p:column>
+                    <p:column headerText="Modelo" style="width:20%;" filterBy="#{lstcpumovil.modelo}" filterMatchMode="contains" sortBy="#{lstcpumovil.descripcion}">
+                        <h:outputText value="#{lstcpumovil.modelo}" />
+                    </p:column>
+                    <p:column headerText="Marca" style="width:20%;" filterBy="#{lstcpumovil.marca}" filterMatchMode="contains" sortBy="#{lstcpumovil.marca}">
+                        <h:outputText value="#{lstcpumovil.marca}" />
+                    </p:column>
+                    <p:column headerText="Procesador" style="width:15%;" filterBy="#{lstcpumovil.procesador}" filterMatchMode="contains" sortBy="#{lstcpumovil.procesador}">
+                        <h:outputText value="#{lstcpumovil.procesador}" />
+                    </p:column>
+                    <p:column headerText="Ram" style="width:15%;" filterBy="#{lstcpumovil.ram}" filterMatchMode="contains" sortBy="#{lstcpumovil.ram}">
+                        <h:outputText value="#{lstcpumovil.ram}" />
+                    </p:column>
+                </p:dataTable>
+            </p:dialog>
+            <p:dialog id="dlgEquipog" widgetVar="dlgEquipog" closable="true" header="Lista de Antenas" modal="true">
+                <p:dataTable id="tblEg" var="lstantena" value="#{rfidreaderAction.lstantena}" widgetVar="listEquipog" 
+                             paginatorTemplate="{FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink}"
+                             paginator="true" rows="15" style="margin-bottom:20px;text-align: center" selectionMode="single" selection="#{rfidreaderAction.slcantena}" rowKey="#{lstantena.idantena}">
+                    <f:facet name="header">
+                        <h:outputText value="ANTENAS" />
+                    </f:facet>
+                    <p:ajax event="rowDblselect" listener="#{rfidreaderAction.addDantena()}"/>
+                    <p:column headerText="Codigo" filterBy="#{lstantena.idantena}" filterMatchMode="contains" sortBy="#{lstantena.idantena}">
+                        <h:outputText value="#{lstantena.idantena}" />
+                    </p:column>
+                    <p:column headerText="Descripcion"  filterBy="#{lstantena.descripcion}" filterMatchMode="contains" sortBy="#{lstantena.descripcion}">
+                        <h:outputText value="#{lstantena.descripcion}" />
+                    </p:column>
+                    <p:column headerText="Nro Serie"  filterBy="#{lstantena.nroserie}" filterMatchMode="contains" sortBy="#{lstantena.nroserie}">
+                        <h:outputText value="#{lstantena.nroserie}" />
+                    </p:column>
+                    <p:column headerText="Modelo"  filterBy="#{lstantena.modelo}" filterMatchMode="contains" sortBy="#{lstantena.modelo}">
+                        <h:outputText value="#{lstantena.modelo}" />
+                    </p:column>
+                    <p:column headerText="Frecuencia"  filterBy="#{lstantena.frecuencia}" filterMatchMode="contains" sortBy="#{lstantena.frecuencia}">
+                        <h:outputText value="#{lstantena.frecuencia}" />
+                    </p:column>
+                </p:dataTable>
+            </p:dialog>
+            <p:dialog id="dlgPort" widgetVar="dlgPort" closable="true" header="Lista de Puertos de Comunicacion" modal="true">
+                <p:dataTable id="tblP" var="listPort" value="#{rfidreaderAction.lstpuertocom}" widgetVar="listPort" 
+                             paginatorTemplate="{FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink}"
+                             paginator="true" rows="15" style="margin-bottom:20px;text-align: center" selectionMode="single" selection="#{rfidreaderAction.slcpuertocom}" rowKey="#{listPort.idpuertocom}">
+                    <f:facet name="header">
+                        <h:outputText value="Puerto Com" />
+                    </f:facet>
+                    <p:ajax event="rowDblselect" listener="#{rfidreaderAction.addDpuertoCom()}"/>
+                    <p:column headerText="Codigo"  filterBy="#{listPort.idpuertocom}" filterMatchMode="contains" sortBy="#{listPort.idpuertocom}">
+                        <h:outputText value="#{listPort.idpuertocom}" />
+                    </p:column>
+                    <p:column headerText="Descripcion" filterBy="#{listPort.descripcion}" filterMatchMode="contains" sortBy="#{listPort.descripcion}">
+                        <h:outputText value="#{listPort.descripcion}" />
+                    </p:column>
+                </p:dataTable>
+            </p:dialog>
+            <p:growl id="growl" life="4000" showDetail="false"  />
+            <cmp:mDialogElimina_lst id="cmpDialog" bean="#{rfidreaderAction}" ventana="MNT" />
+        </h:form>
+    </ui:define>
+</ui:composition>

@@ -1,0 +1,59 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:f="http://java.sun.com/jsf/core"
+                template="templatebanco.xhtml"
+                xmlns:pm="http://primefaces.org/mobile"
+                xmlns:cmp="http://java.sun.com/jsf/composite/cmp">
+    <ui:define name="metadata">
+    </ui:define>
+    <ui:define name="body">
+        <h:form id="datos">
+            #{equipoAction.buscarTodo()}  
+            <p:messages autoUpdate="true" closable="true" showIcon="true" style="font-size:10px"/>
+            <p:panelGrid id="principal" columns="2" columnClasses="no-border, no-border">
+                <p:panelGrid style="font-size: 12px;text-align:center;" id="panel1" columns="1" columnClasses="no-border, no-border">
+                    <cmp:barra_lst bean="#{equipoAction}" mostrar_opciones="false" />
+                    <p:dataTable id="tbl" var="listEquipo" value="#{equipoAction.listaDatos}" filteredValue="#{equipoAction.filtroDatos}" widgetVar="listEquipo" 
+                                 paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink}"
+                                 paginator="true" rows="15" style="margin-bottom:20px" selectionMode="single" selection="#{equipoAction.datoSeleccionado}" rowKey="#{listEquipo.IDEQUIPO}" resizableColumns="true">
+                        <f:facet name="header">
+                            <h:outputText value="#{equipoAction.tituloHead}" />
+                        </f:facet>
+                        <p:column style="width:10%;" filterBy="#{listEquipo.IDEQUIPO}" filterMatchMode="contains" sortBy="#{listEquipo.IDEQUIPO}">
+                            <f:facet name="header">
+                                <h:outputText value="CODIGO" />
+                            </f:facet>
+                            <h:outputText value="#{listEquipo.IDEQUIPO}" />
+                        </p:column>
+                        <p:column style="width:60%;" filterBy="#{listEquipo.DESCRIPCION}" filterMatchMode="contains" sortBy="#{listEquipo.DESCRIPCION}">
+                            <f:facet name="header" >
+                                <h:outputText value="DESCRIPCION" />
+                            </f:facet>
+                            <h:outputText value="#{listEquipo.DESCRIPCION}" />
+                        </p:column>
+
+                        <p:column style="width:30%;" filterBy="#{listEquipo.ESTADO}">
+                            <f:facet name="header">
+                                <h:outputText value="ESTADO"/>
+                            </f:facet>
+                            <f:facet name="filter">
+                                <p:selectOneButton onchange="PF('listEquipo').filter()">
+                                    <f:converter converterId="javax.faces.Boolean" />
+                                    <f:selectItem  itemLabel="Activo" itemValue="true" />
+                                    <f:selectItem itemLabel="Anulado" itemValue="false" />
+                                </p:selectOneButton>
+                            </f:facet>
+                            <h:graphicImage value="../images/img/#{listEquipo.ESTADO?'activo':'inactivo'}.png"/>
+                            <h:outputText value="#{listEquipo.ESTADO?'Activo':'Anulado'}" />
+                        </p:column>
+                    </p:dataTable>  
+                </p:panelGrid>
+            </p:panelGrid>
+            <p:growl id="growl" life="4000" showDetail="false"  />
+            <cmp:mDialogElimina_lst id="cmpDialog" bean="#{equipoAction}" ventana="LST" />
+        </h:form>
+        <!--        -->
+    </ui:define>
+</ui:composition>

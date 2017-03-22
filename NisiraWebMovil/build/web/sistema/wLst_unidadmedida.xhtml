@@ -1,0 +1,83 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:f="http://java.sun.com/jsf/core"
+                template="templatebanco.xhtml"
+                xmlns:cmp="http://java.sun.com/jsf/composite/cmp">
+    <ui:define name="metadata">
+    </ui:define>
+    <ui:define name="body">
+        <h:form id="datos">
+            #{unidadMedidaAction.buscarTodo()}
+            <p:panelGrid id="principal" columns="1" columnClasses="no-border, no-border">
+                <cmp:barra_lst bean="#{unidadMedidaAction}" mostrar_opciones="false" />
+                <p:dataTable id="tbl" var="listUnidadMedida" value="#{unidadMedidaAction.listaDatos}" widgetVar="listUnidadMedida" 
+                             paginatorTemplate="{FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink}" paginatorPosition="top"
+                             paginator="true" rows="15" style="margin-bottom:20px" selectionMode="single" selection="#{unidadMedidaAction.datoSeleccionado}" rowKey="#{listUnidadMedida.IDUNIDAD}" resizableColumns="true">
+                    <f:facet name="header">
+                        <h:outputText value="#{unidadMedidaAction.tituloHead}" />
+                    </f:facet>
+                    <p:column style="width:15%;" filterBy="#{listUnidadMedida.IDUNIDAD}" filterMatchMode="contains" sortBy="#{listUnidadMedida.IDUNIDAD}">
+                        <f:facet name="header">
+                            <h:outputText value="ID" />
+                        </f:facet>
+                        <h:outputText value="#{listUnidadMedida.IDUNIDAD}"/>
+                    </p:column>
+                    <p:column style="width:30%;" filterBy="#{listUnidadMedida.DESCRIPCION}" filterMatchMode="contains" sortBy="#{listUnidadMedida.DESCRIPCION}">
+                        <f:facet name="header">
+                            <h:outputText value="DESCRIPCIÓN" />
+                        </f:facet>
+                        <h:outputText value="#{listUnidadMedida.DESCRIPCION}" />
+                    </p:column>
+                    <p:column style="width:30%;" filterBy="#{listUnidadMedida.FACTORUNIDADDIAGRAMA}" filterMatchMode="contains" sortBy="#{listUnidadMedida.FACTORUNIDADDIAGRAMA}">
+                        <f:facet name="header">
+                            <h:outputText value="FACTOR UNIDAD" />
+                        </f:facet>
+                        <h:outputText value="#{listUnidadMedida.FACTORUNIDADDIAGRAMA}" />
+                    </p:column>
+                    <p:column style="width:20%;" filterBy="#{listTipoZona.ESTADO}">
+                        <f:facet name="header">
+                            <h:outputText value="ESTADO"/>
+                        </f:facet>
+                        <f:facet name="filter">
+                            <p:selectOneButton onchange="PF('listUnidadMedida').filter()">
+                                <f:converter converterId="javax.faces.Boolean" />
+                                <f:selectItem  itemLabel="Activo" itemValue="true"/>
+                                <f:selectItem itemLabel="Inactivo" itemValue="false"/>
+                            </p:selectOneButton>
+                        </f:facet>
+                        <h:graphicImage value="../images/img/#{listUnidadMedida.ESTADO?'activo':'inactivo'}.png"/>
+                        <h:outputText value="#{listUnidadMedida.ESTADO?'Activo':'Inactivo'}" />
+                    </p:column>
+                </p:dataTable>  
+            </p:panelGrid>
+            <p:dialog id="dlGuardarUnidadMedida" header="..:: MANTENEDOR UNIDAD MEDIDA ::." widgetVar="dlGuardarUnidadMedida" modal="true" showEffect="popup" closable="false">
+                <p:panelGrid columns="2" columnClasses="no-border, no-border">
+                    <p:outputLabel value="Id: " />
+                    <p:inputText disabled="true" size="3" value="#{unidadMedidaAction.datoEdicion.IDUNIDAD}"/>
+
+                    <p:outputLabel for="descripcion" value="Descripcion:"/>
+                    <p:inputTextarea id="descripcion" disabled="#{!unidadMedidaAction.edicion}" cols="50" rows="2" value="#{unidadMedidaAction.datoEdicion.DESCRIPCION}" onkeyup="javascript:this.value = this.value.toUpperCase();" />
+
+                    <p:outputLabel for="factor" value="Factor Unidad"/>
+                    <p:inputText id="factor" disabled="#{!unidadMedidaAction.edicion}" value="#{unidadMedidaAction.datoEdicion.FACTORUNIDADDIAGRAMA}" onkeyup="javascript:this.value = this.value.toUpperCase();" >
+                        <f:convertNumber minFractionDigits="2" />
+                        <f:validateDoubleRange minimum="0" maximum="30"/>
+                    </p:inputText>
+                    <h:outputText value="Estado?:" />
+                    <p:selectBooleanCheckbox value="#{unidadMedidaAction.datoEdicion.ESTADO}" disabled="#{!unidadMedidaAction.edicion}"/>
+                </p:panelGrid>
+                <br/>
+                <p:toolbar>
+                    <f:facet name="right">
+                        <p:commandButton id="buttonGuardar" value="Grabar" ajax="true" actionListener="#{unidadMedidaAction.grabar()}" image="ui-icon-grabar" />
+                        <p:commandButton id="buttonCancelar" value="Cancelar" process="@this" update="datos" image="ui-icon-cancelar" onclick="PF('dlGuardarUnidadMedida').hide()"/>
+                    </f:facet>
+                </p:toolbar>              
+            </p:dialog>
+            <p:growl id="growl" life="4000" showDetail="false"  />
+            <cmp:mDialogElimina_lst id="cmpDialog" bean="#{unidadMedidaAction}" ventana="LST" />
+        </h:form>
+    </ui:define>
+</ui:composition>

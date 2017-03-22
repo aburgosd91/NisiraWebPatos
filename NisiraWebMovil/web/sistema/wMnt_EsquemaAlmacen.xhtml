@@ -1,0 +1,150 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:my="http://example.com/jsf"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:f="http://java.sun.com/jsf/core"
+                template="templatebanco.xhtml"
+                xmlns:pm="http://primefaces.org/mobile">
+    <ui:define name="metadata">
+    </ui:define>
+    <ui:define name="body">
+        #{esquemaAlmacenAction.iniciarMantenedorEsquemaZona()}
+        <h:form id="FormularioEsquemaZona" style="width:100%;position:relative;">
+            <p:toolbar>
+                <f:facet name="left">
+                    <div style="color:#069; font-size: 14px; padding-top: 5px"><p:outputLabel  value="Registro de Esquema Almacen" /></div>
+                    <p:messages id="messages" autoUpdate="true" closable="true" style="font-size:10px"/>
+                </f:facet>
+                <f:facet name="right">
+                    <p:commandButton value="Grabar" ajax="true" actionListener="#{esquemaAlmacenAction.grabar()}" image="ui-icon-grabar" />
+                    <p:commandButton value="Cancelar" actionListener="#{esquemaAlmacenAction.doVerLista()}" update="FormularioEsquemaZona" image="ui-icon-cancelar"/>
+                </f:facet>
+            </p:toolbar>
+            <br/>
+            <div class="ui-grid ">
+                <div class="ui-grid-row">
+                    <div class="ui-grid-col-2">
+                        <p:panelGrid columns="2" columnClasses="no-border, no-border">
+                            <f:facet name="header">
+                                <div style="color:#069; font-size: 14px; padding-top: 5px"><p:outputLabel  value="#{esquemaAlmacenAction.tituloHead}" /></div>
+                            </f:facet>
+                            <p:outputLabel value="ID SUCURSAL: " /> 
+                            <p:outputLabel value="#{esquemaAlmacenAction.cerosIzquierda(esquemaAlmacenAction.datoEdicion.IDSUCURSAL,3)}" /> 
+
+                            <p:outputLabel value="SUCURSAL: " /> 
+                            <p:outputLabel value="#{esquemaAlmacenAction.datoEdicion.SUCURSAL}" /> 
+
+                            <p:outputLabel value="ID ZONA: " /> 
+                            <p:outputLabel value="#{esquemaAlmacenAction.cerosIzquierda(esquemaAlmacenAction.datoEdicion.IDZONA,6)}" /> 
+
+                            <p:outputLabel value="ZONA: " /> 
+                            <p:outputLabel value="#{esquemaAlmacenAction.datoEdicion.DESCRIPCION}" /> 
+                        </p:panelGrid> 
+                    </div>
+                    <div class="ui-grid-col-3">
+                        <p:panelGrid columns="2" columnClasses="no-border,no-border">
+                            <f:facet name="header">
+                                <div style="color:#069; font-size: 14px; padding-top: 5px"><p:outputLabel  value="Configuración" /></div>
+                            </f:facet>
+                            <p:outputLabel>Margen: </p:outputLabel>
+                            <h:panelGrid columns="1" style="margin-bottom: 10px">
+                                <h:outputText id="output" value="Escala al %#{esquemaAlmacenAction.escala}" />
+                                <h:inputHidden id="escala" value="#{esquemaAlmacenAction.escala}" />
+                                <p:slider for="escala" display="output" style="width: 200px" displayTemplate="Escala al  %{value}">
+                                    <p:ajax process="@this" event="slideEnd" listener="#{esquemaAlmacenAction.onSlideEnd}" update="listDZonaDiagrama" />
+                                </p:slider>
+                            </h:panelGrid>
+
+                        </p:panelGrid>
+                    </div>
+                    <div class="ui-grid-col-3">
+                        <p:panelGrid columns="1" columnClasses="no-border">
+                            <f:facet name="header">
+                                <div style="color:#069; font-size: 14px; padding-top: 5px"><p:outputLabel  value="Leyenda" /></div>
+                            </f:facet>
+                            <p:dataTable id="leyenda" var="leyenda" value="#{esquemaAlmacenAction.listLeyenda}">
+                                <p:column headerText="N°" style="text-align: center">
+                                    <h:outputText value="#{leyenda.NUM}" />
+                                </p:column>
+                                <p:column headerText="Descripción" style="text-align: center" sortBy="#{leyenda.DESCRIPCION}">
+                                    <h:outputText value="#{leyenda.DESCRIPCION}" />
+                                </p:column>
+                                <p:column headerText="Color">
+                                    <p:commandButton ajax="true" value="" title="Color:#{leyenda.COLOR}" action="#{esquemaAlmacenAction.buttonAction()}" style="background: #{leyenda.COLOR}; width: 100%;height:20px;">
+                                        <f:setPropertyActionListener value="#{leyenda}" target="#{esquemaAlmacenAction.selectedLeyenda}" />
+                                    </p:commandButton>
+                                </p:column>
+                            </p:dataTable>
+                        </p:panelGrid>
+                    </div>                      
+                </div>
+                <p:toolbar id="tb">
+                    <f:facet name="left">
+                        <p:outputLabel value="Color :"  />
+                        <p:colorPicker id="colorPicker" value="#{esquemaAlmacenAction.color}"/>
+                        <p:outputLabel>Racks: </p:outputLabel>
+                        <p:commandButton oncomplete="PF('dlAlmacenRacks').show()" icon="ui-icon-search" title="View"/>
+                        <p:outputLabel>Borrar Segmento: </p:outputLabel>
+                        <p:selectBooleanCheckbox value="#{esquemaAlmacenAction.borraesg}" />
+                        <p:outputLabel>Definir Forma: </p:outputLabel>
+                        <p:selectBooleanCheckbox value="#{esquemaAlmacenAction.preform}">
+                            <p:ajax event="change" update="largo ancho" /> 
+                        </p:selectBooleanCheckbox>
+                        <p:outputLabel value="Largo :"  />
+                        <p:inputText id="largo" value="#{esquemaAlmacenAction.largo}" disabled="#{!esquemaAlmacenAction.preform}"/>
+                        <p:outputLabel value="Ancho :"  />
+                        <p:inputText id="ancho" value="#{esquemaAlmacenAction.ancho}" disabled="#{!esquemaAlmacenAction.preform}"/>
+                    </f:facet>
+                </p:toolbar>
+                <p:sticky target="tb" />
+                <div class="ui-grid-row">
+                    <p:fieldset legend=" DISTRIBUCIÓN DE ALMACEN " style="width:#{esquemaAlmacenAction.datoEdicion.ANCHOUNIDADDIAGRAMA * esquemaAlmacenAction.escala}px">
+                        <p:dataGrid var="listDZonaDiagrama" value="#{esquemaAlmacenAction.listDAlmacenDiagrama}" columns="#{esquemaAlmacenAction.datoEdicion.LARGOUNIDADDIAGRAMA}"
+                                    rows="#{esquemaAlmacenAction.datoEdicion.ANCHOUNIDADDIAGRAMA * esquemaAlmacenAction.datoEdicion.LARGOUNIDADDIAGRAMA}" paginator="true" 
+                                    id="listDZonaDiagrama" paginatorPosition="top" style="width:#{esquemaAlmacenAction.datoEdicion.LARGOUNIDADDIAGRAMA * esquemaAlmacenAction.escala}px"
+                                    paginatorTemplate="{Comandos}">
+                            <f:facet name="{Comandos}">
+                                <p:commandButton value="Reset" ajax="true" actionListener="#{esquemaAlmacenAction.getClear()}" image="ui-icon-aceptar" />
+                            </f:facet>
+                            <p:commandLink  action="#{esquemaAlmacenAction.ubicacionSeleccionado()}" ajax="true">                                
+                                <f:setPropertyActionListener value="#{listDZonaDiagrama}" target="#{esquemaAlmacenAction.selectDAlmacenDiagrama}"/>
+                                <p:panel id="boton"  style="background:#{listDZonaDiagrama.COLORHEXADECIMAL};width:30px;height:30px;padding: 0px">
+                                    <h:panelGrid columns="1" style="width: 100%;alignment-adjust: central">
+                                        <h:outputText value="R#{listDZonaDiagrama.IDRACK}" rendered="#{listDZonaDiagrama.IDRACK!=null?true:false}"/>
+                                    </h:panelGrid>
+                                </p:panel>
+                            </p:commandLink>
+                        </p:dataGrid>
+                    </p:fieldset>
+                </div>
+            </div>
+        </h:form>
+        <p:dialog id="dlAlmacenRacks" header="..:: ESTRUCTURA DE ALMACEN ::." widgetVar="dlAlmacenRacks" modal="true" showEffect="popup" closable="true" >
+            <h:form id="FormularioAlmacenRacks">
+                <p:dataTable rowStyleClass="#{listaRacks.picked==true?'old':null}" id="listaRacks" var="listaRacks" value="#{esquemaAlmacenAction.listaRacks}" rowKey="#{listaRacks.IDRACK}" selectionMode="single" selection="#{esquemaAlmacenAction.selctRack}" style="text-align: center;width:500px;height: 400px">
+                    <p:ajax event="rowDblselect"  oncomplete="PF('dlAlmacenRacks').hide()"/>
+                    <p:column headerText="IDRACK" style="width: 16%">
+                        <h:outputText value="#{listaRacks.IDRACK}" />
+                    </p:column>
+                    <p:column headerText="IDRACK" style="width: 16%">
+                        <h:outputText value="#{listaRacks.TIPORACKS}" />
+                    </p:column>
+                    <p:column headerText="N° PISOS" style="width: 16%">
+                        <h:outputText value="#{listaRacks.PISOS}" />
+                    </p:column>
+                    <p:column headerText="FILAS" style="width:16%">
+                        <h:outputText value="#{listaRacks.FILAS}" />
+                    </p:column>
+                    <p:column headerText="COLUMNAS" style="width:16%">
+                        <h:outputText value="#{listaRacks.COLUMNAS}" />
+                    </p:column>
+                    <p:column headerText="CAPACIDAD" style="width:16%">
+                        <h:outputText value="#{listaRacks.CAPACIDAD}" />
+                    </p:column>
+                </p:dataTable>
+
+            </h:form>                 
+        </p:dialog> 
+    </ui:define>
+</ui:composition>

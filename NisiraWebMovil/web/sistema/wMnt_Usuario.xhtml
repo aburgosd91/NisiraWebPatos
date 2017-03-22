@@ -1,0 +1,35 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:f="http://java.sun.com/jsf/core"
+                template="templatebanco.xhtml"
+                xmlns:pm="http://primefaces.org/mobile"
+                xmlns:cmp="http://java.sun.com/jsf/composite/cmp">
+    <ui:define name="metadata">
+    </ui:define>
+    <ui:define name="body">
+        <h:form id="datos">
+            <cmp:barra_mnt bean="#{usuarioAction}"/>
+            <p:panelGrid id="principal" style="width: 100%" columns="1" columnClasses="no-border, no-border">
+                <f:facet name="header">
+                    <p:outputLabel value="#{usuarioAction.tituloHead}"/>
+                </f:facet>
+                <p:panelGrid columns="2" columnClasses="no-border, no-border">
+                    <p:outputLabel value ="Codigo Usuario"/>
+                    <p:inputText value="#{usuarioAction.datoEdicion.IDUSUARIO}" disabled="#{!usuarioAction.edic}"/>
+                    <p:outputLabel value ="Clave"/>
+                    <p:password redisplay="true" value="#{usuarioAction.datoEdicion.PASSWORD}" disabled="#{!usuarioAction.edicion}"/>
+                    <p:outputLabel value ="Nombres"/>
+                    <p:inputText value="#{usuarioAction.datoEdicion.USR_NOMBRES}" disabled="#{!usuarioAction.edicion}"/>
+                    <p:outputLabel value ="Iniciales"/>
+                    <p:inputText value="#{usuarioAction.datoEdicion.USR_INICIALES}" disabled="#{!usuarioAction.edicion}"/>
+                    <p:outputLabel value ="EMAIL"/>
+                    <p:inputText value="#{usuarioAction.datoEdicion.EMAIL}" disabled="#{!usuarioAction.edicion}"/>
+                </p:panelGrid>
+            </p:panelGrid>
+            <p:growl id="growl" life="4000" showDetail="false"  />
+            <cmp:mDialogElimina_lst id="cmpDialog" bean="#{usuarioAction}" ventana="MNT" />
+        </h:form>
+    </ui:define>
+</ui:composition>

@@ -1,0 +1,119 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:f="http://java.sun.com/jsf/core"
+                template="templatebanco.xhtml"
+                xmlns:pm="http://primefaces.org/mobile"
+                xmlns:cmp="http://java.sun.com/jsf/composite/cmp">
+    <ui:define name="metadata">
+    </ui:define>
+    <ui:define name="body">
+        <h:form id="datos">
+            #{mPrivilegioUsuarioAction.verDetalle()}  
+            <cmp:barra_mnt bean="#{mPrivilegioUsuarioAction}"/>
+            <p:panelGrid id="principal" columns="1" columnClasses="no-border, no-border">             
+                
+                <f:facet name="header">
+                    <p:outputLabel value="Grupo de Usuario"/>
+                </f:facet>
+                <p:panelGrid columns="2">
+                    <p:outputLabel value="Codigo de Grupo"/>
+                    <p:inputText value="#{mPrivilegioUsuarioAction.datoEdicion.idgrupousuario}" disabled="#{!mPrivilegioUsuarioAction.edicion}"/>
+                    <p:outputLabel value="Descripcion"/>
+                    <p:inputText value="#{mPrivilegioUsuarioAction.datoEdicion.descripcion}" disabled="#{!mPrivilegioUsuarioAction.edicion}"/>
+                    <p:outputLabel value="Administrador"/>
+                    <p:selectBooleanCheckbox value="#{mPrivilegioUsuarioAction.datoEdicion.BEs_administrador}" disabled="#{!mPrivilegioUsuarioAction.edicion}"/>
+                    <p:commandButton value="Agregar" onclick="PF('frmdialog').show()"/>
+                    <p:commandButton value="Eliminar" actionListener="#{mPrivilegioUsuarioAction.delDetalle()}"/>
+                </p:panelGrid>
+
+                <p:dataTable id="lstgruprivi" value="#{mPrivilegioUsuarioAction.lgup}" selectionMode="single" selection="#{mPrivilegioUsuarioAction.gup}" var="grupriv" rowKey="#{grupriv.idformulario}">
+                    <p:column headerText="Formulario" style="width:30%;" filterBy="#{grupriv.idformulario}" filterMatchMode="contains" sortBy="#{grupriv.idformulario}">
+                        <h:outputText value="#{grupriv.idformulario}" />
+                    </p:column>
+                    <p:column headerText="Codigo Grupo" style="width:30%;" filterBy="#{grupriv.idgrupousuario}" filterMatchMode="contains" sortBy="#{grupriv.idgrupousuario}">
+                        <h:outputText value="#{grupriv.idgrupousuario}" />
+                    </p:column>
+                    <p:column headerText="Crear">
+                        <p:selectBooleanCheckbox value="#{grupriv.bcrear}"/>
+                    </p:column>
+                    <p:column headerText="Eliminar">
+                        <p:selectBooleanCheckbox value="#{grupriv.beliminar}"/>
+                    </p:column>
+                    <p:column headerText="Editar">
+                        <p:selectBooleanCheckbox value="#{grupriv.bmodificar}"/>
+                    </p:column>
+                    <p:column headerText="Ver">
+                        <p:selectBooleanCheckbox value="#{grupriv.bver}"/>
+                    </p:column>
+                </p:dataTable>
+            </p:panelGrid>
+            <p:dialog id="frmdialog" widgetVar="frmdialog"  closable="true" closeOnEscape="true" draggable="true" modal="true">
+                <p:dataTable id="tbl" var="listfrm" value="#{mPrivilegioUsuarioAction.lfrm}" widgetVar="listTipoZona" paginatorTemplate="{FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink}" paginatorPosition="top"
+                             paginator="true" rows="15" style="margin-bottom:20px" selectionMode="single" selection="#{mPrivilegioUsuarioAction.frm}" rowKey="#{listfrm.idformulario}">
+                    <f:facet name="header">
+                        <h:outputText value="..::SysFormularios::.." />
+                    </f:facet>
+                    <p:ajax event="rowDblselect"  update=":datos:lstgruprivi" listener="#{mPrivilegioUsuarioAction.selectFrm()}" oncomplete="PF('frmdialog').hide()"/>
+                    <p:column style="width:15%;" filterBy="#{listfrm.idformulario}" filterMatchMode="contains" sortBy="#{listfrm.idformulario}">
+                        <f:facet name="header">
+                            <h:outputText value="Cod Formulario" />
+                        </f:facet>
+                        <h:outputText value="#{listfrm.idformulario}"/>
+                    </p:column>
+                    <p:column style="width:15%;" filterBy="#{listfrm.clase}" filterMatchMode="contains" sortBy="#{listfrm.clase}">
+                        <f:facet name="header">
+                            <h:outputText value="Clase" />
+                        </f:facet>
+                        <h:outputText value="#{listfrm.clase}"/>
+                    </p:column>
+                    <p:column style="width:15%;" filterBy="#{listfrm.clasedoc}" filterMatchMode="contains" sortBy="#{listfrm.clasedoc}">
+                        <f:facet name="header">
+                            <h:outputText value="Clase Documento" />
+                        </f:facet>
+                        <h:outputText value="#{listfrm.clasedoc}"/>
+                    </p:column>
+                    <p:column style="width:15%;" filterBy="#{listfrm.descripcion}" filterMatchMode="contains" sortBy="#{listfrm.descripcion}">
+                        <f:facet name="header">
+                            <h:outputText value="Descripcion" />
+                        </f:facet>
+                        <h:outputText value="#{listfrm.descripcion}"/>
+                    </p:column>
+                    <p:column style="width:15%;" filterBy="#{listfrm.eslista}" filterMatchMode="contains" sortBy="#{listfrm.eslista}">
+                        <f:facet name="header">
+                            <h:outputText value="Lista" />
+                        </f:facet>
+                        <h:outputText value="#{listfrm.eslista==1?'SI':'NO'}"/>
+                    </p:column>
+                    <p:column style="width:15%;" filterBy="#{listfrm.imagen}" filterMatchMode="contains" sortBy="#{listfrm.imagen}">
+                        <f:facet name="header">
+                            <h:outputText value="Imagen" />
+                        </f:facet>
+                        <h:outputText value="#{listfrm.imagen}"/>
+                    </p:column>
+                    <p:column style="width:15%;" filterBy="#{listfrm.paquete}" filterMatchMode="contains" sortBy="#{listfrm.paquete}">
+                        <f:facet name="header">
+                            <h:outputText value="Paquete" />
+                        </f:facet>
+                        <h:outputText value="#{listfrm.paquete}"/>
+                    </p:column>
+                    <p:column style="width:15%;" filterBy="#{listfrm.paquetedoc}" filterMatchMode="contains" sortBy="#{listfrm.paquetedoc}">
+                        <f:facet name="header">
+                            <h:outputText value="Paquete Documento" />
+                        </f:facet>
+                        <h:outputText value="#{listfrm.paquetedoc}"/>
+                    </p:column>
+                    <p:column style="width:15%;" filterBy="#{listfrm.opcion}" filterMatchMode="contains" sortBy="#{listfrm.opcion}">
+                        <f:facet name="header">
+                            <h:outputText value="Opcion" />
+                        </f:facet>
+                        <h:outputText value="#{listfrm.opcion}"/>
+                    </p:column>
+                </p:dataTable>
+            </p:dialog>
+            <p:growl id="growl" life="4000" showDetail="false"  />
+            <cmp:mDialogElimina_lst id="cmpDialog" bean="#{mPrivilegioUsuarioAction}" ventana="MNT" />
+        </h:form>
+    </ui:define>
+</ui:composition>

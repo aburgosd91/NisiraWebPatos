@@ -1,0 +1,95 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:f="http://java.sun.com/jsf/core"
+                template="templatebanco.xhtml"
+                xmlns:pm="http://primefaces.org/mobile"
+                xmlns:cmp="http://java.sun.com/jsf/composite/cmp">
+    <ui:define name="metadata">
+    </ui:define>
+    <ui:define name="body">
+        <h:form id="datos">
+            #{esquemaZonaAction.buscarTodo()}  
+            <p:panelGrid id="principal" columns="1" columnClasses="no-border, no-border">             
+             <cmp:barra_lst bean="#{esquemaZonaAction}" mostrar_opciones="false" />
+             <p:dataTable id="tbl" var="listZona" value="#{esquemaZonaAction.listaDatos}" filteredValue="#{esquemaZonaAction.filtroDatos}" widgetVar="listTipoZona"   paginatorTemplate="{FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink}" paginatorPosition="top"
+                          paginator="true" rows="15" style="margin-bottom:20px" selectionMode="single" selection="#{esquemaZonaAction.datoSeleccionado}" rowKey="#{listZona.IDZONA}" resizableColumns="true">
+                        <f:facet name="header">
+                                <h:outputText value="#{esquemaZonaAction.tituloHead}" />
+                        </f:facet>
+                        <p:column style="width:15%;" filterBy="#{listZona.IDZONA}" filterMatchMode="contains" sortBy="#{listZona.IDZONA}">
+                           <f:facet name="header">
+                               <h:outputText value="ID" />
+                           </f:facet>
+                            <h:outputText value="#{listZona.IDZONA}"/>
+                       </p:column>
+                        <p:column style="width:30%;" filterBy="#{listZona.DESCRIPCION}" filterMatchMode="contains" sortBy="#{listZona.DESCRIPCION}">
+                           <f:facet name="header">
+                               <h:outputText value="DESCRIPCIÓN" />
+                           </f:facet>
+                           <h:outputText value="#{listZona.DESCRIPCION}" />
+                       </p:column>
+                        <p:column style="width:30%;" filterBy="#{listZona.SUCURSAL}" filterMatchMode="contains" sortBy="#{listZona.SUCURSAL}">
+                           <f:facet name="header">
+                               <h:outputText value="SUCURSAL" />
+                           </f:facet>
+                           <h:outputText value="#{listZona.SUCURSAL}" />
+                       </p:column>
+                        <p:column style="width:30%;" filterBy="#{listZona.AREA}" filterMatchMode="contains" sortBy="#{listZona.AREA}">
+                           <f:facet name="header">
+                               <h:outputText value="AREA (m²)" />
+                           </f:facet>
+                           <h:outputText value="#{listZona.AREA}" />
+                       </p:column>
+                        <p:column style="width:30%;" filterBy="#{listZona.AREAUNIDADDIAGRAMA}" filterMatchMode="contains" sortBy="#{listZona.AREAUNIDADDIAGRAMA}">
+                           <f:facet name="header">
+                               <h:outputText value="AREA - DIAGRAMA" />
+                           </f:facet>
+                            <h:outputText value="#{listZona.AREAUNIDADDIAGRAMA}" />
+                       </p:column>
+                        <p:column style="width:30%;" filterBy="#{listZona.TIPOZONA}" filterMatchMode="contains" sortBy="#{listZona.TIPOZONA}">
+                           <f:facet name="header">
+                               <h:outputText value="TIPO ZONA" />
+                           </f:facet>
+                           <h:outputText value="#{listZona.TIPOZONA}" />
+                       </p:column>
+                        <p:column style="width:30%;" filterBy="#{listZona.UNIDADMEDIDA}" filterMatchMode="contains" sortBy="#{listZona.UNIDADMEDIDA}">
+                           <f:facet name="header">
+                               <h:outputText value="UNIDAD MEDIDA" />
+                           </f:facet>
+                           <h:outputText value="#{listZona.UNIDADMEDIDA}" />
+                       </p:column>
+                        <p:column style="width:30%;" filterBy="#{listZona.LARGOUNIDADDIAGRAMA}" filterMatchMode="contains" sortBy="#{listZona.LARGOUNIDADDIAGRAMA}">
+                           <f:facet name="header">
+                               <h:outputText value="LARGO" />
+                           </f:facet>
+                           <h:outputText value="#{listZona.LARGOUNIDADDIAGRAMA}" />
+                       </p:column>
+                        <p:column style="width:30%;" filterBy="#{listZona.ANCHOUNIDADDIAGRAMA}" filterMatchMode="contains" sortBy="#{listZona.ANCHOUNIDADDIAGRAMA}">
+                           <f:facet name="header">
+                               <h:outputText value="ANCHO" />
+                           </f:facet>
+                           <h:outputText value="#{listZona.ANCHOUNIDADDIAGRAMA}" />
+                       </p:column>
+                        <p:column style="width:20%;" filterBy="#{listZona.ESTADO}">
+                           <f:facet name="header">
+                               <h:outputText value="ESTADO"/>
+                           </f:facet>
+                           <f:facet name="filter">
+                                <p:selectOneButton onchange="PF('listTipoZona').filter()">
+                                    <f:converter converterId="javax.faces.Boolean" />
+                                    <f:selectItem  itemLabel="Activo" itemValue="true"/>
+                                    <f:selectItem itemLabel="Inactivo" itemValue="false"/>
+                                </p:selectOneButton>
+                            </f:facet>
+                           <h:graphicImage value="../images/img/#{listZona.ESTADO?'activo':'inactivo'}.png"/>
+                           <h:outputText value="#{listZona.ESTADO?'Activo':'Inactivo'}" />
+                       </p:column>
+                    </p:dataTable>  
+            </p:panelGrid>
+            <p:growl id="growl" life="4000" showDetail="false"  />
+            <cmp:mDialogElimina_lst id="cmpDialog" bean="#{esquemaZonaAction}" ventana="LST" />
+        </h:form>
+    </ui:define>
+</ui:composition>

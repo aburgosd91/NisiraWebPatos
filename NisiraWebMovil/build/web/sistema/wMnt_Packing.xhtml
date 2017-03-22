@@ -1,0 +1,124 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:f="http://java.sun.com/jsf/core"
+                template="templatebanco.xhtml"
+                xmlns:pm="http://primefaces.org/mobile"
+                xmlns:cmp="http://java.sun.com/jsf/composite/cmp">
+    <ui:define name="metadata">
+    </ui:define>
+    <ui:define name="body">
+        #{PackingAction.findDetalles()}
+        <h:form id="datos">
+            <cmp:barra_mnt bean="#{PackingAction}"/>
+            <h:panelGrid style="width:100%;text-align: left" id="pnl_reprogramar" >
+                <h:panelGrid  columns="4">
+                    <p:outputLabel value="Id Empresa" escape="false" />
+                    <p:inputText style="width: 100px !important;font-size: 11px" value="#{PackingAction.datoEdicion.IDEMPRESA}" disabled="true"/>
+                    <p:outputLabel value="Id Sucursal" escape="false" />
+                    <p:inputText style="width: 100px !important;font-size: 11px" value="#{PackingAction.datoEdicion.IDSUCURSAL}" disabled="true"/>
+                    <p:outputLabel value="Id Packing" escape="false" />
+                    <p:inputText  style="width: 100px !important;font-size: 11px" value="#{PackingAction.datoEdicion.IDPACKING}" disabled="true"/>
+                    <p:outputLabel value="Id Cliente" escape="false" />
+                    <p:inputText value="#{PackingAction.datoEdicion.IDCLIENTE}" disabled="#{!PackingAction.edicion}"/>
+                    <p:outputLabel value="Fecha" escape="false" />
+                    <p:inputText value="#{PackingAction.datoEdicion.FECHA}" disabled="true"/>
+                    <p:outputLabel value="Contenedor" escape="false" />
+                    <p:inputText value="#{PackingAction.datoEdicion.CONTENEDOR}" disabled="#{!PackingAction.edicion}"/>
+                    <p:outputLabel value="Id documento" escape="false" />
+                    <p:selectOneMenu id="cboiddoc" value="#{PackingAction.datoEdicion.IDDOCUMENTO}" style="width:150px" disabled="#{!PackingAction.nuevoD}">
+                        <p:ajax listener="#{PackingAction.oncDocChange}" update="cboserie num" />
+                        <f:selectItems value="#{PackingAction.lstdocs}" var="iddocs" itemLabel="#{iddocs.DESCRIPCION}" itemValue="#{iddocs.IDDOCUMENTO}"/>
+                    </p:selectOneMenu>
+                    <p:outputLabel value="Serie" escape="false" />
+                    <p:selectOneMenu id="cboserie" value="#{PackingAction.datoEdicion.SERIE}" style="width:150px" disabled="#{!PackingAction.nuevoD}">
+                        <f:selectItems value="#{PackingAction.lstnume}" var="nume" itemLabel="#{nume.SERIE}" itemValue="#{nume.SERIE}"/>
+                    </p:selectOneMenu>
+                    <p:outputLabel value="Numero" escape="false" />
+                    <p:inputText id="num" maxlength="4" style="width: 100px !important;font-size: 11px" value="#{PackingAction.numero}" disabled="#{!PackingAction.nuevoD}"/>
+                    <p:outputLabel value="Responsable" escape="false" />
+                    <h:panelGrid id="cntResponsable" cellpadding="0" cellspacing="0" columns="3">
+                        <p:commandButton styleClass="boton_buscar" ajax="true" actionListener="#{PackingAction.verCntResponsable()}" disabled="#{!PackingAction.edicion}"  icon="ui-icon-search">
+                            <p:ajax event="dialogReturn" listener="#{PackingAction.llenarResponsable}" update="cntResponsable"/>
+                        </p:commandButton>
+                        <p:inputText  style="text-align: center" size="3" readonly="true"  value="#{PackingAction.op.idresponsable}"/>
+                        <p:inputText size="41" readonly="true" value="#{PackingAction.op.nombre}" />
+                    </h:panelGrid>
+                    
+                    <p:outputLabel value="Puerto Destino" escape="false" />
+                    <h:panelGrid id="cntPuerto" cellpadding="0" cellspacing="0" columns="3">
+                        <p:commandButton styleClass="boton_buscar" ajax="true" onclick="PF('diagPuert').show()" disabled="#{!PackingAction.edicion}"  icon="ui-icon-search"/>
+                        <p:inputText  style="text-align: center" size="3" readonly="true"  value="#{PackingAction.puerto.IDPUERTODESTINO}"/>
+                        <p:inputText size="41" readonly="true" value="#{PackingAction.puerto.DESCRIPCION}" />
+                    </h:panelGrid>
+                    <p:outputLabel value="Motivo" escape="false" />
+                    <h:panelGrid id="cntMotivo" cellpadding="0" cellspacing="0" columns="3">
+                        <p:commandButton styleClass="boton_buscar" ajax="true" onclick="PF('diagMot').show()" disabled="#{!PackingAction.edicion}"  icon="ui-icon-search"/>
+                        <p:inputText  style="text-align: center" size="3" readonly="true"  value="#{PackingAction.mot.IDMOTIVO}"/>
+                        <p:inputText size="41" readonly="true" value="#{PackingAction.mot.DESCRIPCION}" />
+                    </h:panelGrid>
+                    <p:outputLabel value="Activo"/>
+                    <p:selectBooleanCheckbox value="#{PackingAction.datoEdicion.BEstado}" disabled="#{!PackingAction.edicion}"/>  
+                </h:panelGrid>
+            </h:panelGrid>
+            <h:panelGrid >
+                <p:dataTable value="#{PackingAction.ldpacking}" >
+                    <f:facet name="header">
+                        <h:outputText value="..::Detalle de Packing List::.." />
+                    </f:facet>
+                </p:dataTable>
+            </h:panelGrid>
+            <p:dialog header="Motivos" id="diagMot" resizable="false" width="500" height="500" widgetVar="diagMot" modal="true" showEffect="popup" closable="true">
+                <p:dataTable id="lstMot" var="lstMot" value="#{PackingAction.lstmotivo}" widgetVar="lstMot" paginatorTemplate="{FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink}" paginatorPosition="top"
+                             paginator="true" rows="15" style="margin-bottom:20px" selectionMode="single" selection="#{PackingAction.mot}" rowKey="#{lstMot.IDMOTIVO}">
+                    <p:ajax event="rowDblselect" listener="#{PackingAction.llenarMotivo()}"/>
+                    <p:column headerText="Codigo Empresa" style="width:30%;" filterBy="#{lstMot.IDEMPRESA}" filterMatchMode="contains" sortBy="#{lstMot.IDEMPRESA}">
+                        <h:outputText value="#{lstMot.IDEMPRESA}" />
+                    </p:column>
+                    <p:column headerText="Codigo Motivo" style="width:30%;" filterBy="#{lstMot.IDMOTIVO}" filterMatchMode="contains" sortBy="#{lstMot.IDMOTIVO}">
+                        <h:outputText value="#{lstMot.IDMOTIVO}" />
+                    </p:column>
+                    <p:column headerText="Descripcion" style="width:30%;" filterBy="#{lstMot.DESCRIPCION}" filterMatchMode="contains" sortBy="#{lstMot.DESCRIPCION}">
+                        <h:outputText value="#{lstMot.DESCRIPCION}" />
+                    </p:column>
+                    <p:column headerText="Codigo Eqquivalente" style="width:30%;" filterBy="#{lstMot.CODIGOEQUIVALENTE}" filterMatchMode="contains" sortBy="#{lstMot.CODIGOEQUIVALENTE}">
+                        <h:outputText value="#{lstMot.CODIGOEQUIVALENTE}" />
+                    </p:column>
+                    <p:column headerText="Fecha Creacion" style="width:30%;" filterBy="#{lstMot.FECHACREACION}" filterMatchMode="contains" sortBy="#{lstMot.FECHACREACION}">
+                        <h:outputText value="#{lstMot.FECHACREACION}" />
+                    </p:column>
+                    <p:column headerText="Estado" style="width:30%;" filterBy="#{lstMot.ESTADO}" filterMatchMode="contains" sortBy="#{lstMot.ESTADO}">
+                        <h:outputText value="#{lstMot.BEstado?'Activo':'Inactivo'}" />
+                    </p:column>
+                </p:dataTable>
+            </p:dialog>
+            <p:dialog header="Puerto de Destino"  id="diagPuert" resizable="false" width="500" height="500" widgetVar="diagPuert" modal="true" showEffect="popup" closable="true">
+                <p:dataTable id="tbl" var="lstPuert" value="#{PackingAction.lstpuerto}" widgetVar="tbl" paginatorTemplate="{FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink}" paginatorPosition="top"
+                             paginator="true" rows="15" style="margin-bottom:20px" selectionMode="single" selection="#{PackingAction.puerto}" rowKey="#{lstPuert.IDPUERTODESTINO}">
+                    <p:ajax event="rowDblselect" listener="#{PackingAction.llenarPuerto()}"/>
+                    <p:column headerText="Codigo Emprea" style="width:30%;" filterBy="#{lstPuert.IDEMPRESA}" filterMatchMode="contains" sortBy="#{lstPuert.IDEMPRESA}">
+                        <h:outputText value="#{lstPuert.IDEMPRESA}" />
+                    </p:column>
+                    <p:column headerText="Codigo Puerto" style="width:30%;" filterBy="#{lstPuert.IDPUERTODESTINO}" filterMatchMode="contains" sortBy="#{lstPuert.IDPUERTODESTINO}">
+                        <h:outputText value="#{lstPuert.IDPUERTODESTINO}" />
+                    </p:column>
+                    <p:column headerText="Descripcion" style="width:30%;" filterBy="#{lstPuert.DESCRIPCION}" filterMatchMode="contains" sortBy="#{lstPuert.DESCRIPCION}">
+                        <h:outputText value="#{lstPuert.DESCRIPCION}" />
+                    </p:column>
+                    <p:column headerText="Equivalente" style="width:30%;" filterBy="#{lstPuert.CODIGOEQUIVALENTE}" filterMatchMode="contains" sortBy="#{lstPuert.CODIGOEQUIVALENTE}">
+                        <h:outputText value="#{lstPuert.CODIGOEQUIVALENTE}" />
+                    </p:column>
+                    <p:column headerText="Fecha Creacion" style="width:30%;" filterBy="#{lstPuert.FECHACREACION}" filterMatchMode="contains" sortBy="#{lstPuert.FECHACREACION}">
+                        <h:outputText value="#{lstPuert.FECHACREACION}" />
+                    </p:column>
+                    <p:column headerText="Estado" style="width:30%;" filterBy="#{lstPuert.ESTADO}" filterMatchMode="contains" sortBy="#{lstPuert.ESTADO}">
+                        <h:outputText value="#{lstPuert.BEstado?'Activo':'Inactivo'}" />
+                    </p:column>
+                </p:dataTable>
+            </p:dialog>
+            <p:growl id="growl" life="4000" showDetail="false"  />
+            <cmp:mDialogElimina_lst id="cmpDialog" bean="#{PackingAction}" ventana="MNT" />
+        </h:form>
+    </ui:define>
+</ui:composition>

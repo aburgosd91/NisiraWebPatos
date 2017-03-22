@@ -1,0 +1,88 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:f="http://java.sun.com/jsf/core"
+                template="templatebanco.xhtml"
+                xmlns:cmp="http://xmlns.jcp.org/jsf/composite/cmp">
+    <ui:define name="metadata">
+    </ui:define>
+    <ui:define name="body">
+        <div class="ui-grid ">
+            <p:messages id="messages" autoUpdate="true" closable="true" style="font-size:10px"/><br/>
+            <h:form id="datos"  style="width:100%;position:relative;">
+                <cmp:barra_mnt bean="#{dAccionesVistasAction}"/>
+                <p:toolbar>
+                    <f:facet name="left">
+                        <h:outputText value="Asignación Vista - Acción" />
+                    </f:facet>
+                </p:toolbar>
+                <div class="ui-grid-row">
+                    <p:panelGrid columns="1" columnClasses="no-border">
+                        <p:fieldset legend="ACCION" toggleable="false" style="font-size: 14px;" >
+                            <p:panelGrid columns="1" columnClasses="no-border">
+                                <p:panelGrid columns="2" columnClasses="no-border,no-border">
+                                    <h:outputText value="VISTA : " />
+                                    <p:panelGrid id="cntVista" columns="3" columnClasses="no-border, no-border,no-border">
+                                        <p:commandButton styleClass="boton_buscar" ajax="true" actionListener="#{dAccionesVistasAction.verCntSysFormularios()}" disabled="#{!dAccionesVistasAction.edicion}"  icon="ui-icon-search">
+                                            <p:ajax event="dialogReturn" listener="#{dAccionesVistasAction.llenarVista}" update="cntVista"/>
+                                        </p:commandButton>
+                                        <p:inputText id="txtvista" size="41" readonly="true" value="#{dAccionesVistasAction.datoEdicion.VISTA}" />
+                                    </p:panelGrid>
+                                    <h:outputText value="ACCION : " escape="false"/>
+                                    <p:panelGrid id="cntAcciones" columns="3" columnClasses="no-border, no-border,no-border">
+                                        <p:commandButton styleClass="boton_buscar" ajax="true" actionListener="#{dAccionesVistasAction.verCntAcciones()}" disabled="#{!dAccionesVistasAction.edicion}"  icon="ui-icon-search">
+                                            <p:ajax event="dialogReturn" listener="#{dAccionesVistasAction.llenarAccion}" update="cntAcciones"/>
+                                        </p:commandButton>
+                                        <p:inputText id="idaccion" size="5" readonly="true" value="#{dAccionesVistasAction.acciones.idaccion}" />
+                                        <p:inputText id="accion" size="41" readonly="true" value="#{dAccionesVistasAction.acciones.descripcion}" />
+                                    </p:panelGrid>
+                                </p:panelGrid>
+                            </p:panelGrid>
+                        </p:fieldset>
+                    </p:panelGrid>
+                </div>
+                <div class="ui-grid-row">
+                    #{dAccionesVistasAction.listarDetalle()}
+                    <p:panelGrid columns="1" columnClasses="no-border,no-border">
+                        <p:fieldset id="informacion" legend="DETALLE ACCIONES - VISTA" toggleable="false" style="font-size: 14px;">
+                            <p:toolbar>
+                                <f:facet name="left">
+                                    <p:commandButton value="Agregar" ajax="true" image="ui-icon-nuevo" actionListener="#{dAccionesVistasAction.agregarDetalle()}"/>
+                                    <p:commandButton value="Eliminar" ajax="true" image="ui-icon-eliminar" actionListener="#{dAccionesVistasAction.eliminarDetalle()}" disabled="#{dAccionesVistasAction.botonEliminar}"/>
+                                    <p:commandButton value="Subir" ajax="true" image="ui-icon-subir" actionListener="#{dAccionesVistasAction.subirDetalle()}" />                           
+                                    <p:commandButton value="Bajar" ajax="true" image="ui-icon-bajar" actionListener="#{dAccionesVistasAction.bajarDetalle()}" />                                    
+                                </f:facet> 
+                            </p:toolbar>
+                            <p:dataTable id="listDAccionesVistas" var="listDAccionesVistas" value="#{dAccionesVistasAction.listDAccionesVistas}" selectionMode="single"
+                                         selection="#{dAccionesVistasAction.selectDAccionesVistas}" rowKey="#{listDAccionesVistas.IDACCION}" 
+                                                resizableColumns="true" style="text-align: center;">
+
+                               <!--f:facet name="header">
+                                   LISTA DE ACCIONES - VISTAS
+                               </f:facet-->
+                               <p:ajax event="rowSelect" listener="#{dAccionesVistasAction.onSelectDAccionesVistas()}"/>
+                               <!--p:ajax event="rowEdit" listener="#{dAccionesVistasAction.onRowEdit}"/-->
+                               <!--p:ajax event="rowEditCancel" listener="#{dAccionesVistasAction.onRowCancel}"/-->
+                               <p:column headerText="#Orden" sortBy="#{listDAccionesVistas.ORDEN}">
+                                   <h:outputText value="#{listDAccionesVistas.ORDEN}" />
+                               </p:column>
+                               <p:column headerText="ACCION">
+                                   <h:outputText value="#{listDAccionesVistas.ACCIONES}" />
+                               </p:column>
+                               <p:column headerText="VISTA">
+                                   <h:outputText value="#{listDAccionesVistas.VISTA}" />
+                               </p:column>
+                               <!--p:column style="width:10%">
+                                    <p:rowEditor />
+                                </p:column-->
+                           </p:dataTable>
+                        </p:fieldset>
+                    </p:panelGrid>
+                </div>
+                <p:growl id="growl" life="4000" showDetail="false"  />
+                <cmp:mDialogElimina_lst id="cmpDialog" bean="#{dAccionesVistasAction}" ventana="MNT" />
+            </h:form>
+        </div>
+    </ui:define>    
+</ui:composition>

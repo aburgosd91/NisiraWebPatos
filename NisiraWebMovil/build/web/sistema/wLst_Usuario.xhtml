@@ -1,0 +1,49 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:f="http://java.sun.com/jsf/core"
+                template="templatebanco.xhtml"
+                xmlns:pm="http://primefaces.org/mobile"
+                xmlns:cmp="http://java.sun.com/jsf/composite/cmp">
+    <ui:define name="metadata">
+    </ui:define>
+    <ui:define name="body">
+        <h:form id="datos">
+            #{usuarioAction.buscarTodo()}  
+            <p:panelGrid id="principal" columns="1" columnClasses="no-border, no-border"> 
+                <cmp:barra_lst bean="#{usuarioAction}" mostrar_opciones="false" />
+                <p:dataTable id="tbl" var="listUsu" value="#{usuarioAction.listaDatos}" filteredValue="#{usuarioAction.filtroDatos}" widgetVar="listUsu"   paginatorTemplate="{FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink}" paginatorPosition="top"
+                             paginator="true" rows="15" style="margin-bottom:20px" selectionMode="single" selection="#{usuarioAction.datoSeleccionado}" rowKey="#{listUsu.IDUSUARIO}" resizableColumns="true">
+                    <f:facet name="header">
+                        #{usuarioAction.tituloHead}
+                    </f:facet>
+                    <p:column headerText="Usuario" filterBy="#{listUsu.IDUSUARIO}" filterMatchMode="contains" sortBy="#{listUsu.IDUSUARIO}">
+                        <h:outputText value="#{listUsu.IDUSUARIO}" />
+                    </p:column>
+                    <p:column headerText="Usuario" filterBy="#{listUsu.USR_NOMBRES}" filterMatchMode="contains" sortBy="#{listUsu.USR_NOMBRES}">
+                        <h:outputText value="#{listUsu.USR_NOMBRES}" />
+                    </p:column>
+                    <p:column headerText="Usuario" filterBy="#{listUsu.USR_INICIALES}" filterMatchMode="contains" sortBy="#{listUsu.USR_INICIALES}">
+                        <h:outputText value="#{listUsu.USR_INICIALES}" />
+                    </p:column>
+                    <p:column filterBy="#{listUsu.ESTADO}">
+                        <f:facet name="header">
+                            <h:outputText value="ESTADO"/>
+                        </f:facet>
+                        <f:facet name="filter">
+                            <p:selectOneButton onchange="PF('listUsu').filter()">
+                                <f:selectItem  itemLabel="Activo" itemValue="#{1}" />
+                                <f:selectItem itemLabel="Anulado" itemValue="#{0}" />
+                            </p:selectOneButton>
+                        </f:facet>
+                        <h:graphicImage value="../images/img/#{listUsu.ESTADO==1 ?'activo':'inactivo'}.png"/>
+                        <h:outputText value="#{listUsu.ESTADO==1 ?'Activo':'Anulado'}" />
+                    </p:column>
+                </p:dataTable>
+            </p:panelGrid>
+            <p:growl id="growl" life="4000" showDetail="false"  />
+            <cmp:mDialogElimina_lst id="cmpDialog" bean="#{usuarioAction}" ventana="LST" />
+        </h:form>
+    </ui:define>
+</ui:composition>

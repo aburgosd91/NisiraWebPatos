@@ -1,0 +1,34 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:f="http://java.sun.com/jsf/core"
+                template="templatebanco.xhtml"
+                xmlns:pm="http://primefaces.org/mobile"
+                xmlns:cmp="http://java.sun.com/jsf/composite/cmp">
+    <ui:define name="metadata">
+    </ui:define>
+    <ui:define name="body">
+        <h:form id="datos">
+            <p:panelGrid id="principal" columns="1" columnClasses="no-border, no-border">             
+                <cmp:barra_mnt bean="#{ParametrosAction}"/>
+                <p:panelGrid columns="2" columnClasses="no-border, no-border">
+                    <p:outputLabel value ="Codigo Empresa"/>
+                    <p:inputText value="#{ParametrosAction.datoEdicion.IDEMPRESA}" disabled="true"/>
+                    <p:outputLabel value ="Codigo Parametro"/>
+                    <p:inputText value="#{ParametrosAction.datoEdicion.IDPARAMETRO}" disabled="#{!ParametrosAction.edicion}"/>
+                    <p:outputLabel value ="Valor"/>
+                    <p:inputText value="#{ParametrosAction.datoEdicion.VALOR}" disabled="#{!ParametrosAction.edicion}"/>
+                    <p:outputLabel value ="Descripcion"/>
+                    <p:inputTextarea value="#{ParametrosAction.datoEdicion.DESCRIPCION}" disabled="#{!ParametrosAction.edicion}"/>
+                    <p:outputLabel value ="Codigo Equivalente"/>
+                    <p:inputText value="#{ParametrosAction.datoEdicion.CODIGOEQUIVALENTE}" disabled="#{!ParametrosAction.edicion}"/>
+                    <p:outputLabel value ="Activo"/>
+                    <p:selectBooleanCheckbox value="#{ParametrosAction.datoEdicion.BEstado}" disabled="#{!ParametrosAction.edicion}"/>
+                </p:panelGrid>
+                 </p:panelGrid>
+                <p:growl id="growl" life="4000" showDetail="false"  />
+            <cmp:mDialogElimina_lst id="cmpDialog" bean="#{ParametrosAction}" ventana="MNT" />
+        </h:form>
+    </ui:define>
+</ui:composition>

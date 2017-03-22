@@ -1,0 +1,39 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:f="http://java.sun.com/jsf/core"
+                template="templatebanco.xhtml"
+                xmlns:pm="http://primefaces.org/mobile"
+                xmlns:cmp="http://java.sun.com/jsf/composite/cmp">
+    <ui:define name="metadata">
+    </ui:define>
+    <ui:define name="body">
+        <h:form id="datos">
+            #{mUsuarioAction.buscarTodo()}  
+            <p:panelGrid id="principal" columns="1" columnClasses="no-border, no-border">             
+                <cmp:barra_lst bean="#{mUsuarioAction}" mostrar_opciones="false" />
+                <p:dataTable id="tbl" var="listUsu" value="#{mUsuarioAction.listaDatos}" filteredValue="#{mUsuarioAction.filtroDatos}" widgetVar="listUsuario"   paginatorTemplate="{FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink}" paginatorPosition="top"
+                             paginator="true" rows="15" style="margin-bottom:20px" selectionMode="single" selection="#{mUsuarioAction.datoSeleccionado}" rowKey="#{listUsu.idusuario}" resizableColumns="true">
+                    <f:facet name="header">
+                        #{mUsuarioAction.tituloHead}
+                    </f:facet>
+                    <p:column headerText="Codigo Grupo" style="width:30%;" filterBy="#{listUsu.idusuario}" filterMatchMode="contains" sortBy="#{listUsu.idusuario}">
+                        <h:outputText value="#{listUsu.idusuario}" />
+                    </p:column>
+                    <p:column headerText="Nombre" style="width:30%;" filterBy="#{listUsu.nombres}" filterMatchMode="contains" sortBy="#{listUsu.nombres}">
+                        <h:outputText value="#{listUsu.nombres}" />
+                    </p:column>
+                    <p:column headerText="Grupo" style="width:30%;" filterBy="#{listUsu.idgrupousuario}" filterMatchMode="contains" sortBy="#{listUsu.idgrupousuario}">
+                        <h:outputText value="#{listUsu.idgrupousuario}" />
+                    </p:column>
+                    <p:column headerText="Esttado" style="width:30%;">
+                        <h:outputText value="#{listUsu.BEstado?'Activo':'InActivo'}" />
+                    </p:column>
+                </p:dataTable>
+            </p:panelGrid>
+            <p:growl id="growl" life="4000" showDetail="false"  />
+            <cmp:mDialogElimina_lst id="cmpDialog" bean="#{mUsuarioAction}" ventana="LST" />
+        </h:form>
+    </ui:define>
+</ui:composition>

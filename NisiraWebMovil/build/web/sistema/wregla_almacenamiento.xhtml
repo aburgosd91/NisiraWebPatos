@@ -1,0 +1,199 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:f="http://java.sun.com/jsf/core"
+                template="templatebanco.xhtml"
+                >
+    <ui:define name="metadata">
+    </ui:define>
+    <ui:define name="body">
+        <h:form id="programacion">
+            <p:toolbar>
+                <f:facet name="right">
+                    <p:commandButton value="Guardar" ajax="true" actionListener="#{reglaAlmacenamientoAction.getGrabarReglaUbicacion()}" image="ui-icon-grabar" />
+                    <p:commandButton value="Cancelar" process="@this" update="datos"  image="ui-icon-cancelar">
+                        <p:resetInput target="datos" />
+                    </p:commandButton>
+                </f:facet>
+            </p:toolbar>
+        </h:form>
+        <p:messages id="messages" showDetail="true" autoUpdate="true" closable="true" />
+        <div class="ui-grid ">
+            <div class="ui-grid-row">
+                <div class="ui-grid-col-6">
+                    <h:form id="datos">
+                        <p:panelGrid columns="2" columnClasses="no-border, no-border">
+                            <p:panelGrid columns="1" columnClasses="no-border">
+                                #{reglaAlmacenamientoAction.getRecordTipoParametro()}
+                                <p:fieldset id="informacion" legend="PARAMETROS DE DISTRIBUCIÓN" toggleable="false" style="font-size: 14px;">
+                                    <p:panelGrid columns="2" columnClasses="no-border,no-border">
+                                        <p:outputLabel for="cbotipoparametro" value="Tipo :"  />
+                                        <p:selectOneMenu id="cbotipoparametro" value="#{reglaAlmacenamientoAction.IDTIPOPARAMETRO}" rendered="true">
+                                            <p:ajax listener="#{reglaAlmacenamientoAction.onParametroDistribucionChange}" update="listParametroDistribucion" />
+                                            <f:selectItem itemLabel="Seleccionar Tipo Parametro" itemValue=""/>
+                                            <f:selectItems value="#{reglaAlmacenamientoAction.listTipoParametro}" var="tipoparametro" itemLabel="#{tipoparametro.DESCRIPCION}" itemValue="#{tipoparametro.VALOR}"/>
+                                        </p:selectOneMenu>
+                                    </p:panelGrid>
+                                    <p:panelGrid columns="1" columnClasses="no-border">
+                                        <p:dataTable id="listParametroDistribucion" var="listParametroDistribucion" value="#{reglaAlmacenamientoAction.listParametroDistribucion}"
+                                                     selection="#{reglaAlmacenamientoAction.selectParametroDistribucion}" rowKey="#{listParametroDistribucion.IDPARAMETRO}" resizableColumns="true" resizeMode="expand" style="text-align: center;">
+                                            <p:ajax event="toggleSelect" immediate="true" listener="#{reglaAlmacenamientoAction.onCheck()}" process="@this" />
+                                            <p:ajax event="rowSelectCheckbox" immediate="true" listener="#{reglaAlmacenamientoAction.onCheck()}" process="@this" />
+                                            <p:ajax event="rowUnselectCheckbox" immediate="true" listener="#{programacionAction.onCheck()}" process="@this" />
+                                            <f:facet name="header">
+                                                REGLAS DE DISTRIBUCIÓN
+                                            </f:facet>
+                                            <p:column headerText="ID">
+                                                <h:outputText value="#{listParametroDistribucion.IDPARAMETRO}" />
+                                            </p:column>
+                                            <p:column headerText="NOMBRE">
+                                                <h:outputText value="#{listParametroDistribucion.NOMBRE}" />
+                                            </p:column>
+                                            <p:column headerText="TIPO">
+                                                <h:outputText value="#{listParametroDistribucion.TIPOREGLA}" />
+                                            </p:column>
+                                            <p:column headerText="FECHA" style="width: 10%;">
+                                                <h:outputText value="#{listParametroDistribucion.FECHA_DETALLE}" />
+                                            </p:column>
+                                            <p:column selectionMode="single" style="width:16px;text-align:center"/>
+                                        </p:dataTable>
+                                    </p:panelGrid>
+                                </p:fieldset>
+                                <br/>
+                                <h:outputLabel value=" - DISTRIBUCIÓN POR NIVEL" style="font-family: fantasy; font-size: 14px; font-weight: bold;"/>
+                                <h:panelGrid columns="2">
+                                    <p:commandButton id="btnGenerico" value="GENÉRICO" ajax="true" actionListener="#{reglaAlmacenamientoAction.getActionGenerico()}" image="ui-icon-generico" disabled="#{reglaAlmacenamientoAction.botonAsignacionNivel}"/>
+                                    <p:commandButton id="btnParticular" value="PARTICULAR" ajax="true" actionListener="#{reglaAlmacenamientoAction.getActionParticular()}" image="ui-icon-particular" disabled="#{reglaAlmacenamientoAction.botonAsignacionNivel}"/>
+                                </h:panelGrid>
+                                <br/>
+                                <p:fieldset id="tablaSeleccionRacks" legend="RACKS SELECCIONADOS" toggleable="false" style="font-size: 14px;">
+                                    <p:dataTable id="listDFormaUbicacion" var="listDFormaUbicacion" value="#{reglaAlmacenamientoAction.listDFormaUbicacion}"
+                                                 selection="#{reglaAlmacenamientoAction.listSelectDFormaUbicacion}" rowKey="#{listDFormaUbicacion.IDRACK}" resizableColumns="true" resizeMode="expand" style="text-align: center;">
+                                       <p:ajax event="toggleSelect" immediate="true" listener="#{reglaAlmacenamientoAction.onCheckSelecionRack()}" process="@this" />
+                                       <p:ajax event="rowSelectCheckbox" immediate="true" listener="#{reglaAlmacenamientoAction.onCheckSelecionRack()}" process="@this" />
+                                       <p:ajax event="rowUnselectCheckbox" immediate="true" listener="#{reglaAlmacenamientoAction.onCheckSelecionRack()}" process="@this" />
+                                       <p:column headerText="ORDEN" sortBy="#{listDFormaUbicacion.PRIORIDAD}">
+                                           <h:outputText value="#{listDFormaUbicacion.PRIORIDAD}" />
+                                       </p:column>
+                                       <p:column headerText="IDRACK" sortBy="#{listDFormaUbicacion.IDRACK}">
+                                           <h:outputText value="#{listDFormaUbicacion.IDRACK}" />
+                                       </p:column>
+                                       <p:column headerText="DISTRIBUCION - NIVEL" sortBy="#{listDFormaUbicacion.TIPONIVEL}">
+                                           <h:outputText value="#{listDFormaUbicacion.TIPONIVEL}" />
+                                       </p:column>
+                                       <p:column selectionMode="multiple" style="width:16px;text-align:center"/>
+                                   </p:dataTable>
+                                </p:fieldset>
+                            </p:panelGrid>
+                        </p:panelGrid>
+                        <p:dialog id="nivelDialog" header="..:: DISTRIBUCIÓN - NIVEL - #{reglaAlmacenamientoAction.tipoDistribucion eq 'G'?'GENERAL':'PARTICULAR'} ::." widgetVar="nivelDialog" modal="true" showEffect="popup" closable="true">
+                            #{reglaAlmacenamientoAction.getRecordDistribucionNivel()}
+                            #{reglaAlmacenamientoAction.getRecordDNFORMAUBICACION()}
+                            <div class="ui-grid ">
+                                <div class="ui-grid-row">
+                                    <p:panelGrid  columns="2" columnClasses="no-border,no-border" style="width:80%;">
+                                        <h:outputText value="FORMA ORDENAMIENTO:" />
+                                        <p:selectOneMenu  id="cboParametro" value="#{reglaAlmacenamientoAction.parametroOrdenamiento}" rendered="true" style="width:80%;">
+                                            <f:selectItem itemLabel="Seleccionar Ordenamiento" itemValue="0"/>
+                                            <f:selectItems value="#{reglaAlmacenamientoAction.listDistribucionNivel}" var="distribucion" itemLabel="#{distribucion.DESCRIPCION}" itemValue="#{distribucion.VALOR}" />
+                                        </p:selectOneMenu>
+                                        <h:outputText value="TIPO FILAS X COLUMNAS:" />
+                                        <p:selectOneMenu  id="cboFilasColumnas" value="#{reglaAlmacenamientoAction.IDNFORMACIONUBICACION}" rendered="true" style="width:80%;">
+                                            <p:ajax listener="#{reglaAlmacenamientoAction.onDistribucionNivelChange()}" update="datos:listDDNForma_Ubicacion"/>
+                                            <f:selectItem itemLabel="Seleccionar Estructura" itemValue="0"/>
+                                            <f:selectItems value="#{reglaAlmacenamientoAction.listDNForma_Ubicacion}" var="filaxcolumna" itemLabel="#{filaxcolumna.FILAS} x #{filaxcolumna.COLUMNAS}" itemValue="#{filaxcolumna.IDNFORMACIONUBICACION}" />
+                                        </p:selectOneMenu>
+                                    </p:panelGrid>
+                                </div>
+                                <div class="ui-grid-row" style="width:650px;height:500px;">
+                                    <p:dataGrid var="listDDNForma_Ubicacion" value="#{reglaAlmacenamientoAction.listDDNForma_Ubicacion}" columns="#{reglaAlmacenamientoAction.selectFilaxColumna.COLUMNAS}"
+                                                rows="#{reglaAlmacenamientoAction.selectFilaxColumna.FILAS * reglaAlmacenamientoAction.selectFilaxColumna.COLUMNAS}" paginator="true" id="listDDNForma_Ubicacion" style="text-align:center;" 
+                                                paginatorPosition="top" paginatorTemplate="{Comandos}">
+                                        <f:facet name="{Comandos}">
+                                            <p:commandButton value="ASIGNAR" ajax="true" actionListener="#{reglaAlmacenamientoAction.asignarDistribucionXnivel()}" image="ui-icon-aceptar" />
+                                        </f:facet>
+                                        <p:panel id="cuadroNivel" header="POSICIÓN - #{listDDNForma_Ubicacion.IDFILA} x #{listDDNForma_Ubicacion.IDCOLUMNA}" style="alignment-adjust: central;text-align:center; background-color:#{listDDNForma_Ubicacion.SELECCIONADO?'#7887AB':'#FFFFFF'};font-size: 10px">
+                                            <h:panelGrid columns="1" style="width: 100%">
+                                                <h:outputText value="#{listDDNForma_Ubicacion.PRIORIDAD}" style="font-weight: bold; font-size: 24px;color: #061539;visibility:#{listDDNForma_Ubicacion.SELECCIONADO?'visible':'hidden'}"/>
+                                            </h:panelGrid>
+                                        </p:panel>
+                                    </p:dataGrid>
+                                </div>
+                            </div>
+                        </p:dialog>
+                        <p:dialog id="guardadoDialog" header="..:: NUEVO DOCUMENTO DE DISTRIBUCIÓN ::." widgetVar="guardadoDialog" modal="true" showEffect="popup" closable="true" width="500">
+                            <p:panelGrid  columns="2" columnClasses="no-border,no-border" style="width:90%">
+                                <h:outputText value="R.DISTRIBUCIÓN:" />
+                                <h:outputText style="font-weight: bold" value="(#{reglaAlmacenamientoAction.selectParametroDistribucion.IDPARAMETRO}) #{reglaAlmacenamientoAction.selectParametroDistribucion.TIPOREGLA} - #{reglaAlmacenamientoAction.selectParametroDistribucion.NOMBRE} #{reglaAlmacenamientoAction.selectParametroDistribucion.FECHA_DETALLE eq ''?'':reglaAlmacenamientoAction.selectParametroDistribucion.FECHA_DETALLE}" />
+                                <h:outputText value="SUCURSAL:" />
+                                <h:outputText style="font-weight: bold" value="(#{reglaAlmacenamientoAction.IDSUCURSAL})" />
+                                <h:outputText value="ALMACEN:" />
+                                <h:outputText style="font-weight: bold" value="(#{reglaAlmacenamientoAction.IDALMACEN})" />
+                                <h:outputText value="CONTENIDO:" />
+                                <p:inputTextarea rows="3" style="width: 200px;" value="#{reglaAlmacenamientoAction.CONTENIDO}" onkeyup="javascript:this.value=this.value.toUpperCase();" />
+                                <br/>
+                            </p:panelGrid>
+                            <p:toolbar>
+                                <f:facet name="right">
+                                    <p:commandButton value="Guardar" ajax="true" actionListener="#{reglaAlmacenamientoAction.grabarReglaUbicacion()}" image="ui-icon-grabar" />
+                                    <p:commandButton value="Cancelar" process="@this" update="datos"  image="ui-icon-cancelar" onclick="PF('guardadoDialog').hide()" >
+                                        <p:resetInput target="datos" />
+                                    </p:commandButton>
+                                </f:facet>
+                            </p:toolbar>
+                        </p:dialog>
+                        
+                    </h:form>
+                </div>
+                <div class="ui-grid-col-6">
+                    <h:form id="datos2">
+                        #{reglaAlmacenamientoAction.getRecordSucursal()}
+                        <p:growl id="msgs" showDetail="true" />
+                        <p:panelGrid columns="1" columnClasses="no-border">
+                            <p:panelGrid columns="2" columnClasses="no-border,no-border">
+                                <p:outputLabel for="cbosucursal" value="Sucursal :"  />
+                                <p:selectOneMenu id="cbosucursal" value="#{reglaAlmacenamientoAction.IDSUCURSAL}" rendered="true">
+                                    <p:ajax listener="#{reglaAlmacenamientoAction.onSucursalChange}" update="cboalmacen" />
+                                    <f:selectItem itemLabel="Seleccionar Sucursal" itemValue=""/>
+                                    <f:selectItems value="#{reglaAlmacenamientoAction.listSucursa}" var="sucursal" itemLabel="#{sucursal.DESCRIPCION}" itemValue="#{sucursal.IDSUCURSAL}" />
+                                </p:selectOneMenu>
+                                <p:outputLabel for="cboalmacen" value="Almacen :"  />
+                                <p:selectOneMenu id="cboalmacen" value="#{reglaAlmacenamientoAction.IDALMACEN}" rendered="true">
+                                    <p:ajax listener="#{reglaAlmacenamientoAction.onAlmacenChange}" update="datos2:listRacks" />
+                                    <f:selectItem itemLabel="Seleccionar Almacen" itemValue=""/>
+                                    <f:selectItems value="#{reglaAlmacenamientoAction.listAlmacen}" var="almacen" itemLabel="#{almacen.DESCRIPCION}" itemValue="#{almacen.IDALMACEN}" />
+                                </p:selectOneMenu>
+                            </p:panelGrid>
+                            <p:panelGrid columns="1" columnClasses="no-border,no-border">
+                                <p:dataGrid var="listRacks" value="#{reglaAlmacenamientoAction.listRacks}" columns="4"
+                                            rows="12" paginator="true" id="listRacks" paginatorPosition="top"
+                                    paginatorTemplate="{Comandos} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}">
+                                    <f:facet name="{Comandos}">
+                                        <p:commandButton value="ASIGNAR" ajax="true" actionListener="#{reglaAlmacenamientoAction.getAsignarDistribucionRack()}" image="ui-icon-aceptar" />
+                                    </f:facet>
+                                    <p:panel id="cuadroRack" header="RACK - #{listRacks.IDRACK}" style="text-align:center; background-color:#{listRacks.SELECCION?'#FFAAAA':'#FFFFFF'};font-size: 10px">
+                                        <h:panelGrid columns="1" columnClasses="no-border" style="font-size: 10px">
+                                            <h:outputText value="#{listRacks.IDUBICACION}" style="font-weight: bold;"/>
+                                            <h:outputText value="#{listRacks.posicion}" style="font-weight: bold; font-size: 24px;color: #D8000C;visibility:#{listRacks.SELECCION?'visible':'hidden'}"/>
+                                            <h:panelGrid columns="2" columnClasses="no-border,no-border">
+                                                <h:outputText value="DISPONIBLE:" style="font-weight: bold;" />
+                                                <h:outputText value="#{listRacks.CAPACIDAD}" />
+                                                <h:outputText value="CAPACIDAD:" style="font-weight: bold;"/>
+                                                <h:outputText value="#{listRacks.CAPACIDAD}" />
+                                            </h:panelGrid>
+                                            <p:commandButton ajax="true" value="#{listRacks.SELECCION?'check':'no-check'}" action="#{reglaAlmacenamientoAction.rackSeleccionado()}">
+                                                <f:setPropertyActionListener value="#{listRacks}" target="#{reglaAlmacenamientoAction.selectRacks}"/>
+                                            </p:commandButton>
+                                        </h:panelGrid>
+                                    </p:panel>
+                                </p:dataGrid>
+                            </p:panelGrid>
+                        </p:panelGrid>
+                    </h:form>
+                </div>
+            </div>
+        </div>
+        <!--        -->
+    </ui:define>    
+</ui:composition>

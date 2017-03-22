@@ -1,0 +1,142 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:f="http://java.sun.com/jsf/core"
+                template="templatebanco.xhtml"
+                xmlns:pm="http://primefaces.org/mobile"
+                xmlns:cmp="http://java.sun.com/jsf/composite/cmp">
+    <ui:define name="metadata">
+    </ui:define>
+    <ui:define name="body" >           
+        <h:form id="datos">
+            #{asignacionChips.findDetalle()}          
+            <cmp:barra_mnt bean="#{asignacionChips}" />
+            <div class="ui-grid ">
+                <div class="ui-grid-row">                   
+                    <div class="ui-grid-col-4">
+                        <p:panelGrid columns="2" style="width: 100%" columnClasses="no-border, no-border">
+                            <f:facet name="header">
+                                <p:outputLabel value="#{asignacionChips.tituloHead}"/>
+                            </f:facet>
+                            <p:outputLabel value="Codigo"/>
+                            <p:inputText value="#{asignacionChips.datoEdicion.idasignacionchips}" style="width: 100%"  disabled="true"/>
+                            <p:outputLabel value="Sucursal"/>
+                            <p:inputText value="#{asignacionChips.datoEdicion.idsucursal}" style="width: 100%"  disabled="true"/>
+                            <p:outputLabel for="Zona"  value="Zona:" />
+                            <p:selectOneMenu id="Zona" widgetVar="Zona"  value="#{asignacionChips.datoEdicion.idzona}" style="width: 100%" disabled="#{!asignacionChips.edicion}"> 
+                                <p:ajax listener="#{asignacionChips.onZonaSelect()}" update="datos:" />
+                                <f:selectItem itemLabel="Seleccione Zona" itemValue=""/>                        
+                                <f:selectItems value="#{asignacionChips.lstZona}"  var="tipoZona" itemLabel="#{tipoZona.DESCRIPCION}" itemValue="#{tipoZona.IDZONA}" />
+                            </p:selectOneMenu>
+                            <p:outputLabel for="Estado"  value="Estado" />
+                            <p:selectOneMenu id="Estado" value="#{asignacionChips.datoEdicion.estado}"  disabled="#{!asignacionChips.edicion}"> 
+                                <f:selectItem itemLabel="Seleccione Zona" itemValue=""/>     
+                                <f:selectItem itemLabel="Asignado" itemValue="#{1}"/>   
+                                <f:selectItem itemLabel="Anulado" itemValue="#{2}"/>   
+                            </p:selectOneMenu>  
+                        </p:panelGrid>
+                    </div>
+                    <div class="ui-grid-col-4">
+                        <p:panelGrid columns="2" columnClasses="no-border, no-border,no-border"  style="width: 100%">
+                            <f:facet name="header">
+                                <p:outputLabel value=" ."/>
+                            </f:facet>
+                            <p:outputLabel  value="# Ubicaciones sin Confirmar"/>
+                            <p:spinner value="#{asignacionChips.ubsc}"  min="0" readonly="true"/>
+                            <p:outputLabel  value="# Ubicaciones Confirmada"/>
+                            <p:spinner value="#{asignacionChips.ubc}" min="0" readonly="true"/>
+                            <p:outputLabel  value="# Tag Asignadas"/>
+                            <p:spinner value="#{asignacionChips.taga}" min="0" readonly="true"/>
+                            <p:outputLabel  value="# Tags Sin asginar"/>
+                            <p:spinner value="#{asignacionChips.dif}"  min="0" readonly="true"/>
+                        </p:panelGrid>
+                    </div>
+                    <div class="ui-grid-col-4">
+                        <p:panelGrid style="width: 100%" >
+                            <f:facet name="header">
+                                <p:row>
+                                    <p:column colspan="7">Leyenda</p:column>
+                                </p:row>
+                                <p:row>
+                                    <p:column >Estado</p:column>
+                                    <p:column >Descripcion</p:column>
+                                </p:row>
+                            </f:facet>
+                            <p:row>
+                                <p:column style="background-color: #f00"></p:column>
+                                <p:column >Sin Asignar</p:column>
+                            </p:row>
+                            <p:row>
+                                <p:column style="background-color: #41e63c"></p:column>
+                                <p:column >Confirmado</p:column>
+                            </p:row>
+                        </p:panelGrid>
+                    </div>           
+                </div>    
+                <div class="ui-grid-row">
+                    <p:fieldset legend="ASIGNACION" style="width:#{asignacionChips.slcZona.LARGOUNIDADDIAGRAMA * 50}px">
+                        <p:dataGrid var="listDasigna" value="#{asignacionChips.lstDAsigChips}" columns="#{asignacionChips.slcZona.LARGOUNIDADDIAGRAMA}"
+                                    rows="#{asignacionChips.slcZona.ANCHOUNIDADDIAGRAMA * asignacionChips.slcZona.LARGOUNIDADDIAGRAMA}"
+                                    id="listDasigna" paginatorPosition="top" style="width:#{asignacionChips.slcZona.LARGOUNIDADDIAGRAMA * 50}px" rowIndexVar="rindex">
+                            <p:commandLink actionListener="#{asignacionChips.confirmar(rindex)}" ajax="true" >                                
+                                <f:setPropertyActionListener value="#{listDasigna}" target="#{asignacionChips.slcDAsigChip}"/>
+                                <p:panel id="boton"  style="background-color: #{listDasigna.color};width:30px;height:30px;padding: 0px">
+                                    <p:outputLabel value="#{listDasigna.desc}"/>
+                                </p:panel>                               
+                            </p:commandLink>
+                        </p:dataGrid>
+                    </p:fieldset>
+                </div>
+
+            </div>
+            <p:dialog id="detDeasig" widgetVar="detDeasig" closable="true" modal="true" style="height: 800px; width:  500px; text-align: center" onHide="#{asignacionChips.onhideClear()}">
+                <p:ajax event="close" listener="#{asignacionChips.onhideClear()}" />
+                <p:panel id="panel">
+                    <p:panelGrid id="pan" style="width: 100%;display:block; text-align:center" >
+                        <p:defaultCommand id="dc" target="#{asignacionChips.focusB}"/>
+                        <p:row>
+                            <p:column > <p:commandButton id="NOB" value="NO" actionListener="#{asignacionChips.changeFocus('NO')}" update="datos:chips panel"/> </p:column>
+                            <p:column > <p:commandButton  value="NC" disabled="true"/> </p:column>
+                            <p:column > <p:commandButton id="NEB" value="NE" actionListener="#{asignacionChips.changeFocus('NE')}" update="datos:chips panel"/> </p:column>
+                        </p:row>
+                        <p:row>
+                            <p:column > <p:commandButton value="CO" disabled="true"/> </p:column>
+                            <p:column style="width: 100px; height: 100px; background-color: #{asignacionChips.slcDAsigChip.color}"> #{asignacionChips.slcDAsigChip.desc} </p:column>
+                            <p:column > <p:commandButton value="CE" disabled="true"/> </p:column>
+                        </p:row>
+                        <p:row>
+                            <p:column > <p:commandButton id="SOB" value="SO" actionListener="#{asignacionChips.changeFocus('SO')}" update="datos:chips panel"/> </p:column>
+                            <p:column > <p:commandButton value="SC" disabled="true"/> </p:column>
+                            <p:column > <p:commandButton id="SEB" value="SE" actionListener="#{asignacionChips.changeFocus('SE')}" update="datos:chips panel"/> </p:column>
+                        </p:row>
+                    </p:panelGrid>
+                    <p:panelGrid id="chips" columns="4" columnClasses="no-border,no-border,no-border,no-border">
+                        <p:panelGrid columns="2" columnClasses="no-border,no-border">
+                            <p:focus for="#{asignacionChips.focus}" context="panel"/>                        
+                            <p:outputLabel value="NO"/>
+                        </p:panelGrid>
+                        <p:inputText id="NO" value="#{asignacionChips.NO}" style="width: 100%"/>
+                        <p:outputLabel value="NE"/>
+                        <p:inputText id="NE" value="#{asignacionChips.NE}" style="width: 100%"/>
+                        <p:outputLabel value="SO"/>
+                        <p:inputText id="SO" value="#{asignacionChips.SO}" style="width: 100%"/>
+                        <p:outputLabel value="SE"/>
+                        <p:inputText id="SE" value="#{asignacionChips.SE}"  style="width: 100%"/>
+                        <p:outputLabel value="NC"/>
+                        <p:inputText id="NC" value="#{asignacionChips.NC}" style="width: 100%" disabled="true"/>
+                        <p:outputLabel value="CO"/>
+                        <p:inputText id="CO" value="#{asignacionChips.CO}" style="width: 100%" disabled="true"/>
+                        <p:outputLabel value="CE"/>
+                        <p:inputText id="CE" value="#{asignacionChips.CE}" style="width: 100%" disabled="true"/>                    
+                        <p:outputLabel value="SC"/>
+                        <p:inputText id="SC" value="#{asignacionChips.SC}" style="width: 100%" disabled="true"/>                    
+                    </p:panelGrid>
+                    <p:commandButton actionListener="#{asignacionChips.grabarDet()}" value="Grabar"/>
+                </p:panel>
+            </p:dialog>
+            <p:growl id="growl" life="4000" showDetail="false"  />
+            <cmp:mDialogElimina_lst id="cmpDialog" bean="#{asignacionChips}" ventana="MNT" />
+        </h:form>
+    </ui:define>
+</ui:composition>

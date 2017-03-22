@@ -1,0 +1,92 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:pm="http://primefaces.org/mobile">
+    <f:view renderKitId="PRIMEFACES_MOBILE" />  
+
+    <h:head>
+        <f:loadBundle basename="titulos" var="titulos" />
+    </h:head>
+    <h:body>
+    <pm:page title="Ingresar Pallet a Tunel o Camara" id="page1">
+            <pm:header title="Ingresar Pallet a Tunel o Camara" fixed="true" >
+                
+                    <f:facet name="left">
+                        <h:form>
+                            <p:commandButton ajax="true" value="Atrás" icon="back"  onclick=" window.location = '#{facesContext.externalContext.requestContextPath}/faces/sistema/menu.xhtml?faces-redirect=true'"/>
+                        </h:form>
+                    </f:facet>
+                    <f:facet name="right">
+                        <h:form>
+                            <p:commandButton ajax="true" value="Salir" icon="delete" onclick="PF('dlg').show()" />
+                        </h:form>
+                    </f:facet>                
+                
+                <script type="text/javascript" src="../js/validadispositivo.js"></script>
+                <script type="text/javascript" >
+                    function setFocus(id){
+                        $(id).focus();
+                        //document.getElementById(id).focus();
+                    }
+                </script>
+                
+            </pm:header>
+            
+            <pm:content >
+                <h:outputLabel value="#{MovUbicacionPaletaAction.iniciar}" />                
+                <h:form id="Formmovubicacionpaleta">
+                    <p:dialog header="Advertencia" widgetVar="dlg" showEffect="pop" modal="true">                        
+                        <pm:field>
+                            <h:outputText value="Desea Salir?"/>
+                        </pm:field>
+                        <pm:field>
+                            <p:commandButton ajax="true" value="Si" onclick = " window.location = '#{facesContext.externalContext.requestContextPath}/faces/Sistema/CerrarSesion.xhtml';" icon="check"/>
+                        </pm:field>
+                    </p:dialog>   
+                    
+                    <p:dialog header="Sistema" widgetVar="dlgmensaje" modal="true">
+                        <pm:field>
+                            <h:outputText id="lblmensaje" value="#{MovUbicacionPaletaAction.mensaje}"/>
+                        </pm:field>
+                        <pm:field>
+                            <p:commandButton ajax="true" value="Aceptar"  icon="check" onclick="PF('dlgmensaje').hide()"/>
+                        </pm:field>
+                    </p:dialog>
+    
+                    <p:focus id="idfocus" context="Formmovubicacionpaleta" />
+                    <p:outputLabel value="Ingresar Nro Paleta"></p:outputLabel>
+                    <p:inputText id="nropaleta" value="#{MovUbicacionPaletaAction.numeroPaletaBuscar}" maxlength="20"> </p:inputText>                    
+                    <p:commandButton type="submit" value="Buscar Paleta" actionListener="#{MovUbicacionPaletaAction.buscaUbicacionPaleta()}"/>
+                    <br></br>
+                    <p:accordionPanel  id="accordionubicacionpaleta" activeIndex="#{MovUbicacionPaletaAction.indiceAccordeon}">
+                        <p:tab title="UBICACION PALETA">
+                            <p:inputTextarea rows="10"  autoResize="true"  readonly="true" id ="txtubicacionpaleta" value="#{MovUbicacionPaletaAction.informacionUbicacionActual}" /> 
+                        </p:tab>
+                    </p:accordionPanel>
+                    <br></br>
+                    <br></br>
+                    <br></br>
+                    <p:outputLabel  id="lblbuscarubicacion" value="Leer Codigo barras ubicacion Tunel o Camara" >                        
+                    </p:outputLabel>
+                    <p:inputText id="nroubicacioncamara" value="#{MovUbicacionPaletaAction.numeroUbicacionCamaraBuscar}" maxlength="15" >
+                    </p:inputText>
+                    <p:commandButton  type="submit" value="Buscar Ubicacion de Tunel o Camara" actionListener="#{MovUbicacionPaletaAction.buscarUbicaciondeCamara()}" />
+                    <br></br>
+                    <br></br>
+                    <br></br>
+                    <p:commandButton  type="submit" value="Grabar Ingreso Paleta" actionListener="#{MovUbicacionPaletaAction.grabarPaletUbicacionCamara()}" />
+                    
+                </h:form>
+
+                <br></br><br></br><br></br><br></br><br></br><br></br><br></br><br></br>
+            </pm:content>
+            <pm:footer fixed="true">
+                <h1 style="font-size: x-small" >© 2015 <img border="0" height="10px" src="../images/logoWeb.png"/> Nisira Systems SAC </h1>         
+                
+            </pm:footer>  
+    </pm:page>
+ </h:body> 
+</html>

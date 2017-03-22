@@ -1,0 +1,73 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:f="http://java.sun.com/jsf/core"
+                template="templatebanco.xhtml"
+                xmlns:cmp="http://java.sun.com/jsf/composite/cmp">
+    <ui:define name="metadata">
+    </ui:define>
+    <ui:define name="body">
+        <h:form id="datos">
+            #{tipoZonaAction.buscarTodo()}
+            <p:panelGrid id="principal" columns="1" columnClasses="no-border, no-border">
+                
+                <cmp:barra_lst bean="#{tipoZonaAction}" mostrar_opciones="false" />
+                <p:dataTable id="tbl" var="listTipoZona" value="#{tipoZonaAction.listaDatos}" filteredValue="#{tipoZonaAction.filtroDatos}" widgetVar="listTipoZona" 
+                             paginatorTemplate="{FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink}" paginatorPosition="top"
+                             paginator="true" rows="15" style="margin-bottom:20px" selectionMode="single" selection="#{tipoZonaAction.datoSeleccionado}" rowKey="#{listTipoZona.IDTIPOZONA}" resizableColumns="true">
+                    <f:facet name="header">
+                        <h:outputText value="#{tipoZonaAction.tituloHead}" />
+                    </f:facet>
+                    <p:column style="width:15%;" filterBy="#{listTipoZona.IDTIPOZONA}" filterMatchMode="contains" sortBy="#{listTipoZona.IDTIPOZONA}">
+                        <f:facet name="header">
+                            <h:outputText value="ID" />
+                        </f:facet>
+                        <h:outputText value="#{listTipoZona.IDTIPOZONA}"/>
+                    </p:column>
+                    <p:column style="width:30%;" filterBy="#{listTipoZona.DESCRIPCION}" filterMatchMode="contains" sortBy="#{listTipoZona.DESCRIPCION}">
+                        <f:facet name="header">
+                            <h:outputText value="DESCRIPCIÓN" />
+                        </f:facet>
+                        <h:outputText value="#{listTipoZona.DESCRIPCION}" />
+                    </p:column>
+                    <p:column style="width:20%;" filterBy="#{listTipoZona.ESTADO}">
+                        <f:facet name="header">
+                            <h:outputText value="ESTADO"/>
+                        </f:facet>
+                        <f:facet name="filter">
+                            <p:selectOneButton onchange="PF('listTipoZona').filter()">
+                                <f:converter converterId="javax.faces.Boolean" />
+                                <f:selectItem  itemLabel="Activo" itemValue="true"/>
+                                <f:selectItem itemLabel="Inactivo" itemValue="false"/>
+                            </p:selectOneButton>
+                        </f:facet>
+                        <h:graphicImage value="../images/img/#{listTipoZona.ESTADO?'activo':'inactivo'}.png"/>
+                        <h:outputText value="#{listTipoZona.ESTADO?'Activo':'Inactivo'}" />
+                    </p:column>
+                </p:dataTable>  
+            </p:panelGrid>
+            <p:dialog id="dlGuardarTipoZona" header="..:: MANTENEDOR TIPO ZONA ::." widgetVar="dlGuardarTipoZona" modal="true" showEffect="popup" closable="false">
+                <p:panelGrid columns="2" columnClasses="no-border, no-border,no-border">
+                    <p:outputLabel value="Id: " />
+                    <p:panelGrid columns="3" columnClasses="no-border, no-border, no-border">
+                        <p:inputText disabled="true" size="3" value="#{tipoZonaAction.datoEdicion.IDTIPOZONA}"/>
+                    </p:panelGrid>
+                    <p:outputLabel for="descripcion" value="Descripcion:"/>
+                    <p:inputTextarea id="descripcion" cols="50" rows="2" value="#{tipoZonaAction.datoEdicion.DESCRIPCION}" onkeyup="javascript:this.value = this.value.toUpperCase();" disabled="#{!tipoZonaAction.edicion}"/>
+                    <h:outputText value="Estado?:" />
+                    <p:selectBooleanCheckbox value="#{tipoZonaAction.datoEdicion.ESTADO}" disabled="#{!tipoZonaAction.edicion}"/>
+                </p:panelGrid>
+                <br/>
+                <p:toolbar>
+                    <f:facet name="right">
+                        <p:commandButton id="buttonGuardar" value="Grabar" ajax="true" actionListener="#{tipoZonaAction.grabar()}" image="ui-icon-grabar" />
+                        <p:commandButton id="buttonCancelar" value="Cancelar" process="@this" update="datos" image="ui-icon-cancelar" onclick="PF('dlGuardarTipoZona').hide()"/>
+                    </f:facet>
+                </p:toolbar>                
+            </p:dialog>
+            <p:growl id="growl" life="4000" showDetail="false"  />
+            <cmp:mDialogElimina_lst id="cmpDialog" bean="#{tipoZonaAction}" ventana="LST" />
+        </h:form>
+    </ui:define>
+</ui:composition>

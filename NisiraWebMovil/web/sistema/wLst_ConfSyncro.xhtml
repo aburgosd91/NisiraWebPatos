@@ -1,0 +1,75 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:f="http://java.sun.com/jsf/core"
+                template="templatebanco.xhtml"
+                xmlns:cmp="http://java.sun.com/jsf/composite/cmp">
+    <ui:define name="metadata">
+    </ui:define>
+    <ui:define name="body">   
+        #{confSyncroAction.buscarTodo()}
+        <h:form id="datos">
+            
+            <cmp:barra_mnt bean="#{confSyncroAction}"/>
+            <p:panelGrid id="principal" columns="1" columnClasses="no-border, no-border">
+                <p:dataTable id="tbl" var="listConf" 
+                             value="#{confSyncroAction.listaDatos}" 
+                             widgetVar="listConf" 
+                             paginator="true"  
+                             rows="15" 
+                             filteredValue="#{confSyncroAction.filtroDatos}"
+                             emptyMessage="No cars found with given criteria"
+                             style="margin-bottom:20px" 
+                             selection="#{confSyncroAction.datoSeleccionado}" 
+                             selectionMode="single"
+                             resizableColumns="true"
+                             rowKey="#{listConf.IDTABLASINCRO}">
+                    <f:facet name="header">
+                        <h:outputText value="#{confSyncroAction.tituloHead}" />
+                    </f:facet>
+                    <p:column filterBy="#{listConf.IDTABLASINCRO}" filterMatchMode="contains" filterStyle="width: 75%" style="width: 100px;padding: 3px !important" headerText="ID" sortBy="#{listConf.IDTABLASINCRO}">  
+                        <h:outputText value="#{listConf.IDTABLASINCRO}"   escape="false"/>
+                    </p:column>
+                    <p:column filterBy="#{listConf.TABLA}" filterMatchMode="contains" filterStyle="width: 75%" style="width: 100px;padding: 3px !important" headerText="TABLA" sortBy="#{listConf.TABLA}">  
+                        <h:outputText value="#{listConf.TABLA}"   escape="false"/>
+                    </p:column>
+                    <p:column style="width: 100px;padding: 3px !important" headerText="Tipo de Sync" sortBy="#{listConf.TIPOSINCRO}">  
+                        <p:selectOneMenu disabled="#{!confSyncroAction.edicion}"  value="#{listConf.TIPOSINCRO}">
+                            <f:selectItem itemLabel="Manual" itemValue="#{1}"/>
+                            <f:selectItem itemLabel="Automatica" itemValue="#{2}"/>
+                        </p:selectOneMenu>
+                    </p:column>
+                    <p:column style="width:15%;" headerText="Subida de Datos" sortBy="#{listConf.UPDOWN}">
+                        <p:selectOneMenu disabled="#{!confSyncroAction.edicion}"  value="#{listConf.UPDOWN}">
+                            <f:selectItem itemLabel="Bajada" itemValue="#{1}"/>
+                            <f:selectItem itemLabel="Bajada-Subida" itemValue="#{2}"/>
+                        </p:selectOneMenu>
+                    </p:column>
+                    <p:column style="width:15%;" headerText="Estado">
+                        <p:selectBooleanCheckbox value="#{listConf.BESTADO}" disabled="#{!confSyncroAction.edicion}"/>
+                    </p:column>
+                </p:dataTable>
+            </p:panelGrid>
+            <p:dialog header="Tablas"  id="diagMot" resizable="false" width="500" height="500" widgetVar="diagTab" modal="true" showEffect="popup" closable="true">
+                <p:dataTable id="listaPend" widgetVar="listaPend" var="var" value="#{confSyncroAction.pendTablas}" 
+                             selection="#{confSyncroAction.instTablas}" rowKey="#{var.IDTABLASINCRO}" paginator="true" 
+                             resizableColumns="true" style="font-size: 10px;" rowSelectMode="checkbox">
+                    <f:facet name="header">
+                        Tabalas
+                    </f:facet>
+                    <p:column headerText="id"  selectionMode="multiple" />
+                    <p:column filterBy="#{var.IDTABLASINCRO}" filterStyle="width: 75%" filterMatchMode="contains" headerText="Codigo">
+                        <p:outputLabel value="#{var.IDTABLASINCRO}"/>
+                    </p:column>
+                    <p:column filterBy="#{var.TABLA}" filterStyle="width: 75%" filterMatchMode="contains" headerText="Descripcion" >
+                        <h:outputText value="#{var.TABLA}"/>
+                    </p:column>
+                </p:dataTable>
+                <p:commandButton value="Agregar" actionListener="#{confSyncroAction.addTablas()}" />
+            </p:dialog>
+            <p:growl id="growl" life="4000" showDetail="false"  />
+            <cmp:mDialogElimina_lst id="cmpDialog" bean="#{confSyncroAction}" ventana="MNT" />
+        </h:form>
+    </ui:define>
+</ui:composition>

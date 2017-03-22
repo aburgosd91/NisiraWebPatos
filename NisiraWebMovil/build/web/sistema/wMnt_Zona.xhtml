@@ -1,0 +1,197 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:f="http://java.sun.com/jsf/core"
+                template="templatebanco.xhtml"
+                xmlns:pm="http://primefaces.org/mobile"
+                xmlns:cmp="http://java.sun.com/jsf/composite/cmp">
+    <ui:define name="metadata">
+    </ui:define>
+    <ui:define name="body">
+        #{zonaAction.findDetalle()}
+        <h:form id="datos">            
+            <cmp:barra_mnt bean="#{zonaAction}"/>
+            <div class="ui-grid ">
+                <div class="ui-grid-row">
+                    <div class="ui-grid-col-7">
+                        <p:panelGrid style="width: 98%" columns="2" columnClasses="no-border, no-border">
+                            <f:facet name="header">
+                                <p:outputLabel value="#{zonaAction.tituloHead}"/>
+                            </f:facet>
+                            <p:outputLabel value="Id: " />
+                            <p:inputText disabled="true" size="3" value="#{zonaAction.datoEdicion.IDZONA}"/>
+
+                            <p:outputLabel for="descripcion" value="Descripcion:"/>
+                            <p:inputTextarea id="descripcion"  required="true" cols="50" rows="2" value="#{zonaAction.datoEdicion.DESCRIPCION}" onkeyup="javascript:this.value = this.value.toUpperCase();" />
+
+                            <p:outputLabel for="cbounidadmedida" value="Unidad Medida:"/>
+                            <p:selectOneMenu id="cbounidadmedida" required="true" rendered="true" style="width: 100%"  value="#{zonaAction.datoEdicion.IDUNIDADMEDIDA}"> 
+                                <f:selectItem itemLabel="Seleccione Unidad Medida" itemValue="0"/>
+                                <f:selectItems value="#{zonaAction.listUnidadMedida}" var="unidadmedida" itemLabel="#{unidadmedida.DESCRIPCION}" itemValue="#{unidadmedida.IDUNIDAD}" />
+                            </p:selectOneMenu>
+
+                            <p:outputLabel for="cbotipozona" value="Tipo Zona:"/>
+                            <p:selectOneMenu id="cbotipozona" required="true" rendered="true" style="width: 100%" value="#{zonaAction.datoEdicion.IDTIPOZONA}"> 
+                                <p:ajax listener="#{zonaAction.eventTipoZona()}" update=":datos:agregarAlmacen"/>
+                                <f:selectItem itemLabel="Seleccione Tipo Zona" itemValue="0"/>
+                                <f:selectItems value="#{zonaAction.listTipoZona}" var="tipozona" itemLabel="#{tipozona.DESCRIPCION}" itemValue="#{tipozona.IDTIPOZONA}" />
+                            </p:selectOneMenu>
+
+                            <p:outputLabel for="proceso"  value="Proceso:" />
+                            <p:selectOneMenu id="proceso" value="#{zonaAction.datoEdicion.IDPROCESO}"> 
+                                <f:selectItem itemLabel="Seleccione Proceso" itemValue="#{0}"/>                        
+                                <f:selectItems value="#{zonaAction.lstproceso}" var="tipoProceso" itemLabel="#{tipoProceso.descripcion}" itemValue="#{tipoProceso.idproceso}" />
+                            </p:selectOneMenu>
+
+                            <p:outputLabel value="Fondo :"/>
+                            <p:panelGrid style="width: 50%" columns="3" columnClasses="no-border, no-border, no-border">
+                                <p:colorPicker id="colorPicker" value="#{zonaAction.datoEdicion.COLOR}">
+                           <!--         <f:ajax listener="#{zonaAction.changeColor()}"/>-->
+                                </p:colorPicker>
+                                <h:outputText id="color" value="# #{zonaAction.datoEdicion.COLOR}" style="font-weight: bold;"/>
+                            </p:panelGrid>
+
+                            <h:outputLabel for="area" value="Área: " />
+                            <p:spinner id="area" value="#{zonaAction.datoEdicion.AREA}" stepFactor="0.25" min="#{zonaAction.datoEdicion.TIPOZONA eq 1?zonaAction.totalcuadros:0.00}" />
+
+                            <h:outputLabel for="areaunidaddiagrama" value="Área(UD):" />
+                            <p:panelGrid columns="2" style="margin-left: -10px" columnClasses="no-border, no-border">
+                                <p:spinner id="areaunidaddiagrama" rendered="true" disabled="true" value="#{zonaAction.datoEdicion.AREAUNIDADDIAGRAMA}" stepFactor="0.25" />
+                                <p:commandButton ajax="true" id="btncalcular" value="Calcular"  actionListener="#{zonaAction.calcular}" style="font-weight:bold; width:85px; height:30px" update="datos:areaunidaddiagrama" /> 
+                            </p:panelGrid>
+
+                            <h:outputLabel for="largou" value="Largo(UD): " />
+                            <p:spinner id="largou" rendered="true" value="#{zonaAction.datoEdicion.LARGOUNIDADDIAGRAMA}" stepFactor="1" min="0.00"> 
+                                <f:validateLongRange minimum="0" maximum="#{zonaAction.datoEdicion.AREAUNIDADDIAGRAMA}"/>
+                                <p:ajax update="anchou" listener="#{zonaAction.regularLargoAncho('L')}" process="@this" />
+                            </p:spinner>
+
+                            <h:outputLabel for="anchou" value="Ancho(UD): " />
+                            <p:spinner id="anchou" rendered="true" value="#{zonaAction.datoEdicion.ANCHOUNIDADDIAGRAMA}" stepFactor="1" min="0.00">
+                                <f:validateLongRange minimum="0" maximum="#{zonaAction.datoEdicion.AREAUNIDADDIAGRAMA}"/>
+                                <p:ajax update="largou" listener="#{zonaAction.regularLargoAncho('A')}" process="@this" />
+                            </p:spinner>
+                            <h:outputText value="Estado?:" />
+                            <p:selectBooleanCheckbox value="#{zonaAction.datoEdicion.ESTADO}"/>
+                        </p:panelGrid>
+                    </div>
+                    <div class="ui-grid-col-5">
+                        <p:panelGrid columns="1" columnClasses="no-border">
+                            <p:commandButton id="agregarAlmacen" value="Almacen" disabled="#{zonaAction.estadoAlmacen}"  ajax="true" image="ui-icon-nuevo" action="#{zonaAction.agregarTablaAlmacen()}"/>
+                            <p:dataTable id="tablaAlmacen" var="tablaAlmacen" value="#{zonaAction.tablaAlmacen}" style="text-align: center;"
+                                         editable="true">
+                                <f:facet name="header">
+                                    ASIGNAR ALMACENES
+                                </f:facet>
+                                <p:ajax event="rowEdit" listener="#{zonaAction.onRowEditAlmacen}"/>
+                                <p:ajax event="rowEditCancel" listener="#{zonaAction.onRowCancelAlmacen}"/>
+                                <p:column headerText="ID" style="width: 10%">
+                                    <h:outputText value="#{tablaAlmacen.id}" />
+                                </p:column>
+                                <p:column headerText="IDALMACEN" style="width: 15%">
+                                    <p:cellEditor>
+                                        <f:facet name="output">
+                                            <h:outputText value="#{tablaAlmacen.idalmacen}" /></f:facet>
+                                        <f:facet name="input">
+                                            <p:selectOneMenu id="tablaidalmacen" value="#{tablaAlmacen.idalmacen}" style="width:100%">
+                                                <p:ajax listener="#{zonaAction.actualizarDescripcionCapacidadAlmacen}" update=":datos:agregarAlmacen"/>
+                                                <f:selectItem itemValue="" itemLabel=".::Seleccionar Almacen::."/>
+                                                <f:selectItems value="#{zonaAction.listalmacen}" var="almacen" itemLabel="#{almacen.DESCRIPCION}" itemValue="#{almacen.IDALMACEN}" />
+                                            </p:selectOneMenu>
+                                        </f:facet>
+                                    </p:cellEditor>
+                                </p:column>
+                                <p:column headerText="ALMACEN" style="width: 50%">
+                                    <h:outputText value="#{tablaAlmacen.almacen}" />
+                                </p:column>
+                                <p:column headerText="V.A" style="width: 10%">
+                                    <h:outputText value="#{tablaAlmacen.capvista}" />
+                                </p:column>
+                                <p:column headerText="CAP" style="width: 10%">
+                                    <h:outputText value="#{tablaAlmacen.capacidad}" />
+                                </p:column>
+                                <p:column style="width:32px;text-align: center">
+                                    <p:commandButton update=":datos:listaRacks" oncomplete="PF('dlAlmacenRacks').show()" icon="ui-icon-search" title="View">
+                                        <f:setPropertyActionListener value="#{tablaAlmacen}" target="#{zonaAction.obj}" />
+                                    </p:commandButton>
+                                </p:column>
+                                <p:column style="width:10%">
+                                    <p:rowEditor />
+                                </p:column>
+                            </p:dataTable>
+                        </p:panelGrid>
+                        <p:panelGrid columns="2" columnClasses="no-border, no-border">
+                            <p:panelGrid columns="2" columnClasses="no-border, no-border">
+                                <p:outputLabel  value="Total Cuadros:" />
+                                <p:outputLabel id="totalcuadros" value="#{zonaAction.totalcuadros}" style="font-weight: bold"/>                                
+                            </p:panelGrid>
+                            <p:panelGrid columns="2" columnClasses="no-border, no-border">
+                                <p:outputLabel  value="Total Capacidad" />
+                                <p:outputLabel id="totalcapacidad" value="#{zonaAction.totalcapacidad}" style="font-weight: bold"/>                                
+                            </p:panelGrid>
+                        </p:panelGrid>
+                        <p:panelGrid columns="1" columnClasses="no-border">
+                            <p:commandButton id="agregarAccesorio" value="Accesorio" disabled="#{zonaAction.estadoAccesorio}"  ajax="true" image="ui-icon-nuevo" action="#{zonaAction.agregarTablaAccesorio()}"/>
+                            <p:dataTable id="listDZonaAccesorio" var="listDZonaAccesorio" value="#{zonaAction.listDZonaAccesorio}" style="text-align: center"
+                                         editable="true">
+                                <f:facet name="header">
+                                    ASIGNAR ACCESORIOS
+                                </f:facet>
+                                <p:ajax event="rowEditCancel" listener="#{zonaAction.onRowCancelAccesorio}"/>
+                                <p:column headerText="Id" style="width: 10%">
+                                    <h:outputText value="#{listDZonaAccesorio.IDACCESORIO}" />
+                                </p:column>
+                                <p:column headerText="Tipo" style="width: 25%">
+                                    <p:cellEditor>
+                                        <f:facet name="output">
+                                            <h:outputText value="#{listDZonaAccesorio.IDTIPOACCESORIO}" /></f:facet>
+                                        <f:facet name="input">
+                                            <p:selectOneMenu id="cbomultitabla" value="#{listDZonaAccesorio.IDTIPOACCESORIO}" style="width:100%">
+                                                <f:selectItems value="#{zonaAction.listMultitabla}" var="mul" itemLabel="#{mul.DESCRIPCION}" itemValue="#{mul.VALOR}" />
+                                            </p:selectOneMenu>
+                                        </f:facet>
+                                    </p:cellEditor>
+                                </p:column>
+                                <p:column headerText="Descripción">
+                                    <p:cellEditor>
+                                        <f:facet name="output"><h:outputText value="#{listDZonaAccesorio.DESCRIPCION}" /></f:facet>
+                                        <f:facet name="input"><p:inputText value="#{listDZonaAccesorio.DESCRIPCION}" style="width:96%" label="Descripcion" onkeyup="javascript:this.value = this.value.toUpperCase();"/></f:facet>
+                                    </p:cellEditor>
+                                </p:column>
+                                <p:column style="width:10%">
+                                    <p:rowEditor/>
+                                </p:column>
+                            </p:dataTable>
+
+                        </p:panelGrid>                        
+                    </div>
+                </div>
+            </div>
+            <p:dialog id="dlAlmacenRacks" header="..:: ESTRUCTURA DE ALMACEN ::." widgetVar="dlAlmacenRacks" modal="true" showEffect="popup" closable="true" >
+                <p:dataTable id="listaRacks" var="listaRacks" value="#{zonaAction.obj.listaRacks}" style="text-align: center;width:500px;height: 400px">
+                    <p:column headerText="IDRACK" style="width: 16%">
+                        <h:outputText value="#{listaRacks.IDRACK}" />
+                    </p:column>
+                    <p:column headerText="N° PISOS" style="width: 16%">
+                        <h:outputText value="#{listaRacks.PISOS}" />
+                    </p:column>
+                    <p:column headerText="FILAS" style="width:16%">
+                        <h:outputText value="#{listaRacks.FILAS}" />
+                    </p:column>
+                    <p:column headerText="COLUMNAS" style="width:16%">
+                        <h:outputText value="#{listaRacks.COLUMNAS}" />
+                    </p:column>
+                    <p:column headerText="V.A." style="width:16%">
+                        <h:outputText value="#{listaRacks.FILAS * listaRacks.COLUMNAS}" />
+                    </p:column>
+                    <p:column headerText="CAPACIDAD" style="width:16%">
+                        <h:outputText value="#{listaRacks.CAPACIDAD}" />
+                    </p:column>
+                </p:dataTable>           
+            </p:dialog>  
+            <p:growl id="growl" life="4000" showDetail="false"  />
+            <cmp:mDialogElimina_lst id="cmpDialog" bean="#{zonaAction}" ventana="MNT" />
+        </h:form>
+    </ui:define>
+</ui:composition>

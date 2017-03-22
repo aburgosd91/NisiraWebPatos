@@ -1,0 +1,28 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:f="http://java.sun.com/jsf/core"
+                template="templatebanco.xhtml"
+                xmlns:pm="http://primefaces.org/mobile">
+    <ui:define name="metadata">
+    </ui:define>
+    <ui:define name="body">
+        <h:form id="Formmovubicacionpaleta" prependId="false">
+            <h:panelGrid columns="3" cellpadding="5">
+                <p:photoCam id="photo" widgetVar="pc" listener="#{capturaCodigoBarras.sendPhoto}"/>
+                <p:commandButton id="button" type="button" value="Capture" onclick="PF('pc').capture()" icon="fa fa-camera"/>
+                <p:outputPanel id="images" style="margin-top:10px"/>
+            </h:panelGrid>
+            <h:inputHidden id="inputCodigo" value="#{capturaCodigoBarras.codigoBarra}"/>
+        </h:form>
+        <p:socket onMessage="handleMessage" channel="/codigobarra" />
+        <script type="text/javascript">
+            function handleMessage(data) {
+                var url="#{facesContext.externalContext.requestContextPath}//faces//archivo//codigobarra//"+data+".jpeg";
+                $('#images').prepend('<img src="' + url + '"/>');
+            }
+        </script>
+        <br></br><br></br><br></br><br></br><br></br><br></br><br></br><br></br>
+    </ui:define>
+</ui:composition>

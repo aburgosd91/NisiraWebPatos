@@ -1,0 +1,69 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:f="http://java.sun.com/jsf/core"
+                template="templatebanco.xhtml"
+                xmlns:pm="http://primefaces.org/mobile">
+    <ui:define name="metadata">
+    </ui:define>
+    <ui:define name="body">
+        <h:form id="datos">
+            #{distribucionUbicacionAlmacenAction.getAllAlmacenByEmpresa()}
+            <p:panelGrid id="principal" columns="2" columnClasses="no-border, no-border">
+                <p:panelGrid style="font-size: 12px;text-align:center;" id="panel1" columns="1" columnClasses="no-border, no-border">
+                    <p:panelGrid id="cabecera" columns="2" columnClasses="no-border, no-border">
+                    </p:panelGrid>
+                    <p:dataTable id="tbl" var="listAlmacen" value="#{distribucionUbicacionAlmacenAction.listAlmacen}" widgetVar="listAlmacen" filteredValue="#{distribucionUbicacionAlmacenAction.filterSucursal}"
+                        paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink}"
+                        paginator="true" rows="15" style="margin-bottom:20px" selectionMode="single" selection="#{distribucionUbicacionAlmacenAction.selectAlmacen}" rowKey="#{listAlmacen.IDSUCURSAL},#{listAlmacen.IDALMACEN}">
+                        <p:ajax event="rowDblselect" listener="#{distribucionUbicacionAlmacenAction.onRowSelect}" update=":datos:cabecera" />
+                        <f:facet name="header">
+                            <p:outputPanel>
+                                <h:outputText value="Sucursal : " />
+                                <p:inputText id="globalFilter" onkeyup="PF('listAlmacen').filter()" style="width:60%" placeholder="Ingresar Texto..."/>
+                            </p:outputPanel>
+                        </f:facet>
+                        <p:column style="width:10%;" filterBy="#{listAlmacen.IDSUCURSAL}" filterMatchMode="contains">
+                           <f:facet name="header">
+                               <h:outputText value="IDSUCURSAL" />
+                           </f:facet>
+                           <h:outputText value="#{listAlmacen.IDSUCURSAL}" />
+                       </p:column>
+                        <p:column style="width:10%;" filterBy="#{listAlmacen.DESCRIPCIONSUCURSAL}" filterMatchMode="contains">
+                           <f:facet name="header">
+                               <h:outputText value="SUCURSAL" />
+                           </f:facet>
+                           <h:outputText value="#{listAlmacen.DESCRIPCIONSUCURSAL}" />
+                       </p:column>
+                        <p:column style="width:10%;" filterBy="#{listAlmacen.IDALMACEN}" filterMatchMode="contains">
+                           <f:facet name="header">
+                               <h:outputText value="IDALMACEN" />
+                           </f:facet>
+                           <h:outputText value="#{listAlmacen.IDALMACEN}" />
+                       </p:column>
+                       <p:column style="width:60%;" filterBy="#{listAlmacen.DESCRIPCION}" filterMatchMode="contains">
+                           <f:facet name="header" >
+                               <h:outputText value="ALMACEN" />
+                           </f:facet>
+                           <h:outputText value="#{listAlmacen.DESCRIPCION}" />
+                       </p:column>
+                        <p:column style="width:30%;">
+                           <f:facet name="header" >
+                               <h:outputText value="DIRECCIÓN" />
+                           </f:facet>
+                            <h:outputText value="#{listAlmacen.DIRECCION}" />
+                       </p:column>
+                       <p:column style="width:30%;">
+                           <f:facet name="header">
+                               <h:outputText value="ESTADO"/>
+                           </f:facet>
+                           <h:graphicImage value="../images/img/#{listAlmacen.ESTADO?'activo':'inactivo'}.png"/>
+                           <h:outputText value="#{listAlmacen.ESTADO?'Activo':'Inactivo'}" />
+                       </p:column>
+                    </p:dataTable>  
+                </p:panelGrid>
+            </p:panelGrid>
+        </h:form>
+    </ui:define>
+</ui:composition>

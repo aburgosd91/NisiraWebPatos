@@ -1,0 +1,177 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:f="http://java.sun.com/jsf/core"
+                template="templatebanco.xhtml"
+                xmlns:pm="http://primefaces.org/mobile"
+                xmlns:cmp="http://java.sun.com/jsf/composite/cmp">
+    <ui:define name="metadata">
+    </ui:define>
+    <ui:define name="body">
+        <h:form id="datos" >
+            #{documentoAction.findDetalle()}
+            <cmp:barra_mnt bean="#{documentoAction}"/>
+
+            <p:panelGrid columns="2" columnClasses="no-border,no-border" style="width: 100%">
+                <f:facet name="header">
+                    #{documentoAction.tituloHead}
+                </f:facet>
+                <p:outputLabel value="Cod Documento"/>
+                <p:inputText id="codigo" size="3" maxlength="3" disabled="#{!documentoAction.edicion}" 
+                             value="#{documentoAction.datoEdicion.IDDOCUMENTO}" 
+                             onkeyup="javascript:this.value = this.value.toUpperCase();"
+                             >
+                    <p:ajax event="valueChange" immediate="true" process="@this"/>
+                </p:inputText>
+                <p:outputLabel value="DESCRIPCIPN"/>
+                <p:inputTextarea id="descripcion" cols="60" rows="2" 
+                                 disabled="#{!documentoAction.edicion}"
+                                 value="#{documentoAction.datoEdicion.DESCRIPCION}" 
+                                 onkeyup="javascript:this.value = this.value.toUpperCase();"
+                                 >
+                    <p:ajax event="valueChange" immediate="true" process="@this"/>
+                </p:inputTextarea>
+                <p:outputLabel value="Ventana"/>
+                <p:inputText value="#{documentoAction.datoEdicion.VENTANA}" disabled="#{!documentoAction.edicion}"/>
+                <p:outputLabel for="proceso"  value="Proceso:" />
+                <p:selectOneMenu id="proceso" value="#{documentoAction.datoEdicion.IDPROCESO}"  disabled="#{!documentoAction.edicion}"> 
+                    <f:selectItem itemLabel="Seleccione Proceso" itemValue="#{0}"/>                        
+                    <f:selectItems value="#{documentoAction.lstproc}" var="tipoProceso" itemLabel="#{tipoProceso.descripcion}" itemValue="#{tipoProceso.idproceso}" />
+                </p:selectOneMenu>
+                <h:outputText value="Estado?:" />
+                <p:selectBooleanCheckbox value="#{documentoAction.datoEdicion.BEstado}" />
+            </p:panelGrid>
+            <p:fieldset legend="Detalle" toggleable="true" toggleSpeed="500" style="margin-bottom:20px">
+                <p:toolbar id="detbar">
+                    <f:facet name="left">
+                        <p:commandButton value="det." ajax="true" image="ui-icon-nuevo" actionListener="#{documentoAction.getActionAgregarDetalle()}" disabled="#{!documentoAction.edicion}" />
+                        <p:commandButton value="det." ajax="true" image="ui-icon-edit" actionListener="#{documentoAction.getActionEditarDetalle()}" disabled="#{(!documentoAction.edicion) || documentoAction.botonNumEmisorEditarDis}"/> 
+                        <p:commandButton value="det." ajax="true" image="ui-icon-eliminar" actionListener="#{documentoAction.getActionEliminarDetalle()}" disabled="#{(!documentoAction.edicion) || documentoAction.botonNumEmisorEliminarDis}">
+                            <p:confirm header="Confirmacion" message="¿Desea eliminar detalle seleccionado?" icon="ui-icon-alert" />
+                        </p:commandButton>                            
+                    </f:facet> 
+                </p:toolbar>
+                <p:dataTable id="tbl" var="detalle" value="#{documentoAction.listNumEmisor}" filteredValue="#{documentoAction.fillNumEmisor}" widgetVar="listNumEmisor" 
+                             paginatorTemplate="{FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink}"
+                             paginator="true" paginatorPosition="top" rows="15" style="margin-bottom:20px" selectionMode="single" 
+                             selection="#{documentoAction.selectNumEmisor}" 
+                             rowKey="#{detalle.IDSUCURSAL}#{detalle.SERIE}"
+                             sortBy="#{detalle.ITEM}"
+                             >
+                    <p:ajax event="rowSelect" listener="#{documentoAction.onRowSelectNumEmisor}" />
+                    <p:ajax event="rowUnselect" listener="#{documentoAction.onRowUnselectNumEmisor}"/>
+                    <p:column style="width:10%;" filterBy="#{detalle.ITEM}" filterMatchMode="contains" sortBy="#{detalle.ITEM}">
+                        <f:facet name="header">
+                            <h:outputText value="ITEM" />
+                        </f:facet>
+                        <h:outputText value="#{detalle.ITEM}" />
+                    </p:column>                      
+                    <p:column style="width:10%;" filterBy="#{detalle.IDSUCURSAL}" filterMatchMode="contains" sortBy="#{detalle.IDSUCURSAL}">
+                        <f:facet name="header">
+                            <h:outputText value="COD.SUCURSAL" />
+                        </f:facet>
+                        <h:outputText value="#{detalle.IDSUCURSAL}" />
+                    </p:column>
+                    <p:column style="width:30%;" filterBy="#{detalle.SUCURSAL.DESCRIPCION}" filterMatchMode="contains" sortBy="#{detalle.SUCURSAL.DESCRIPCION}">
+                        <f:facet name="header">
+                            <h:outputText value="SUCURSAL" />
+                        </f:facet>
+                        <h:outputText value="#{detalle.SUCURSAL.DESCRIPCION}" />
+                    </p:column>
+
+                    <p:column style="width:10%;" filterBy="#{detalle.SERIE}" filterMatchMode="contains" sortBy="#{detalle.SERIE}">
+                        <f:facet name="header" >
+                            <h:outputText value="SERIE" />
+                        </f:facet>
+                        <h:outputText value="#{detalle.SERIE}" />
+                    </p:column>
+                    <p:column style="width:20%;" filterBy="#{detalle.NUMERO}" filterMatchMode="contains" sortBy="#{detalle.NUMERO}">
+                        <f:facet name="header" >
+                            <h:outputText value="NUMERO" />
+                        </f:facet>
+                        <h:outputText value="#{detalle.NUMERO}" />
+                    </p:column>
+                </p:dataTable>  
+            </p:fieldset>
+            <p:dialog id="dlg_detalle" header="..:: SERIES Y NUMEROS POR SUCURSAL ::." widgetVar="dlg_detalle" modal="true" showEffect="popup" closable="false">
+                <p:messages id="mensajeDialogDetalle" for="mensajeDialogDetalle" autoUpdate="true" closable="true" style="font-size:10px"/>
+                <p:panelGrid columns="2" columnClasses="no-border, no-border,no-border">
+                    <p:outputLabel for="item" value="Item: " />
+                    <p:inputText id="item" maxlength="3" size="3" readonly="true"
+                                 value="#{documentoAction.selectNumEmisor.ITEM}" 
+                                 >
+                        <p:ajax event="valueChange" immediate="true" process="@this"/>
+                    </p:inputText>
+                    <p:outputLabel for="idsucursal"  value="Cod.Sucursal: " />
+                    <p:panelGrid columns="3" id="contenedorsucursal" columnClasses="no-border, no-border,no-border">
+                        <p:commandButton ajax="true" id="btnbuscarsucursal" icon="ui-icon-search" onclick="PF('dlg_sucursal').show()"
+                                         style="padding-right: 0px;" disabled="#{!documentoAction.edicion}"
+                                         />
+                        <p:inputText id="idsucursal" maxlength="3" size="3"  readonly="true"
+                                     style="margin-right:0px"
+                                     value="#{documentoAction.newNumEmisor.IDSUCURSAL}" >  
+                            <p:ajax event="valueChange" immediate="true" process="@this"/>
+                        </p:inputText>
+                        <p:inputText id="descsucursal" size="40"  readonly="true"
+                                     style="margin-right:0px"
+                                     value="#{documentoAction.newNumEmisor.SUCURSAL.DESCRIPCION}" >                                         
+                        </p:inputText>
+                    </p:panelGrid>
+                    <p:outputLabel for="serie" value="Serie: " />
+                    <p:inputText id="serie" maxlength="4" size="4" 
+                                 value="#{documentoAction.newNumEmisor.SERIE}" 
+                                 onblur="javascript:this.value = ('0000' + this.value).slice( - 4);" 
+                                 onkeypress="if (event.which lt; 48 || event.which gt; 57) return false;" disabled="#{!documentoAction.edicion}">
+                        <p:ajax event="valueChange" immediate="true" process="@this"/>
+                    </p:inputText>
+
+                    <p:outputLabel for="numero" value="Numero: " />
+                    <p:inputText id="numero" maxlength="7" size="7"
+                                 value="#{documentoAction.newNumEmisor.NUMERO}" 
+                                 onblur="javascript:this.value = ('0000000' + this.value).slice( - 7);" 
+                                 onkeypress="if (event.which  lt; 48 || event.which  gt; 57) return false;" disabled="#{!documentoAction.edicion}">
+                        <p:ajax event="valueChange" immediate="true" process="@this"/>
+                    </p:inputText>
+                </p:panelGrid>
+                <br/>
+                <p:toolbar>
+                    <f:facet name="right">
+                        <p:commandButton value="Agregar" ajax="true" actionListener="#{documentoAction.AgregarEditarDetalle()}" image="ui-icon-grabar" />
+                        <p:commandButton value="Cancelar" image="ui-icon-cancelar" onclick="PF('dlg_detalle').hide()">
+                        </p:commandButton>
+                    </f:facet>
+                </p:toolbar>
+            </p:dialog>
+            <p:dialog id="dlg_sucursal" header="..:: BUSQUEDA SUCURSAL ::." widgetVar="dlg_sucursal"  showEffect="popup" closable="false"
+                      modal="true" height="450" width="550" resizable="true">
+                <p:panelGrid columns="3" columnClasses="no-border, no-border,no-border">
+                    <p:inputText style="padding-right: 0px;" size="50" id="txtFiltro2" value="#{documentoAction.filtrobusquedaSucursal}" label="" onkeydown="#{documentoAction.buscarSucursal()}"/> 
+                    <p:watermark for="txtFiltro2" value="Cod.Sucursal,Descripcion" />
+                    <p:commandButton  actionListener="#{documentoAction.buscarSucursal()}" ajax="true" update="tablaSucursal" value="BUSCAR" />
+                </p:panelGrid>
+                <p:dataTable id="tablaSucursal" var="sucursal" value="#{documentoAction.listbusquedaSucursal}"
+                             selection="#{documentoAction.selectbusquedaSucursal}" rowKey="#{sucursal.IDSUCURSAL}"  selectionMode="single"
+                             rows="10"
+                             paginator="true"
+                             styleClass="mystyle"
+                             paginatorTemplate="{FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} "
+                             >
+                    <p:column style="width: 50px;text-align: right" headerText="Id"> 
+                        #{sucursal.IDSUCURSAL} 
+                    </p:column> 
+                    <p:column headerText="Nombre"> 
+                        #{sucursal.DESCRIPCION} 
+                    </p:column> 
+
+                </p:dataTable>
+                <div style="text-align: center; padding: 9px">
+                    <p:commandButton  id="btnSeleccionarBusquedaSucursal" value="Seleccionar" actionListener="#{documentoAction.valoresSucursal()}" />  
+                    <p:commandButton style="width: 90px" value="Salir" onclick="PF('dlg_sucursal').hide();"  />
+                </div>
+            </p:dialog>
+            <p:growl id="growl" life="4000" showDetail="false"  />
+            <cmp:mDialogElimina_lst id="cmpDialog" bean="#{documentoAction}" ventana="MNT" />
+        </h:form>
+    </ui:define>
+</ui:composition>

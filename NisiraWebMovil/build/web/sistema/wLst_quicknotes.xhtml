@@ -1,0 +1,74 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:f="http://java.sun.com/jsf/core"
+                template="templatebanco.xhtml"
+                xmlns:cmp="http://java.sun.com/jsf/composite/cmp">
+    <ui:define name="metadata">
+    </ui:define>
+    <ui:define name="body">          
+        <h:form id="datos">
+            #{quicknotesAction.buscarTodo()}
+            <p:panelGrid id="principal" columns="1" columnClasses="no-border, no-border">
+                <cmp:barra_lst bean="#{quicknotesAction}" mostrar_opciones="false" />
+                <p:dataTable id="tbl" var="listQuickNotes" value="#{quicknotesAction.listaDatos}" filteredValue="#{quicknotesAction.filtroDatos}" widgetVar="listQuickNotes" 
+                             paginatorTemplate="{FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink}" paginatorPosition="top"
+                             paginator="true" rows="15" style="margin-bottom:20px" selectionMode="single" selection="#{quicknotesAction.datoSeleccionado}" rowKey="#{listQuickNotes.idnotes}">
+                    <f:facet name="header">
+                        <h:outputText value="..:: NOTAS RÁPIDAS ::.." />
+                    </f:facet>
+                    <p:column style="width:15%;" filterBy="#{listQuickNotes.idnotes}" filterMatchMode="contains" sortBy="#{listQuickNotes.idnotes}">
+                        <f:facet name="header">
+                            <h:outputText value="ID" />
+                        </f:facet>
+                        <h:outputText value="#{listQuickNotes.idnotes}"/>
+                    </p:column>
+                    <p:column style="width:20%;" filterBy="#{listQuickNotes.mensaje}" filterMatchMode="contains" sortBy="#{listQuickNotes.mensaje}">
+                        <f:facet name="header" >
+                            <h:outputText value="MENSAJE" />
+                        </f:facet>
+                        <h:outputText value="#{listQuickNotes.mensaje}" />
+                    </p:column>
+                    <p:column style="width:20%;" filterBy="#{listQuickNotes.estado}" sortBy="#{listQuickNotes.estado}">
+                        <f:facet name="header">
+                            <h:outputText value="ESTADO"/>
+                        </f:facet>
+                        <f:facet name="filter">
+                            <p:selectOneButton onchange="PF('listQuickNotes').filter()">
+                                <f:selectItem  itemLabel="Activo" itemValue="#{1}"/>
+                                <f:selectItem itemLabel="Inactivo" itemValue="#{0}"/>
+                            </p:selectOneButton>
+                        </f:facet>
+                        <h:graphicImage value="../images/img/#{listQuickNotes.estado == 1?'activo':'inactivo'}.png"/>
+                        <h:outputText value="#{listQuickNotes.estado == 1?'Activo':'Inactivo'}" />
+                    </p:column>
+                </p:dataTable>  
+            </p:panelGrid>
+            <p:dialog id="dlGuardarQuickNotes" header="..:: MANTENEDOR NOTAS RÁPIDAS ::." widgetVar="dlGuardarQuickNotes" modal="true" showEffect="popup" closable="false">
+                <p:messages id="messages" autoUpdate="true" closable="true" style="font-size:10px"/>
+                <p:panelGrid columns="2" columnClasses="no-border, no-border,no-border">
+                    <p:outputLabel value="Id: " />
+                    <p:panelGrid columns="3" columnClasses="no-border, no-border, no-border">
+                        <p:inputText value="#{quicknotesAction.datoEdicion.idnotes}" disabled="true" readonly="#{!quicknotesAction.edicion}"/>
+                        <p:outputLabel for="mensaje" value="Mensaje: " />
+                        <p:inputTextarea id="mensaje" cols="40" rows="3"  value="#{quicknotesAction.datoEdicion.mensaje}" style="text-transform: uppercase"
+                                onblur="javascript:this.value = this.value.toUpperCase();" disabled="#{!quicknotesAction.edicion}">
+                        </p:inputTextarea>
+                    </p:panelGrid>
+                    <h:outputText value="Estado?:" />
+                    <p:selectBooleanCheckbox value="#{quicknotesAction.estado}" disabled="#{!quicknotesAction.edicion}"/>
+                </p:panelGrid>
+                <br/>
+                <p:toolbar>
+                    <f:facet name="right">
+                        <p:commandButton id="buttonGuardar" value="Grabar" ajax="true" actionListener="#{quicknotesAction.grabar()}" image="ui-icon-grabar" />
+                        <p:commandButton id="buttonCancelar" value="Cancelar" image="ui-icon-cancelar" onclick="PF('dlGuardarQuickNotes').hide()"/>
+                    </f:facet>
+                </p:toolbar>          
+            </p:dialog> 
+            <p:growl id="growl" life="4000" showDetail="false"  />
+            <cmp:mDialogElimina_lst id="cmpDialog" bean="#{quicknotesAction}" ventana="LST" />
+        </h:form>
+    </ui:define>
+</ui:composition>

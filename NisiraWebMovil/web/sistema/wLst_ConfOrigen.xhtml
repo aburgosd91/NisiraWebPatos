@@ -1,0 +1,40 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:f="http://java.sun.com/jsf/core"
+                template="templatebanco.xhtml"
+                xmlns:pm="http://primefaces.org/mobile"
+                xmlns:cmp="http://java.sun.com/jsf/composite/cmp">
+    <ui:define name="metadata">
+    </ui:define>
+    <ui:define name="body">
+        <h:form id="datos">            
+            #{confOrigenAction.buscarTodo()}  
+            <p:panelGrid id="principal" columns="1" columnClasses="no-border, no-border">
+                <cmp:barra_lst bean="#{confOrigenAction}" mostrar_opciones="false" />
+                <p:dataTable id="tbl" var="listconfog" value="#{confOrigenAction.listaDatos}" filteredValue="#{confOrigenAction.filtroDatos}" widgetVar="listconfog" paginatorTemplate="{FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink}" paginatorPosition="top"
+                             paginator="true" rows="15" style="margin-bottom:20px" selectionMode="single" selection="#{confOrigenAction.datoSeleccionado}" rowKey="#{listconfog.IDOGCONFIG}" resizableColumns="true">
+                    <f:facet name="header">
+                        #{confOrigenAction.tituloHead}
+                    </f:facet>
+                    <p:column headerText="Codigo Empresa" filterBy="#{listconfog.IDEMPRESA}" filterMatchMode="contains" sortBy="#{listconfog.IDEMPRESA}">
+                        <h:outputText value="#{listconfog.IDEMPRESA}" />
+                    </p:column>
+                    <p:column headerText="Codigo Sucursal" filterBy="#{listconfog.IDSUCURSAL}" filterMatchMode="contains" sortBy="#{listconfog.IDSUCURSAL}">
+                        <h:outputText value="#{listconfog.IDSUCURSAL}" />
+                    </p:column>
+                    <p:column headerText="Codigo Configuracion"  filterBy="#{listconfog.IDOGCONFIG}" filterMatchMode="contains" sortBy="#{listconfog.IDOGCONFIG}">
+                        <h:outputText value="#{listconfog.IDOGCONFIG}" />
+                    </p:column>
+                    <p:column headerText="Descripcion"  filterBy="#{listconfog.DESCRIPCION}" filterMatchMode="contains" sortBy="#{listconfog.DESCRIPCION}">
+                        <h:outputText value="#{listconfog.DESCRIPCION}" />
+                    </p:column>
+                </p:dataTable>
+            </p:panelGrid>
+            <p:growl id="growl" life="4000" showDetail="false"  />
+            <cmp:mDialogElimina_lst id="cmpDialog" bean="#{confOrigenAction}" ventana="LST" />
+
+        </h:form>
+    </ui:define>
+</ui:composition>

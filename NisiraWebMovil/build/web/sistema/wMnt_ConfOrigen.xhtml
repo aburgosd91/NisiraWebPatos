@@ -1,0 +1,55 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:f="http://java.sun.com/jsf/core"
+                template="templatebanco.xhtml"
+                xmlns:pm="http://primefaces.org/mobile"
+                xmlns:cmp="http://java.sun.com/jsf/composite/cmp">
+    <ui:define name="metadata">
+    </ui:define>
+    <ui:define name="body">
+        #{confOrigenAction.findet()}
+        <h:form id="datos">
+            <cmp:barra_mnt bean="#{confOrigenAction}"/>
+            <p:panelGrid id="principal" style="width: 100%" columns="1" columnClasses="no-border, no-border">
+                <f:facet name="header">
+                    <p:outputLabel value="#{confOrigenAction.tituloHead}"/>
+                </f:facet>
+                <p:panelGrid columns="2" columnClasses="no-border, no-border">
+                    <p:outputLabel for="empresa" value="Empresa: " />
+                    <p:selectOneMenu id="empresa" value="#{confOrigenAction.datoEdicion.IDEMPRESA}" style="width:150px" disabled="#{!confOrigenAction.edicion}">
+                        <p:ajax listener="#{confOrigenAction.onEmpresaSelect()}" update="sucursal" />
+                        <f:selectItem itemLabel="Selecione Empresa" itemValue="" />
+                        <f:selectItems value="#{confOrigenAction.lstemp}" var="slem" itemLabel="#{slem.descripcion}" itemValue="#{slem.idempresa}"/>
+                    </p:selectOneMenu>
+                    <p:outputLabel for="sucursal" value="Sucursal: " />
+                    <p:selectOneMenu id="sucursal" value="#{confOrigenAction.datoEdicion.IDSUCURSAL}" style="width:150px" disabled="#{!confOrigenAction.edicion}">
+                        <f:selectItem itemLabel="Seleccione Sucursal" itemValue="" />
+                        <f:selectItems value="#{confOrigenAction.lstsuc}" var="slsuc" itemLabel="#{slsuc.DESCRIPCION}" itemValue="#{slsuc.IDSUCURSAL}" />
+                    </p:selectOneMenu>
+                    <p:outputLabel value="Gestor"/>
+                    <p:selectOneMenu value="#{confOrigenAction.datoEdicion.GESTOR}" style="width:150px" disabled="#{!confOrigenAction.edicion}">
+                        <f:selectItem itemLabel="Seleccione Gestor" itemValue="#{null}" />
+                        <f:selectItem itemLabel="SQL Server" itemValue="MSSQL" />
+                        <f:selectItem itemLabel="Postgrest SQL" itemValue="PGSQL" />
+                    </p:selectOneMenu>
+                    <p:outputLabel value="Servidor"/>
+                    <p:inputText value="#{confOrigenAction.datoEdicion.SERVIDOR}" disabled="#{!confOrigenAction.edicion}"/>
+                    <p:outputLabel value="Instancia"/>
+                    <p:inputText value="#{confOrigenAction.datoEdicion.INSTANCIA}" disabled="#{!confOrigenAction.edicion}"/>
+                    <p:outputLabel value="Usuario"/>
+                    <p:inputText value="#{confOrigenAction.datoEdicion.USUARIO}" disabled="#{!confOrigenAction.edicion}"/>
+                    <p:outputLabel value="Clave"/>
+                    <p:password redisplay="true" value="#{confOrigenAction.datoEdicion.CLAVE}" disabled="#{!confOrigenAction.edicion}"/>
+                    <p:outputLabel value="Base de Datos"/>
+                    <p:inputText value="#{confOrigenAction.datoEdicion.BASEDATOS}" disabled="#{!confOrigenAction.edicion}"/>
+                    <p:outputLabel value="Tipo"/>
+                    <p:inputText value="#{confOrigenAction.datoEdicion.TIPO}" disabled="#{!confOrigenAction.edicion}"/>
+                </p:panelGrid>
+            </p:panelGrid>
+            <p:growl id="growl" life="4000" showDetail="false"  />
+            <cmp:mDialogElimina_lst id="cmpDialog" bean="#{confOrigenAction}" ventana="MNT" />
+        </h:form>
+    </ui:define>
+</ui:composition>

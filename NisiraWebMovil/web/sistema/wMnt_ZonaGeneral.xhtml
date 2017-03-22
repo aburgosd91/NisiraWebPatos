@@ -1,0 +1,203 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:f="http://java.sun.com/jsf/core"
+                template="templatebanco.xhtml"
+                xmlns:pm="http://primefaces.org/mobile"
+                xmlns:cmp="http://java.sun.com/jsf/composite/cmp">
+    <ui:define name="metadata">
+    </ui:define>
+    <ui:define name="body">
+        <h:form id="datos">
+            #{zonaGeneralAction.dZonaGenera()}
+            <cmp:barra_mnt bean="#{zonaGeneralAction}"/>
+            <p:toolbar>
+                <f:facet name="left">
+                    <div style="color:#069; font-size: 14px; padding-top: 5px"><p:outputLabel  value="#{zonaGeneralAction.estadoDocumento?'Edición de':'Nuevo'} Registro de Zona General" /></div>                    
+                </f:facet>
+            </p:toolbar>
+            <br/>
+            <div class="ui-grid">
+                <div class="ui-grid-row">
+                    <div class="ui-grid-col-4">
+                        <h:panelGrid columns="1" id="pnl_reprogramar" >
+                            <p:focus context="pnl_reprogramar"/>
+                            <p:panelGrid  columns="2">
+                                <f:facet name="header">
+                                    <div style="color:#069; font-size: 14px; padding-top: 5px"><p:outputLabel  value="#{zonaGeneralAction.tituloHead}" /></div>
+                                </f:facet>
+                                <p:outputLabel value="ID SUCURSAL" escape="false" />
+                                <p:selectOneMenu id="cboSucursal" value="#{zonaGeneralAction.datoEdicion.IDSUCURSAL}" style="width:100%">
+                                    <p:ajax listener="#{zonaGeneralAction.eventSucursal}" update=":datos:listZona"/>
+                                    <f:selectItem itemValue="" itemLabel=".::Seleccionar Sucursal::."/>
+                                    <f:selectItems value="#{zonaGeneralAction.listSucursal}" var="sucursal" itemLabel="#{sucursal.DESCRIPCION}" itemValue="#{sucursal.IDSUCURSAL}" />
+                                </p:selectOneMenu>
+
+                                <p:outputLabel value="ID ZONAGENERAL" escape="false" />
+                                <p:inputText maxlength="4" style="width: 100px !important;font-size: 11px" value="#{zonaGeneralAction.datoEdicion.IDZONAGENERAL}" disabled="true" />
+
+                                <p:outputLabel value="AREA:" escape="false" />
+                                <p:spinner id="area" style="width: 200px !important;font-size: 11px" value="#{zonaGeneralAction.datoEdicion.AREA}" stepFactor="1" min="0.00" disabled="#{!zonaGeneralAction.edicion}"> 
+                                    <f:validateLongRange minimum="0" maximum="999999"/>
+                                </p:spinner>
+
+                                <p:outputLabel value="LARGO:" escape="false" />
+                                <p:spinner id="largo" style="width: 200px !important;font-size: 11px" value="#{zonaGeneralAction.datoEdicion.LARGO}" stepFactor="1" min="0.00" disabled="#{!zonaGeneralAction.edicion}"> 
+                                    <f:validateLongRange minimum="0" maximum="999999"/>
+                                    <p:ajax event="blur" update="area" listener="#{zonaGeneralAction.genArea()}"/>
+                                </p:spinner>
+
+                                <p:outputLabel value="ANCHO:" escape="false" />
+                                <p:spinner id="ancho" style="width: 200px !important;font-size: 11px" value="#{zonaGeneralAction.datoEdicion.ANCHO}" stepFactor="1" min="0.00" disabled="#{!zonaGeneralAction.edicion}"> 
+                                    <f:validateLongRange minimum="0" maximum="999999"/>
+                                     <p:ajax event="blur" update="area" listener="#{zonaGeneralAction.genArea()}"/>
+                                </p:spinner>
+
+                                <p:outputLabel value="Estado" escape="false" />
+                                <p:outputLabel style="width: 100px !important;font-size: 11px; color: #{(zonaGeneralAction.datoEdicion.ESTADO == Integer.parseInt(1))? 'blue' : 'red'}; font-weight: bold" value="#{(zonaGeneralAction.datoEdicion.ESTADO == Integer.parseInt(1))? 'ACTIVO' : 'ANULADO'}" />
+                                <p:outputLabel>Margen: </p:outputLabel>
+                                <h:panelGrid columns="1" style="margin-bottom: 10px">
+                                    <h:outputText id="output" value="Escala al %#{zonaGeneralAction.escala}" />
+                                    <h:inputHidden id="escala" value="#{zonaGeneralAction.escala}" />
+                                </h:panelGrid>
+                            </p:panelGrid>
+                           
+                        </h:panelGrid>
+                    </div>                    
+                    <div class="ui-grid-col-4">
+                        <p:panel id="toggleable" header="Leyenda" toggleable="true" widgetVar="panel" style="margin-bottom:20px">
+                            <p:dataTable id="leyenda" var="leyenda" value="#{zonaGeneralAction.listLeyenda}" rowKey="#{leyenda.NUM}">
+                                <p:column headerText="N°" style="text-align: center">
+                                    <h:outputText value="#{leyenda.NUM}" />
+                                </p:column>
+                                <p:column headerText="Descripción" style="text-align: center" sortBy="#{leyenda.DESCRIPCION}">
+                                    <h:outputText value="#{leyenda.DESCRIPCION}" />
+                                </p:column>
+                                <p:column headerText="Color">
+                                    <p:commandButton ajax="true" value="" title="Color:#{leyenda.COLOR}" action="#{zonaGeneralAction.buttonAction()}" style="background: #{leyenda.COLOR}; width: 100%;height:20px;">
+                                        <f:setPropertyActionListener value="#{leyenda}" target="#{zonaGeneralAction.selectLeyenda}" />
+                                    </p:commandButton>
+                                </p:column>
+                            </p:dataTable>
+                        </p:panel>
+                         <p:fileUpload style="width: 100%" fileUploadListener="#{zonaGeneralAction.upExcel}" allowTypes="/(\.|\/)(xls|xlsx)$/" sizeLimit="1000000" label="Seleccionar Excel" uploadLabel="Procesar" cancelLabel="Cancelar" update="tblDetalle"/>
+                    </div>           
+                </div>
+                <p:toolbar id="tb">
+                    <f:facet name="left">
+                        <p:outputLabel value="Color :"  />
+                        <p:colorPicker id="colorPicker" value="#{zonaGeneralAction.color}"/>                        
+                        <p:outputLabel>Borrar Segmento: </p:outputLabel>
+                        <p:selectBooleanCheckbox value="#{zonaGeneralAction.borradzonageneral}">
+                            <p:ajax update=":datos:listZona" listener="#{zonaGeneralAction.eventoDeshabilitar}" />
+                        </p:selectBooleanCheckbox>
+                        <p:outputLabel>Asignar Puerda: </p:outputLabel>
+                        <p:selectBooleanCheckbox  value="#{zonaGeneralAction.addpuerta}"/>
+                        <p:outputLabel value="Retset"/>
+                        <p:commandButton value="Reset" ajax="true" actionListener="#{zonaGeneralAction.getReset()}" image="ui-icon-aceptar" />
+                    </f:facet>
+                </p:toolbar>
+                <p:sticky target="tb" />
+                <div class="ui-grid-row">
+                    <p:dataTable id="listZona" var="listZona" value="#{zonaGeneralAction.listZona}" 
+                                 rowKey="#{listZona.IDZONA}" selectionMode="single" selection="#{zonaGeneralAction.selectZona}"
+                                 style="text-align: center;width:40%;height:100%;">
+                        <p:ajax event="rowDblselect" listener="#{zonaGeneralAction.eventoZona}"/>
+                        <f:facet name="header">
+                            <div style="color:#069; font-size: 14px; padding-top: 5px"><p:outputLabel  value="ZONAS ASIGNADAS" /></div>
+                        </f:facet>
+                        <p:column headerText="SUCURSAL" filterMatchMode="contains" sortBy="#{listZona.SUCURSAL}" style="width: 20%">
+                            <f:facet name="header">
+                                <h:outputText value="SUCURSAL" />
+                            </f:facet>
+                            <h:outputText value="#{listZona.SUCURSAL}" />
+                        </p:column>
+
+                        <p:column headerText="IDZONA" filterMatchMode="contains" sortBy="#{listZona.IDZONA}" style="width: 20%">
+                            <f:facet name="header">
+                                <h:outputText value="IDZONA" />
+                            </f:facet>
+                            <h:outputText value="#{listZona.IDZONA}" />
+                        </p:column>
+
+                        <p:column headerText="DESCRIPCIÓN" filterMatchMode="contains" sortBy="#{listZona.DESCRIPCION}" style="width: 20%">
+                            <f:facet name="header">
+                                <h:outputText value="DESCRIPCION" />
+                            </f:facet>
+                            <h:outputText value="#{listZona.DESCRIPCION}" />
+                        </p:column>
+                        <p:column headerText="LARGO" style="width:20%">
+                            <h:outputText value="#{listZona.LARGOUNIDADDIAGRAMA}" />
+                        </p:column>
+                        <p:column headerText="ANCHO" style="width:20%">
+                            <h:outputText value="#{listZona.ANCHOUNIDADDIAGRAMA}" />
+                        </p:column>
+                    </p:dataTable>                                       
+                </div>
+                <div class="ui-grid-row">
+                    <div class="ui-grid-col-12">
+                        <p:dataTable id="tblDetalle" 
+                                     value="#{zonaGeneralAction.listlistDZonaGeneral}" 
+                                     var="dato"  
+                                     rowIndexVar="rowIndex"
+                                     style="width:#{zonaGeneralAction.datoEdicion.LARGO * zonaGeneralAction.escala}px" 
+                                     widgetVar="tblDetalle">
+                            <p:columns headerText="#{colIndex}" style="width: 100%" value="#{zonaGeneralAction.oblist}" var="col" columnIndexVar="colIndex">
+                                <p:commandLink  action="#{zonaGeneralAction.ubicacionSeleccionado(rowIndex, colIndex)}" ajax="true">
+                                    <p:panel id="boton"  style="background:#{dato.get(colIndex).COLOR};width:30px;height:30px;padding: 0px">
+                                        <h:panelGrid columns="1" style="width: 100%;alignment-adjust: central">
+                                            <h:outputText value="Z(#{dato.get(colIndex).IDZONA})" rendered="#{dato.get(colIndex).IDZONA!=null?true:false}"/>
+                                        </h:panelGrid>
+                                    </p:panel>
+                                </p:commandLink>
+                            </p:columns>
+                        </p:dataTable>
+                    </div>
+                </div>
+            </div>
+            
+            <p:dialog id="dlg_dzonaalm" header="..:: Prioridad ::." widgetVar="dlg_dzonaalm" modal="true"  showEffect="popup" closable="false">
+                <p:dataTable  id="tbl" var="listAlmacen" value="#{zonaGeneralAction.listZonaAlmacen}" widgetVar="listTipoZona" paginatorTemplate="{FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {Exporters}" paginatorPosition="top"
+                              paginator="true" rows="15" style="margin-bottom:20px;height: 300px;width: 600px" selectionMode="single" selection="#{zonaGeneralAction.slcZonaAlmacen}" rowKey="#{listAlmacen.IDALMACEN}">
+                    <p:ajax event="rowDblselect" listener="#{zonaGeneralAction.eventoDalmcen}"/>
+                    <f:facet name="header">
+                        <h:outputText value="..::ALMACENES::.." />
+                    </f:facet>
+                    <p:column style="width:20%;" filterBy="#{listAlmacen.DESCRIPCION}" filterMatchMode="contains" sortBy="#{listAlmacen.DESCRIPCION}">
+                        <f:facet name="header">
+                            <h:outputText value="DESCRIPCION" />
+                        </f:facet>
+                        <h:outputText value="#{listAlmacen.DESCRIPCION}"/>
+                    </p:column>
+                    <p:column style="width:15%;" filterBy="#{listAlmacen.ALMACEN}" filterMatchMode="contains" sortBy="#{listAlmacen.ALMACEN}">
+                        <f:facet name="header">
+                            <h:outputText value="ALMACEN" />
+                        </f:facet>
+                        <h:outputText value="#{listAlmacen.ALMACEN}"/>
+                    </p:column>
+                    <p:column style="width:15%;" filterBy="#{listAlmacen.AREA}" filterMatchMode="contains" sortBy="#{listAlmacen.AREA}">
+                        <f:facet name="header">
+                            <h:outputText value="AREA (m²)" />
+                        </f:facet>
+                        <h:outputText value="#{listAlmacen.AREA}" />
+                    </p:column>
+                    <p:column style="width:20%;" filterBy="#{listAlmacen.AREAUNIDADDIAGRAMA}" filterMatchMode="contains" sortBy="#{listAlmacen.AREAUNIDADDIAGRAMA}">
+                        <f:facet name="header">
+                            <h:outputText value="AREA - DIAGRAMA" />
+                        </f:facet>
+                        <h:outputText value="#{listAlmacen.AREAUNIDADDIAGRAMA}" />
+                    </p:column>
+                    <p:column style="width:15%;" filterBy="#{listAlmacen.TIPOZONA}" filterMatchMode="contains" sortBy="#{listAlmacen.TIPOZONA}">
+                        <f:facet name="header">
+                            <h:outputText value="TIPO ZONA" />
+                        </f:facet>
+                        <h:outputText value="#{listAlmacen.TIPOZONA}" />
+                    </p:column>
+                </p:dataTable>
+            </p:dialog>
+            <p:growl id="growl" life="4000" showDetail="false"  />
+            <cmp:mDialogElimina_lst id="cmpDialog" bean="#{zonaGeneralAction}" ventana="MNT" />
+        </h:form>
+    </ui:define>
+</ui:composition>

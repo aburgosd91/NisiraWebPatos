@@ -1,0 +1,326 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:f="http://java.sun.com/jsf/core"
+                template="templatebanco.xhtml"
+                xmlns:pm="http://primefaces.org/mobile"
+                xmlns:cmp="http://java.sun.com/jsf/composite/cmp">
+    <ui:define name="metadata">
+    </ui:define>
+    <ui:define name="body">
+        #{programaAlmAction.findDetalles()}
+        <h:form id="datos">
+            <div style="width:100%;text-align: center; padding: 0px">
+                <cmp:barra_mnt bean="#{programaAlmAction}"/>
+                <h:panelGrid style="width:100%;text-align: left" id="pnl_reprogramar" >
+                    <h:panelGrid  columns="4">
+                        <p:outputLabel value="Id Prog Almacen" escape="false" />
+                        <p:inputText maxlength="4" style="width: 100px !important;font-size: 11px" value="#{programaAlmAction.datoEdicion.idprogramaalm}" disabled="true">
+                        </p:inputText>
+                        <p:outputLabel value="Id Sucursal" escape="false" /> 
+                        <h:selectOneMenu value="#{programaAlmAction.datoEdicion.idsucursal}">  
+                            <f:selectItems value="#{programaAlmAction.lista_sucursales}" var="est" itemValue="#{est[0]}" itemLabel="#{est[1]}"/>
+                        </h:selectOneMenu>
+                        <p:outputLabel value="Id Tipo Almacen" escape="false" />
+                        <p:selectOneMenu id="cbotipoalmacen" value="#{programaAlmAction.datoEdicion.idtipoalmacen}" required="true" disabled="#{!programaAlmAction.edicion}"> 
+                            <f:selectItem itemLabel="Seleccione Tipo Almacen" itemValue="#{0}"/>                        
+                            <f:selectItems value="#{programaAlmAction.listMultitabla}" var="tipoAlmacen" itemLabel="#{tipoAlmacen.DESCRIPCION}" itemValue="#{tipoAlmacen.VALOR}"/>
+                        </p:selectOneMenu>
+                        <p:outputLabel value="Id documento" escape="false" />
+                        <p:selectOneMenu id="cboiddoc" value="#{programaAlmAction.datoEdicion.iddocumento}" style="width:150px" disabled="#{!programaAlmAction.nuevoD}">
+                            <p:ajax listener="#{programaAlmAction.oncDocChange}" update="cboserie num" />
+                            <f:selectItems value="#{programaAlmAction.lstdocs}" var="iddocs" itemLabel="#{iddocs.DESCRIPCION}" itemValue="#{iddocs.IDDOCUMENTO}"/>
+                        </p:selectOneMenu>
+                        <p:outputLabel value="Serie" escape="false" />
+                        <p:selectOneMenu id="cboserie" value="#{programaAlmAction.datoEdicion.serie}" style="width:150px" disabled="#{!programaAlmAction.nuevoD}">
+                            <f:selectItems value="#{programaAlmAction.lstnume}" var="nume" itemLabel="#{nume.SERIE}" itemValue="#{nume.SERIE}"/>
+                        </p:selectOneMenu>
+                        <p:outputLabel value="Numero" escape="false" />
+                        <p:inputText id="num" maxlength="4" style="width: 100px !important;font-size: 11px" value="#{programaAlmAction.numero}" disabled="#{!programaAlmAction.nuevoD}">
+                        </p:inputText>
+                        <p:outputLabel value="Id Estado" escape="false" />
+                        <p:selectOneMenu id="cboestap" value="#{programaAlmAction.datoEdicion.idestado}"  disabled="#{!programaAlmAction.edicion}"> 
+                            <f:selectItem itemLabel="Seleccione Tipo Almacen" itemValue="#{null}"/>
+                            <f:selectItem itemLabel="Aprobado" itemValue="AC"/>
+                            <f:selectItem itemLabel="Pendiente" itemValue="PE"/>
+                            <f:selectItem itemLabel="Rechazado" itemValue="AN"/>
+                        </p:selectOneMenu>
+                        <p:outputLabel value="Operario" escape="false" />
+                        <h:panelGrid id="cntOperario" cellpadding="0" cellspacing="0" columns="3">
+                            <p:commandButton styleClass="boton_buscar" ajax="true" actionListener="#{programaAlmAction.verCntResponsable()}" disabled="#{!programaAlmAction.edicion}"  icon="ui-icon-search">
+                                <p:ajax event="dialogReturn" listener="#{programaAlmAction.llenarResponsable}" update="cntOperario"/>
+                            </p:commandButton>
+
+                            <p:inputText  style="text-align: center" size="3" readonly="true"  value="#{programaAlmAction.op.idresponsable}"/>
+
+                            <p:inputText size="41" readonly="true" value="#{programaAlmAction.op.nombre}" />
+                        </h:panelGrid>
+                        <h:panelGrid columns="1">
+                            <p:outputLabel value="Fecha Prog" escape="false"/>
+                            <p:calendar id="button1" value="#{programaAlmAction.fechaprogramaciont}" showOn="button" pattern="dd/MM/yyyy" mask="true" disabled="#{!programaAlmAction.edicion}">
+                                <!--<p:ajax event="dateSelect" listener="{planventaAction.updateCampañas}" update="lstCampaña"/>-->
+                            </p:calendar>
+                        </h:panelGrid>
+                        <h:panelGrid columns="1">
+                            <p:outputLabel value="Fecha Ejecucion" escape="false"/>
+                            <p:calendar id="button2" value="#{programaAlmAction.fechaejecuciont}" showOn="button" pattern="dd/MM/yyyy" mask="true" disabled="#{!programaAlmAction.edicion}">
+                                <!--<p:ajax event="dateSelect" listener="{planventaAction.updateCampañas}" update="lstCampaña"/>-->
+                            </p:calendar>
+                        </h:panelGrid>
+                        <h:panelGrid columns="1">
+                            <p:outputLabel value="Fecha Finiliza" escape="false"/>
+                            <p:calendar id="button3" value="#{programaAlmAction.fechafinalizaciont}" showOn="button" pattern="dd/MM/yyyy" mask="true" disabled="#{!programaAlmAction.edicion}">
+                                <!--<p:ajax event="dateSelect" listener="{planventaAction.updateCampañas}" update="lstCampaña"/>-->
+                            </p:calendar>
+                        </h:panelGrid>
+                        <h:panelGrid columns="3">
+                            <p:commandButton value="Agregar det." ajax="true" image="ui-icon-nuevo" actionListener="#{programaAlmAction.getActionAgregarDetalle()}" disabled="#{programaAlmAction.barraVista}"/>
+                            <p:commandButton value="Editar det." ajax="true" image="ui-icon-edit" actionListener="#{programaAlmAction.getActionEditarDetalle()}" disabled="#{programaAlmAction.barraVista}"/> 
+                            <p:commandButton value="Eliminar det." ajax="true" image="ui-icon-eliminar" actionListener="#{programaAlmAction.getActionEliminarDetalle()}" disabled="#{programaAlmAction.barraVista}">
+                                <p:confirm header="Confirmacion" message="¿Desea eliminar detalle seleccionado?" icon="ui-icon-alert" />
+                            </p:commandButton> 
+                        </h:panelGrid>
+                    </h:panelGrid>
+                    <p:fieldset legend="Detalle" toggleable="true" toggleSpeed="500" style="margin-bottom:20px">
+                        <p:tabView id="tab">
+                            <p:ajax event="tabChange" listener="#{programaAlmAction.onTabChange}" />
+                            <p:tab id="tbn1" title="Montacarga">
+                                <h:form id="tabForm">
+                                    <p:dataTable id="tbl" var="listMont" value="#{programaAlmAction.listadprogalmont}" widgetVar="listMont" paginatorTemplate="{FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink}" paginatorPosition="top"
+                                                 paginator="true" rows="15" style="margin-bottom:20px" selectionMode="single" selection="#{programaAlmAction.selectdprogalmont}" rowKey="#{listMont.idprogramaalm}" rowIndexVar="roIndex">
+
+                                        <f:facet name="header">
+                                            <h:outputText value="..::Detalle Montacarga::.." />
+                                        </f:facet>
+                                        <p:column headerText="Codigo Montacarga">
+                                            <h:outputLabel value="#{listMont.idmontacarga}"/>
+                                        </p:column>
+                                        <p:column headerText="Notificado">
+                                            <h:outputLabel value="#{listMont.notificado}"/>
+                                        </p:column>
+                                        <p:column headerText="Estado">
+                                            <p:selectOneMenu id="cboestoM" value="#{listMont.estado}" disabled="#{!programaAlmAction.edicion}"> 
+                                                <f:selectItem itemLabel="Activo" itemValue="#{1}"/>
+                                                <f:selectItem itemLabel="Inactivo" itemValue="#{0}"/>
+                                            </p:selectOneMenu>
+                                        </p:column>
+                                        <p:column headerText="Sincroniza">
+                                            <p:selectOneMenu id="cbosincM" value="#{listMont.sincroniza}"  disabled="#{!programaAlmAction.edicion}"> 
+                                                <f:selectItem itemLabel="Si" itemValue="#{1}"/>
+                                                <f:selectItem itemLabel="No" itemValue="#{0}"/>
+                                            </p:selectOneMenu>
+                                        </p:column>
+                                        <p:column style="width:32px;text-align: center">
+                                            <p:commandButton actionListener="#{programaAlmAction.showdialog1(roIndex)}" icon="ui-icon-search" title="View"/>
+                                        </p:column>
+                                    </p:dataTable>
+                                </h:form>
+
+                            </p:tab>
+                            <p:tab id="tbn2" title="Prioridades">
+                                <p:dataTable id="tbl2" var="listPrio" value="#{programaAlmAction.listdprogprio}" widgetVar="listMont" paginatorTemplate="{FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink}" paginatorPosition="top"
+                                             paginator="true" rows="15" style="margin-bottom:20px" selectionMode="single" selection="#{programaAlmAction.selectdprogprio}" rowKey="#{listPrio.idrack}">
+                                    <p:ajax parent="tbl2" global="false" id="aj2" event="rowDblselect" update=":datos:almprioDetalle" listener="#{programaAlmAction.showdialog2()}"/>
+                                    <f:facet name="header">
+                                        <h:outputText value="..::Detalle Prioridad rack::.." />
+                                    </f:facet>
+                                    <p:column headerText="Codigo Almacen">
+                                        <h:outputLabel value="#{listPrio.idalmacen}"/>
+                                    </p:column>
+                                    <p:column headerText="Codigo Rack">
+                                        <h:outputLabel value="#{listPrio.idrack}"/>
+                                    </p:column>
+                                    <p:column headerText="Prioridad almacen">
+                                        <p:spinner value="#{listPrio.prioridadalmacen}" disabled="#{!programaAlmAction.edicion}" min="0" max="100" />
+                                    </p:column>
+                                    <p:column headerText="Prioridad Rack">
+                                        <p:spinner value="#{listPrio.prioridadrack}" disabled="#{!programaAlmAction.edicion}" min="0" max="100" />
+                                    </p:column>
+                                    <p:column headerText="Sincroniza">
+                                        <p:selectOneMenu id="cbosincP" value="#{listPrio.sincroniza}"  disabled="#{!programaAlmAction.edicion}"> 
+                                            <f:selectItem itemLabel="Si" itemValue="#{1}"/>
+                                            <f:selectItem itemLabel="No" itemValue="#{0}"/>
+                                        </p:selectOneMenu>
+                                    </p:column>
+                                </p:dataTable>
+                            </p:tab>
+                        </p:tabView>
+                    </p:fieldset>
+                </h:panelGrid>
+            </div>
+            <p:dialog id="dlg_detallemontacarga" header="..:: Montacarga ::." widgetVar="dlg_detallemontacarga" modal="true" showEffect="popup" closable="false">
+                <p:panelGrid columns="1" columnClasses="no-border">
+
+                    <p:messages id="mensajeDialogDetalleEquipo" for="mensajeDialogDetalleEquipo" autoUpdate="true" closable="true" style="font-size:10px"/>
+                    <p:panelGrid columns="2" columnClasses="no-border, no-border,no-border">
+                        <p:outputLabel value="Montacarga" escape="false" />
+                        <h:panelGrid id="cntMont" cellpadding="0" cellspacing="0" columns="3">
+                            <p:commandButton styleClass="boton_buscar" ajax="true" actionListener="#{programaAlmAction.verCntMontacarga()}" disabled="#{!programaAlmAction.edicion}"  icon="ui-icon-search">
+                                <p:ajax event="dialogReturn" listener="#{programaAlmAction.valorMontaarga}" update="cntMont"/>
+                            </p:commandButton>
+
+                            <p:inputText  style="text-align: center" size="3" readonly="true"  value="#{programaAlmAction.mo.IDMONTACARGA}"/>
+
+                            <p:inputText size="41" readonly="true" value="#{programaAlmAction.mo.DESCRIPCION}" />
+                        </h:panelGrid>
+                    </p:panelGrid>
+                    <br/>
+                    <p:toolbar>
+                        <f:facet name="right">
+                            <p:commandButton value="Agregar" ajax="true" actionListener="#{programaAlmAction.AgregarEditarDetalle()}" image="ui-icon-grabar" />
+                            <p:commandButton value="Cancelar" ajax="true" image="ui-icon-cancelar" onclick="PF('dlg_detallemontacarga').hide()">
+                            </p:commandButton>
+                        </f:facet>
+                    </p:toolbar>
+
+                </p:panelGrid>                      
+            </p:dialog>
+            <p:dialog id="dlg_detalleprio" header="..:: Prioridad ::." widgetVar="dlg_detalleprio" modal="true" height="650" width="1300" showEffect="popup" closable="false">
+                <h:panelGrid columns="4" cellpadding="2">
+                    <h:panelGrid columns="4" cellpadding="5">
+                        <p:outputLabel value="Almacen " />
+                        <p:selectOneMenu id="alm" value="#{programaAlmAction.idAlmacen}" style="width:150px">
+                            <p:ajax listener="#{programaAlmAction.onChangeDrop}" update="dist" />
+                            <f:selectItem itemLabel="Seleccione Almacen" itemValue="" noSelectionOption="true" />
+                            <f:selectItems value="#{programaAlmAction.lstalm}" var="al" itemLabel="#{al.DESCRIPCION}" itemValue="#{al.IDALMACEN}"/>
+                        </p:selectOneMenu>
+
+                        <p:outputLabel value="Distribucion: " />
+                        <p:selectOneMenu id="dist" value="#{programaAlmAction.idDistribucion}" style="width:150px">
+                            <p:ajax listener="#{programaAlmAction.findDRacks()}" update="tbl3 tbl4 cbocoddispiso listDDNFormaUbicacion" />
+                            <f:selectItem itemLabel="Seleccione Distribucion" itemValue="" noSelectionOption="true" />
+                            <f:selectItems value="#{programaAlmAction.lstDist}" var="dis" itemLabel="#{dis.FECHAINICIO}" itemValue="#{dis.IDDISTRIBUCION}"/>
+                        </p:selectOneMenu>
+                    </h:panelGrid>
+                    <h:panelGrid id="cntRegla" cellpadding="0" cellspacing="0" columns="4">
+                        <p:outputLabel value="Regla: " />
+                        <p:commandButton styleClass="boton_buscar" ajax="true" actionListener="#{programaAlmAction.verCntRegla()}" disabled="#{!programaAlmAction.edicion}"  icon="ui-icon-search">
+                            <p:ajax event="dialogReturn" listener="#{programaAlmAction.llenarRegla}" update="cntRegla"/>
+                        </p:commandButton>
+
+                        <p:inputText  style="text-align: center" size="3" readonly="true"  value="#{programaAlmAction.re.idregla}"/>
+
+                        <p:inputText size="41" readonly="true" value="#{programaAlmAction.re.descripcion}" />
+                    </h:panelGrid>
+                    <p:toolbar>
+                        <f:facet name="left">
+                            <p:commandButton value="Agregar" ajax="true" actionListener="#{programaAlmAction.AgregarEditarDetalle()}" image="ui-icon-grabar" />
+                            <p:commandButton value="Cancelar" ajax="true" image="ui-icon-cancelar" onclick="PF('dlg_detalleprio').hide()">
+                            </p:commandButton>
+                        </f:facet>
+                    </p:toolbar>                    
+                </h:panelGrid>
+                <p:dataTable id="tbl3" rowSelectMode="checkbox" var="listRack" value="#{programaAlmAction.lstracks}" widgetVar="listRack" paginatorTemplate="{FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink}" paginatorPosition="top"
+                             paginator="true" rows="15" selection="#{programaAlmAction.sltracks}" rowKey="#{listRack.IDRACK}">
+                    <f:facet name="header">
+                        <h:outputText value="..::Racks::.." />
+                    </f:facet>
+                    <p:column selectionMode="multiple" style="width:16px;text-align:center"/>
+                    <p:column headerText="Codigo Rack">
+                        <h:outputLabel value="#{listRack.IDRACK}"/>
+                    </p:column>
+                    <p:column headerText="Filas">
+                        <h:outputLabel value="#{listRack.FILAS}"/>
+                    </p:column>
+                    <p:column headerText="Columnas">
+                        <h:outputLabel value="#{listRack.COLUMNAS}"/>
+                    </p:column>
+                    <p:column headerText="Ubicacion">
+                        <h:outputLabel value="#{listRack.fubicacion.idnformacionubicacion}"/>
+                    </p:column>
+                </p:dataTable>
+                <p:panelGrid columns="4">
+                    <p:outputLabel value="Seleccionar Ubicacion " />
+                    <p:commandButton value="Ubicaciones" ajax="true" image="ui-icon-cancelar" onclick="PF('dlg_Ubicacion').show()"/>
+                    <p:outputLabel value="Codigo Distribucion Piso" />
+                    <p:selectOneMenu id="cbocoddispiso" value="#{programaAlmAction.iddistribucionpiso}" > 
+                        <f:selectItem itemLabel="Seleccione Tipo Almacen" itemValue="#{NULL}"/>                        
+                        <f:selectItems value="#{programaAlmAction.listMultitabla2}" var="tipodist" itemLabel="#{tipodist.DESCRIPCION}" itemValue="#{tipodist.VALOR}"/>
+                    </p:selectOneMenu>
+                </p:panelGrid>
+            </p:dialog>
+            <p:dialog id="dlg_Ubicacion" header="..:: Ubicacion ::." widgetVar="dlg_Ubicacion" modal="true" height="650" width="1300" showEffect="popup" closable="true">
+                <p:dataTable id="tbl4"  var="listUbi" value="#{programaAlmAction.lisdnforma}" widgetVar="listUbi" paginatorTemplate="{FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink}" paginatorPosition="top"
+                             paginator="true" rows="15" selectionMode="single" selection="#{programaAlmAction.dnforma}" rowKey="#{listUbi.IDNFORMACIONUBICACION}">
+                    <f:facet name="header">
+                        <h:outputText value="..::Ubicacion::.." />
+                    </f:facet>
+                    <p:ajax event="rowDblselect" listener="#{programaAlmAction.genrarDistribucion(event)}"/>
+                    <p:column headerText="Cod Distribucion">
+                        <h:outputLabel value="#{listUbi.IDDISTRIBUCION}"/>
+                    </p:column>
+                    <p:column headerText="Cod Formacion">
+                        <h:outputLabel value="#{listUbi.IDNFORMACIONUBICACION}"/>
+                    </p:column>
+                    <p:column headerText="Filas">
+                        <h:outputLabel value="#{listUbi.FILAS}"/>
+                    </p:column>
+                    <p:column headerText="Columnas">
+                        <h:outputLabel value="#{listUbi.COLUMNAS}"/>
+                    </p:column>
+                    <p:column headerText="Descripcion">
+                        <h:outputLabel value="#{listUbi.DESCRIPCION}"/>
+                    </p:column>
+                </p:dataTable>
+                <h:panelGrid columns="1" styleClass="top-aligned-columns">
+                    <p:dataGrid var="listDDNFormaUbicacion" value="#{programaAlmAction.listDDNFormaUbicacion}" columns="#{programaAlmAction.dnforma.COLUMNAS}"
+                                rows="#{programaAlmAction.dnforma.FILAS * programaAlmAction.dnforma.COLUMNAS}" paginator="true" id="listDDNFormaUbicacion" style="text-align:center;" 
+                                paginatorPosition="top">
+                        <p:panel id="cuadroNivel" header="POSICIÓN - #{listDDNFormaUbicacion.IDFILA} x #{listDDNFormaUbicacion.IDCOLUMNA}" style="alignment-adjust: central;text-align:center; background-color:#{listDDNFormaUbicacion.SELECCIONADO?'#FFAAAA':'#FFFFFF'};font-size: 10px">
+                            <h:panelGrid columns="1" style="width: 100%">
+                                <h:outputText id="numerador" value="#{listDDNFormaUbicacion.PRIORIDAD}" style="font-weight: bold; font-size: 24px;color: #D8000C;visibility:#{listDDNFormaUbicacion.SELECCIONADO?'visible':'hidden'}"/>
+                            </h:panelGrid>
+                        </p:panel>
+                    </p:dataGrid>
+                </h:panelGrid>
+                <p:outputLabel value="Seleccionar" />
+                <p:commandButton value="Ubicaciones" ajax="true" image="ui-icon-cancelar" actionListener="#{programaAlmAction.validarFnUbicacion()}"/>
+            </p:dialog>
+            <p:dialog id="almPrioEdt" resizable="false" width="350" height="350" header="Almacen Prioridad" widgetVar="almPrioEdt" modal="true" showEffect="popup" closable="true">  
+                <p:outputPanel id="almprioDetalle" style="text-align:center;">
+                    <p:panelGrid  columns="2" rendered="#{programaAlmAction.selectdprogprio.fubicacion!=null?true:false}" columnClasses="label,value">
+                        <h:outputText value="Codigo Empresa" />
+                        <h:inputText value="#{programaAlmAction.selectdprogprio.fubicacion.idempresa}" />
+                        <h:outputText value="Codigo Sucursal" />
+                        <h:inputText value="#{programaAlmAction.selectdprogprio.fubicacion.idsucursal}" />
+                        <h:outputText value="Codigo Prog Almacen" />
+                        <h:inputText value="#{programaAlmAction.selectdprogprio.fubicacion.idprogramaalm}" />
+                        <h:outputText value="Codigo Almacen" />
+                        <h:inputText value="#{programaAlmAction.selectdprogprio.fubicacion.idalmacen}" />
+                        <h:outputText value="Codigo Rack" />
+                        <h:inputText value="#{programaAlmAction.selectdprogprio.fubicacion.idrack}" />
+                        <h:outputText value="Forma Ubicacion" />
+                        <h:inputText value="#{programaAlmAction.selectdprogprio.fubicacion.idnformacionubicacion}" />
+                        <h:outputText value="Reglas" />
+                        <h:inputText value="#{programaAlmAction.selectdprogprio.fubicacion.idregla}" />
+                        <h:outputText value="Distribucion Piso" />
+                        <h:inputText value="#{programaAlmAction.selectdprogprio.fubicacion.iddistribucionpiso}" />
+                        <p:commandButton  value="Regresar" ajax="true" image="ui-icon-cancelar" onclick="PF('almPrioEdt').hide()"/>
+                    </p:panelGrid>
+                </p:outputPanel>
+            </p:dialog>               
+            <p:growl id="growl" life="4000" showDetail="false"  />
+            <cmp:mDialogElimina_lst id="cmpDialog" bean="#{programaAlmAction}" ventana="MNT" />
+            
+        </h:form>        
+        <p:dialog id="msgDet" resizable="false" width="350" height="350" header="Mensajes" widgetVar="msgDet" modal="true" showEffect="popup" closable="false">
+                <h:form id="dform">
+                    <h:panelGrid id="msgDetGrid" columns="1">
+                        <p:panelGrid columns="2">
+                            <h:outputText value="Mensaje" />
+                            <h:inputTextarea value="#{programaAlmAction.selectdprogalmont.nota.mensaje}"/>
+                        </p:panelGrid>
+                        <p:panelGrid columns="2">
+                            <h:outputText value="Prioridad" />
+                            <p:spinner value="#{programaAlmAction.selectdprogalmont.nota.prioridad}"/>
+                        </p:panelGrid>
+                    </h:panelGrid>
+                    <p:panelGrid columns="2">
+                        <p:commandButton value="Agregar" ajax="true" actionListener="#{programaAlmAction.agregaNota()}" image="ui-icon-grabar" />
+                        <p:commandButton  value="Regresar" ajax="true" image="ui-icon-cancelar" onclick="PF('msgDet').hide()"/>
+                    </p:panelGrid>
+                </h:form>
+            </p:dialog> 
+    </ui:define>
+</ui:composition>

@@ -1,0 +1,35 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:f="http://java.sun.com/jsf/core"
+                template="templatebanco.xhtml"
+                xmlns:cmp="http://java.sun.com/jsf/composite/cmp">
+    <ui:define name="metadata">
+    </ui:define>
+    <ui:define name="body">   
+        #{confInicioAction.buscarTodo()}
+        <h:form id="datos">
+            <cmp:barra_mnt bean="#{confInicioAction}"/>
+            <p:panelGrid id="principal" columns="1" columnClasses="no-border, no-border">
+                <f:facet name="header">
+                    <p:outputLabel value="#{confInicioAction.tituloHead}"/>
+                </f:facet>
+                <p:panelGrid columns="2" columnClasses="no-border, no-border">
+                    <p:outputLabel value ="Id Empresa:"/>
+                    <p:inputText value="#{confInicioAction.datoEdicion.idempresa}" disabled="#{!confInicioAction.edicion}"/>
+                    <p:outputLabel value ="Id Sucursal:"/>
+                    <p:inputText value="#{confInicioAction.datoEdicion.idsucursal}" disabled="#{!confInicioAction.edicion}"/>
+                    <p:outputLabel value ="Disco:"/>
+                    <p:inputText value="#{confInicioAction.datoEdicion.disco}" disabled="#{!confInicioAction.edicion}"/>
+                    <p:outputLabel value ="Url:"/>
+                    <p:inputText value="#{confInicioAction.datoEdicion.path}" disabled="#{!confInicioAction.edicion}"/>
+                    <p:outputLabel value ="Planta:"/>
+                    <p:inputText value="#{confInicioAction.datoEdicion.imgplant}" disabled="#{!confInicioAction.edicion}"/>
+                </p:panelGrid>
+            </p:panelGrid>
+            <p:growl id="growl" life="4000" showDetail="false"  />
+            <cmp:mDialogElimina_lst id="cmpDialog" bean="#{confInicioAction}" ventana="MNT" />
+        </h:form>
+    </ui:define>
+</ui:composition>

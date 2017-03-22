@@ -1,0 +1,155 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:pm="http://primefaces.org/mobile">
+    
+    <f:view renderKitId="PRIMEFACES_MOBILE" />  
+
+    <h:head>
+        <f:loadBundle basename="titulos" var="titulos" />
+    </h:head>
+    <h:body>
+        <pm:page title="Reporte Distribucion Camara" id="page1">
+            <pm:header title="Reporte de Ubicacion de Pallets en TUNEL/CAMARA" fixed="true" >
+                <f:facet name="left"><p:button  value="Atrás" icon="back"  href="/faces/sistema/menu.xhtml?faces-redirect=true"/></f:facet>                
+                <script type="text/javascript" src="../js/validadispositivo.js"></script>                                
+            </pm:header>
+            <pm:content>
+                <h:outputLabel value="#{MovUbicacionPaletaAction.IniciarDistribucion()}" />
+                
+                <h:form id="FormDistribucioncamara">
+                    
+                    <p:dialog id="dlgmensaje1" header="Mensaje" widgetVar="dlgmensaje" modal="true" showEffect="popup">
+                        <p:panelGrid columns="1">
+                            <h:outputText value="#{MovUbicacionPaletaAction.mensaje}"/>                            
+                        </p:panelGrid>
+                        <pm:field>
+                            <p:commandButton ajax="true" value="Aceptar" onclick="PF('dlgmensaje').hide()" />
+                        </pm:field>                        
+                    </p:dialog>
+                    
+                    <p:dialog id="dlgpaleta1" header="Paleta" widgetVar="dlgpaleta" modal="true" showEffect="popup">
+                        <p:panelGrid columns="2">
+                            <h:outputText value="PALETA: "/>
+                            <h:outputText value="#{MovUbicacionPaletaAction.columnaseleccionadareporte.nropaleta}"/>
+                            <h:outputText value="CLIENTE: "/>
+                            <h:outputText value="#{MovUbicacionPaletaAction.columnaseleccionadareporte.desccliente}"/>
+                            <h:outputText value="VARIEDAD: "/>
+                            <h:outputText value="#{MovUbicacionPaletaAction.columnaseleccionadareporte.descvariedad}"/>
+                            <h:outputText value="ENVASE: "/>
+                            <h:outputText value="#{MovUbicacionPaletaAction.columnaseleccionadareporte.descenvase}"/>
+                            <h:outputText value="CATEGORIA: "/>
+                            <h:outputText value="#{MovUbicacionPaletaAction.columnaseleccionadareporte.desccategorias}"/>
+                            <h:outputText value="CALIBRE: "/>
+                            <h:outputText value="#{MovUbicacionPaletaAction.columnaseleccionadareporte.desccalibres}"/>                        
+                            <h:outputText value="CANTIDAD: "/>
+                            <h:outputText value="#{MovUbicacionPaletaAction.columnaseleccionadareporte.cantidad}"/>                        
+                            <h:outputText value="FECHA INGRESO: "/>
+                            <h:outputText value="#{MovUbicacionPaletaAction.columnaseleccionadareporte.descfechaingreso}"/>                        
+                        </p:panelGrid>
+                        <pm:field>
+                            <p:commandButton ajax="true" value="Aceptar" onclick="PF('dlgpaleta').hide()" />
+                        </pm:field>                        
+                    </p:dialog>
+                    <b><h:outputLabel style="color:blue" value="SELECCION CAMPAÑA"  /> </b>
+                    <p:selectOneMenu id="cbofechacampanaanual" style="width: 100%" value="#{MovUbicacionPaletaAction.idfechacampanaanual}"> 
+                        <f:selectItem itemLabel="Seleccione Campaña" itemValue="nada"/>                        
+                        <f:selectItems value="#{MovUbicacionPaletaAction.hashmap_fechacampanaanual}"/>
+                    </p:selectOneMenu>
+                    
+                    <b><h:outputLabel style="color:blue" value="NRO PALETA"  /> </b>
+                    <p:inputText id="txtbuscarpaleta" value="#{MovUbicacionPaletaAction.numeroPaletaBuscarCamara}"/>
+                    <p:commandButton ajax="true" id="btnbuscarpaleta" value="BUSCAR PALETA" actionListener="#{MovUbicacionPaletaAction.buscarPaletaEnDistribuciondeCamara()}"/>
+                   
+                    <p:accordionPanel id="accordionResultado">
+                        <p:tab title="RESULTADO DE LA UBICACION PARA LA PALETA NUMERO #{MovUbicacionPaletaAction.numeroPaletaBuscarCamara}" >
+                            <p:accordionPanel id="accordionCamara" rendered="#{MovUbicacionPaletaAction.listado_filasdistribucion.size() gt 0 ? true :false }" >
+                            <p:tab title="#{MovUbicacionPaletaAction.listado_filasdistribucion[0].desccamara}" >
+                                <p:accordionPanel id="accordionRack" >
+                                    <p:tab title="RACK #{MovUbicacionPaletaAction.listado_filasdistribucion[0].descrack}" >
+                                        <p:accordionPanel id="accordionPiso" >
+                                            <p:tab title="NIVEL/PISO #{MovUbicacionPaletaAction.listado_filasdistribucion[0].descpiso}" >
+                                                <p:dataTable id="columnas" var="fila" value="#{MovUbicacionPaletaAction.listado_filasdistribucion}" tableStyleClass="ui-table-columntoggle">
+                                                    <p:column headerText="" rendered="#{0 lt (MovUbicacionPaletaAction.numerocolumnas eq null? 0 : MovUbicacionPaletaAction.numerocolumnas ) ? true:false }"  style="padding: 0 !important;margin: 0 !important" >
+                                                        <p:commandButton  ajax="true" value="#{fila.lista_columnas[0].visible ? fila.lista_columnas[0].descubicacion : fila.lista_columnas[0].nropaleta}" style="text-align:center; align:center;width:100%;height:100%; background-color: #{fila.lista_columnas[0].color}" actionListener="#{MovUbicacionPaletaAction.verdatosPaleta(fila.lista_columnas[0])}"/>
+                                                    </p:column>
+                                                    <p:column headerText="" rendered="#{1 lt (MovUbicacionPaletaAction.numerocolumnas eq null? 0 : MovUbicacionPaletaAction.numerocolumnas )? true:false }"  style="padding: 0 !important;margin: 0 !important">
+                                                        <p:commandButton ajax="true" value="#{fila.lista_columnas[1].visible ? fila.lista_columnas[1].descubicacion : fila.lista_columnas[1].nropaleta}" style="text-align:center; align:center;width:100%;height:100%; background-color: #{fila.lista_columnas[1].color}" actionListener="#{MovUbicacionPaletaAction.verdatosPaleta(fila.lista_columnas[1])}"/>
+                                                    </p:column>
+                                                    <p:column headerText="" rendered="#{2 lt (MovUbicacionPaletaAction.numerocolumnas eq null? 0 : MovUbicacionPaletaAction.numerocolumnas )? true:false }"  style="padding: 0 !important;margin: 0 !important">
+                                                        <p:commandButton ajax="true" value="#{fila.lista_columnas[2].visible ? fila.lista_columnas[2].descubicacion : fila.lista_columnas[2].nropaleta}" style="text-align:center; align:center;width:100%;height:100%; background-color: #{fila.lista_columnas[2].color}" actionListener="#{MovUbicacionPaletaAction.verdatosPaleta(fila.lista_columnas[2])}"/>
+                                                    </p:column>
+                                                    <p:column headerText="" rendered="#{3 lt (MovUbicacionPaletaAction.numerocolumnas eq null? 0 : MovUbicacionPaletaAction.numerocolumnas )? true:false }"  style="padding: 0 !important;margin: 0 !important">
+                                                        <p:commandButton ajax="true" value="#{fila.lista_columnas[3].visible ? fila.lista_columnas[3].descubicacion : fila.lista_columnas[3].nropaleta}" style="text-align:center; align:center;width:100%;height:100%; background-color: #{fila.lista_columnas[3].color}" actionListener="#{MovUbicacionPaletaAction.verdatosPaleta(fila.lista_columnas[3])}"/>
+                                                    </p:column>
+                                                    <p:column headerText="" rendered="#{4 lt (MovUbicacionPaletaAction.numerocolumnas eq null? 0 : MovUbicacionPaletaAction.numerocolumnas )? true:false }"  style="padding: 0 !important;margin: 0 !important">
+                                                        <p:commandButton ajax="true" value="#{fila.lista_columnas[4].visible ? fila.lista_columnas[4].descubicacion : fila.lista_columnas[4].nropaleta}" style="text-align:center; align:center;width:100%;height:100%; background-color: #{fila.lista_columnas[4].color}" actionListener="#{MovUbicacionPaletaAction.verdatosPaleta(fila.lista_columnas[4])}"/>
+                                                    </p:column>
+                                                    <p:column headerText="" rendered="#{5 lt (MovUbicacionPaletaAction.numerocolumnas eq null? 0 : MovUbicacionPaletaAction.numerocolumnas )? true:false }"  style="padding: 0 !important;margin: 0 !important">
+                                                        <p:commandButton ajax="true" value="#{fila.lista_columnas[5].visible ? fila.lista_columnas[5].descubicacion : fila.lista_columnas[5].nropaleta}" style="text-align:center; align:center;width:100%;height:100%; background-color: #{fila.lista_columnas[5].color}" actionListener="#{MovUbicacionPaletaAction.verdatosPaleta(fila.lista_columnas[5])}"/>
+                                                    </p:column>                                            
+                                                    <p:column headerText="" rendered="#{6 lt (MovUbicacionPaletaAction.numerocolumnas eq null? 0 : MovUbicacionPaletaAction.numerocolumnas )? true:false }"  style="padding: 0 !important;margin: 0 !important">
+                                                        <p:commandButton ajax="true" value="#{fila.lista_columnas[6].visible ? fila.lista_columnas[6].descubicacion : fila.lista_columnas[6].nropaleta}" style="text-align:center; align:center;width:100%;height:100%; background-color: #{fila.lista_columnas[6].color}" actionListener="#{MovUbicacionPaletaAction.verdatosPaleta(fila.lista_columnas[6])}"/>
+                                                    </p:column>                                            
+                                                    <p:column headerText="" rendered="#{7 lt (MovUbicacionPaletaAction.numerocolumnas eq null? 0 : MovUbicacionPaletaAction.numerocolumnas )? true:false }"  style="padding: 0 !important;margin: 0 !important">
+                                                        <p:commandButton ajax="true" value="#{fila.lista_columnas[7].visible ? fila.lista_columnas[7].descubicacion : fila.lista_columnas[7].nropaleta}" style="text-align:center; align:center;width:100%;height:100%; background-color: #{fila.lista_columnas[7].color}" actionListener="#{MovUbicacionPaletaAction.verdatosPaleta(fila.lista_columnas[7])}"/>
+                                                    </p:column>
+                                                    <p:column headerText="" rendered="#{8 lt (MovUbicacionPaletaAction.numerocolumnas eq null? 0 : MovUbicacionPaletaAction.numerocolumnas )? true:false }"  style="padding: 0 !important;margin: 0 !important">
+                                                        <p:commandButton ajax="true" value="#{fila.lista_columnas[8].visible ? fila.lista_columnas[8].descubicacion : fila.lista_columnas[8].nropaleta}" style="text-align:center; align:center;width:100%;height:100%; background-color: #{fila.lista_columnas[8].color}" actionListener="#{MovUbicacionPaletaAction.verdatosPaleta(fila.lista_columnas[8])}"/>
+                                                    </p:column>
+                                                    <p:column headerText="" rendered="#{9 lt (MovUbicacionPaletaAction.numerocolumnas eq null? 0 : MovUbicacionPaletaAction.numerocolumnas )? true:false }"  style="padding: 0 !important;margin: 0 !important">
+                                                        <p:commandButton ajax="true" value="#{fila.lista_columnas[9].visible ? fila.lista_columnas[9].descubicacion : fila.lista_columnas[9].nropaleta}" style="text-align:center; align:center;width:100%;height:100%; background-color: #{fila.lista_columnas[9].color}" actionListener="#{MovUbicacionPaletaAction.verdatosPaleta(fila.lista_columnas[9])}"/>
+                                                    </p:column>
+                                                    <p:column headerText="" rendered="#{10 lt (MovUbicacionPaletaAction.numerocolumnas eq null? 0 : MovUbicacionPaletaAction.numerocolumnas )? true:false }"  style="padding: 0 !important;margin: 0 !important">
+                                                        <p:commandButton ajax="true" value="#{fila.lista_columnas[10].visible ? fila.lista_columnas[10].descubicacion : fila.lista_columnas[10].nropaleta}" style="text-align:center; align:center;width:100%;height:100%; background-color: #{fila.lista_columnas[10].color}" actionListener="#{MovUbicacionPaletaAction.verdatosPaleta(fila.lista_columnas[10])}"/>
+                                                    </p:column>
+                                                    <p:column headerText="" rendered="#{11 lt (MovUbicacionPaletaAction.numerocolumnas eq null? 0 : MovUbicacionPaletaAction.numerocolumnas )? true:false }"  style="padding: 0 !important;margin: 0 !important">
+                                                        <p:commandButton ajax="true" value="#{fila.lista_columnas[11].visible ? fila.lista_columnas[11].descubicacion : fila.lista_columnas[11].nropaleta}" style="text-align:center; align:center;width:100%;height:100%; background-color: #{fila.lista_columnas[11].color}" actionListener="#{MovUbicacionPaletaAction.verdatosPaleta(fila.lista_columnas[11])}"/>
+                                                    </p:column>
+                                                    <p:column headerText="" rendered="#{12 lt (MovUbicacionPaletaAction.numerocolumnas eq null? 0 : MovUbicacionPaletaAction.numerocolumnas )? true:false }"  style="padding: 0 !important;margin: 0 !important">
+                                                        <p:commandButton ajax="true" value="#{fila.lista_columnas[12].visible ? fila.lista_columnas[12].descubicacion : fila.lista_columnas[12].nropaleta}" style="text-align:center; align:center;width:100%;height:100%; background-color: #{fila.lista_columnas[12].color}" actionListener="#{MovUbicacionPaletaAction.verdatosPaleta(fila.lista_columnas[12])}"/>
+                                                    </p:column>
+                                                    <p:column headerText="" rendered="#{13 lt (MovUbicacionPaletaAction.numerocolumnas eq null? 0 : MovUbicacionPaletaAction.numerocolumnas )? true:false }"  style="padding: 0 !important;margin: 0 !important">
+                                                        <p:commandButton ajax="true" value="#{fila.lista_columnas[13].visible ? fila.lista_columnas[13].descubicacion : fila.lista_columnas[13].nropaleta}" style="text-align:center; align:center;width:100%;height:100%; background-color: #{fila.lista_columnas[13].color}" actionListener="#{MovUbicacionPaletaAction.verdatosPaleta(fila.lista_columnas[13])}"/>
+                                                    </p:column>
+                                                    <p:column headerText="" rendered="#{14 lt (MovUbicacionPaletaAction.numerocolumnas eq null? 0 : MovUbicacionPaletaAction.numerocolumnas )? true:false }"  style="padding: 0 !important;margin: 0 !important">
+                                                        <p:commandButton ajax="true" value="#{fila.lista_columnas[14].visible ? fila.lista_columnas[14].descubicacion : fila.lista_columnas[14].nropaleta}" style="text-align:center; align:center;width:100%;height:100%; background-color: #{fila.lista_columnas[14].color}" actionListener="#{MovUbicacionPaletaAction.verdatosPaleta(fila.lista_columnas[14])}"/>
+                                                    </p:column>
+                                                    <p:column headerText="" rendered="#{15 lt (MovUbicacionPaletaAction.numerocolumnas eq null? 0 : MovUbicacionPaletaAction.numerocolumnas )? true:false }"  style="padding: 0 !important;margin: 0 !important">
+                                                        <p:commandButton ajax="true" value="#{fila.lista_columnas[15].visible ? fila.lista_columnas[15].descubicacion : fila.lista_columnas[15].nropaleta}" style="text-align:center; align:center;width:100%;height:100%; background-color: #{fila.lista_columnas[15].color}" actionListener="#{MovUbicacionPaletaAction.verdatosPaleta(fila.lista_columnas[15])}"/>
+                                                    </p:column>
+                                                    <p:column headerText="" rendered="#{16 lt (MovUbicacionPaletaAction.numerocolumnas eq null? 0 : MovUbicacionPaletaAction.numerocolumnas )? true:false }"  style="padding: 0 !important;margin: 0 !important">
+                                                        <p:commandButton ajax="true" value="#{fila.lista_columnas[16].visible ? fila.lista_columnas[16].descubicacion : fila.lista_columnas[16].nropaleta}" style="text-align:center; align:center;width:100%;height:100%; background-color: #{fila.lista_columnas[16].color}" actionListener="#{MovUbicacionPaletaAction.verdatosPaleta(fila.lista_columnas[16])}"/>
+                                                    </p:column>
+                                                    <p:column headerText="" rendered="#{17 lt (MovUbicacionPaletaAction.numerocolumnas eq null? 0 : MovUbicacionPaletaAction.numerocolumnas )? true:false }"  style="padding: 0 !important;margin: 0 !important">
+                                                        <p:commandButton ajax="true" value="#{fila.lista_columnas[17].visible ? fila.lista_columnas[17].descubicacion : fila.lista_columnas[17].nropaleta}" style="text-align:center; align:center;width:100%;height:100%; background-color: #{fila.lista_columnas[17].color}" actionListener="#{MovUbicacionPaletaAction.verdatosPaleta(fila.lista_columnas[17])}"/>
+                                                    </p:column>
+                                                    <p:column headerText="" rendered="#{18 lt (MovUbicacionPaletaAction.numerocolumnas eq null? 0 : MovUbicacionPaletaAction.numerocolumnas )? true:false }"  style="padding: 0 !important;margin: 0 !important">
+                                                        <p:commandButton ajax="true" value="#{fila.lista_columnas[18].visible ? fila.lista_columnas[18].descubicacion : fila.lista_columnas[18].nropaleta}" style="text-align:center; align:center;width:100%;height:100%; background-color: #{fila.lista_columnas[18].color}" actionListener="#{MovUbicacionPaletaAction.verdatosPaleta(fila.lista_columnas[18])}"/>
+                                                    </p:column>
+                                                    <p:column headerText="" rendered="#{19 lt (MovUbicacionPaletaAction.numerocolumnas eq null? 0 : MovUbicacionPaletaAction.numerocolumnas )? true:false }"  style="padding: 0 !important;margin: 0 !important">
+                                                        <p:commandButton ajax="true" value="#{fila.lista_columnas[19].visible ? fila.lista_columnas[19].descubicacion : fila.lista_columnas[19].nropaleta}" style="text-align:center; align:center;width:100%;height:100%; background-color: #{fila.lista_columnas[19].color}" actionListener="#{MovUbicacionPaletaAction.verdatosPaleta(fila.lista_columnas[19])}"/>
+                                                    </p:column>
+                                                    <p:column headerText="" rendered="#{20 lt (MovUbicacionPaletaAction.numerocolumnas eq null? 0 : MovUbicacionPaletaAction.numerocolumnas )? true:false }"  style="padding: 0 !important;margin: 0 !important">
+                                                        <p:commandButton ajax="true" value="#{fila.lista_columnas[20].visible ? fila.lista_columnas[20].descubicacion : fila.lista_columnas[20].nropaleta}" style="text-align:center; align:center;width:100%;height:100%; background-color: #{fila.lista_columnas[20].color}" actionListener="#{MovUbicacionPaletaAction.verdatosPaleta(fila.lista_columnas[20])}"/>
+                                                    </p:column>
+                                                </p:dataTable>
+                                            </p:tab>
+                                        </p:accordionPanel>
+                                    </p:tab>
+                                </p:accordionPanel>
+                            </p:tab>                                
+                        </p:accordionPanel>
+                        </p:tab>
+                    </p:accordionPanel>    
+                </h:form>
+            </pm:content>
+            <pm:footer fixed="true">
+                <h1 style="font-size: x-small" >© 2013 <img border="0" height="10px" src="../images/logoWeb.png"/> Nisira Systems SAC </h1>         
+            </pm:footer>  
+    </pm:page>
+    </h:body> 
+</html>

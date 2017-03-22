@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+-->
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+    <head>
+        <title>REGISTRO ESQUEMA DE PLANTA</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+        <style type="text/css">
+            .casilla{
+                width:150px;
+                height:30px;
+                text-align: center;
+                position:relative;
+            }
+            .casilla b{
+                font-size: 11px;
+                text-align: center;
+            }
+            .cuadro{
+                width:700px;
+            }
+            .botones{
+                width:100%;
+                height:100%;
+                background-color: rgb(255, 247, 239);
+                font-size: 8px;
+                text-align: center;
+                font-weight: bold;
+            }
+        </style>
+    </head>
+    <body>
+        <div style="alignment-adjust: central">
+            <h2>ALMACEN MATERIA PRODUCCIÓN</h2>
+        </div>
+        <table class="cuadro"> 
+            <thead> 
+                <tr>
+                </tr> 
+            </thead> 
+        <%
+            for(int i=0;i<100;i++){
+                for(int j=0;j<100;j++){
+                
+        %>
+        <tr> 
+            <td class="casilla"><input type="button" value="" class="botones" name="F"  id="C" /></td>
+        </tr> 
+        <%
+                }
+            }    
+        %>
+    </body>
+</html>

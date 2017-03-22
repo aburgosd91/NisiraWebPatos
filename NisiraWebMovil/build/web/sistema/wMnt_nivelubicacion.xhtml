@@ -1,0 +1,78 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:f="http://java.sun.com/jsf/core"
+                template="templatebanco.xhtml"
+                xmlns:pm="http://primefaces.org/mobile">
+    <ui:define name="metadata">
+    </ui:define>
+    <ui:define name="body">
+        <p:messages id="messages" autoUpdate="true" closable="true" style="font-size:10px"/><br/>
+        <h:form id="datos" style="width:100%;position:relative;">
+            #{nivelUbicacionAction.getRecordSucursal()}
+            <p:toolbar>
+                <f:facet name="right">
+                    <p:commandButton value="Grabar" ajax="true" actionListener="#{nivelUbicacionAction.Grabar()}" image="ui-icon-grabar" />
+                    <p:commandButton value="Cancelar" process="@this" update="datos" image="ui-icon-cancelar">
+                        <p:resetInput target="datos" />
+                    </p:commandButton>
+                </f:facet>
+            </p:toolbar>
+            <br/>
+            <p:panelGrid columns="2" columnClasses="no-border, no-border,no-border">
+                <p:outputLabel value="SUCURSAL:" />
+                <p:panelGrid columns="4" columnClasses="no-border, no-border, no-border , no-border">
+                    <p:selectOneMenu id="cbosucursal" value="#{nivelUbicacionAction.IDSUCURSAL}" rendered="true">
+                        <p:ajax listener="#{nivelUbicacionAction.onSucursalChange}" update="cboalmacen" />
+                        <f:selectItem itemLabel="Seleccionar Sucursal" itemValue=""/>
+                        <f:selectItems value="#{nivelUbicacionAction.listSucursa}" var="sucursal" itemLabel="#{sucursal.DESCRIPCION}" itemValue="#{sucursal.IDSUCURSAL}" />
+                    </p:selectOneMenu>
+                    <h:outputText value="ALMACEN:" />
+                    <p:selectOneMenu id="cboalmacen" value="#{nivelUbicacionAction.IDALMACEN}" rendered="true">
+                        <p:ajax listener="#{nivelUbicacionAction.onAlmacenChange}" update="datos:listaFilaxColumna" />
+                        <f:selectItem itemLabel="Seleccionar Almacen" itemValue=""/>
+                        <f:selectItems value="#{nivelUbicacionAction.listAlmacen}" var="almacen" itemLabel="#{almacen.DESCRIPCION}" itemValue="#{almacen.IDALMACEN}" />
+                    </p:selectOneMenu>
+                    <p:commandButton id="ibotonBuscar" value="Buscar" ajax="true" image="ui-icon-ver" actionListener="#{nivelUbicacionAction.getRecordFilasxDistribucion}" disabled="#{nivelUbicacionAction.botonBuscar}"/>
+                </p:panelGrid>
+            </p:panelGrid>
+            <p:fieldset legend="DIMENSIONES DE RACK POR ALMACEN" toggleable="true" toggleSpeed="500" style="margin-bottom:20px">
+                <p:dataTable id="listaFilaxColumna" var="listaFilaxColumna" value="#{nivelUbicacionAction.listaFilaxColumna}" selection="#{nivelUbicacionAction.selectFilaxColumna}">
+                    <p:column headerText="ID">
+                        <h:outputText value="#{listaFilaxColumna.ID}" />
+                    </p:column>
+                    <p:column headerText="DESCRIPCION">
+                        <h:outputText value="#{listaFilaxColumna.DESCRIPCION}" />
+                    </p:column>
+                    <p:column style="width:32px;text-align: center; width: 15%">
+                        <p:commandButton value="#{listaFilaxColumna.ESTADO?'Asignado':'No-Asignado'}" update="datos:listaFilaxColumna" action="#{nivelUbicacionAction.onFilaxDistribucionChange()}" oncomplete="PF('dlDistribucionNivel').show()" icon="ui-icon-search" title="View">
+                            <f:setPropertyActionListener value="#{listaFilaxColumna}" target="#{nivelUbicacionAction.selectFilaxColumna}" />
+                        </p:commandButton>
+                    </p:column>
+                </p:dataTable>
+            </p:fieldset>
+        </h:form>
+        <p:dialog id="dlDistribucionNivel" header="..::Definir Ubicación::." widgetVar="dlDistribucionNivel" modal="true" showEffect="popup" closable="true">
+            <h:form id="FormularioDistribucionNivel">
+                <p:messages id="messages" autoUpdate="true" closable="true" style="font-size:10px"/>
+                <p:dataGrid var="listDDNForma_Ubicacion" value="#{nivelUbicacionAction.listDDNForma_Ubicacion}" columns="#{nivelUbicacionAction.selectFilaxColumna.columnas}"
+                            rows="#{nivelUbicacionAction.selectFilaxColumna.filas * nivelUbicacionAction.selectFilaxColumna.columnas}" paginator="true" id="listDDNForma_Ubicacion" style="text-align:center;" 
+                            paginatorPosition="top" paginatorTemplate="{Comandos}">
+                    <f:facet name="{Comandos}">
+                        <p:commandButton value="ASIGNAR" ajax="true" actionListener="#{nivelUbicacionAction.asignarDistribucionXnivel()}" image="ui-icon-aceptar" />
+                    </f:facet>
+                    <p:panel id="cuadroNivel" header="POSICIÓN - #{listDDNForma_Ubicacion.IDFILA} x #{listDDNForma_Ubicacion.IDCOLUMNA}" style="alignment-adjust: central;text-align:center; background-color:#{listDDNForma_Ubicacion.SELECCIONADO?'#FFAAAA':'#FFFFFF'};font-size: 10px">
+                        <h:panelGrid columns="1" style="width: 100%">
+                            <h:outputText value="#{listDDNForma_Ubicacion.PRIORIDAD}" style="font-weight: bold; font-size: 24px;color: #D8000C;visibility:#{listDDNForma_Ubicacion.SELECCIONADO?'visible':'hidden'}"/>
+                            <p:commandButton ajax="true" value="#{listDDNForma_Ubicacion.SELECCIONADO?'check':'no-check'}" action="#{nivelUbicacionAction.filaColumnaSeleccionado()}">
+                                <f:setPropertyActionListener value="#{listDDNForma_Ubicacion}" target="#{nivelUbicacionAction.selectDDNUbicacion}"/>
+                            </p:commandButton>
+                        </h:panelGrid>
+                    </p:panel>
+                </p:dataGrid>
+            </h:form>                 
+        </p:dialog>
+    </ui:define>
+</ui:composition>
+

@@ -1,0 +1,36 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:f="http://java.sun.com/jsf/core"
+                template="templatebanco.xhtml"
+                xmlns:pm="http://primefaces.org/mobile"
+                xmlns:cmp="http://java.sun.com/jsf/composite/cmp">
+    <ui:define name="metadata">
+    </ui:define>
+    <ui:define name="body">
+        <h:form id="datos">
+            <div style="width:100%;text-align: center; padding: 0px">
+                <cmp:barra_mnt bean="#{responsableAction}"/>
+                <h:panelGrid style="width:100%;text-align: left" id="pnl_reprogramar" >
+                    <p:focus context="pnl_reprogramar"/>
+                    <h:panelGrid  columns="4">
+                        <p:outputLabel value="Codigo Responsable" escape="false" /> <br/>
+                        <p:inputText maxlength="4" style="width: 100px !important;font-size: 11px" value="#{responsableAction.datoEdicion.idresponsable}" disabled="true">
+                        </p:inputText><br/>
+                        <p:outputLabel value="Operario" escape="false" />
+                        <h:panelGrid id="cntOperario" cellpadding="0" cellspacing="0" columns="3">
+                            <p:commandButton styleClass="boton_buscar" ajax="true" actionListener="#{responsableAction.verCntOperario()}" disabled="#{!responsableAction.edicion}"  icon="ui-icon-search">
+                                <p:ajax event="dialogReturn" listener="#{responsableAction.llenarOperario}" update="cntOperario"/>
+                            </p:commandButton>
+                            <p:inputText  style="text-align: center" size="3" readonly="true"  value="#{responsableAction.op.IDOPERARIO}"/>
+                            <p:inputText size="41" readonly="true" value="#{responsableAction.op.AP_PATERNO} #{responsableAction.op.AP_MATERNO} #{responsableAction.op.NOMBRES}" />
+                        </h:panelGrid>
+                    </h:panelGrid>
+                </h:panelGrid>
+            </div>
+            <p:growl id="growl" life="4000" showDetail="false"  />
+            <cmp:mDialogElimina_lst id="cmpDialog" bean="#{responsableAction}" ventana="MNT" />
+        </h:form>
+    </ui:define>
+</ui:composition>

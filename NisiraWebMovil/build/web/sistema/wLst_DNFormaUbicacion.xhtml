@@ -1,0 +1,64 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:f="http://java.sun.com/jsf/core"
+                template="templatebanco.xhtml"
+                xmlns:pm="http://primefaces.org/mobile"
+                xmlns:cmp="http://java.sun.com/jsf/composite/cmp">
+    <ui:define name="metadata">
+    </ui:define>
+    <ui:define name="body">
+        <h:form id="datos">            
+            #{dNFormaUbicacionAction.buscarTodo()}  
+            <p:panelGrid id="principal" columns="1" columnClasses="no-border, no-border">
+                <cmp:barra_lst bean="#{dNFormaUbicacionAction}" mostrar_opciones="false" />
+                <p:dataTable id="tbl" var="listDNFormaUbicacion" value="#{dNFormaUbicacionAction.listaDatos}" widgetVar="listDNFormaUbicacion" paginatorTemplate="{FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink}" paginatorPosition="top"
+                             paginator="true" rows="15" style="margin-bottom:20px" selectionMode="single" selection="#{dNFormaUbicacionAction.datoSeleccionado}" rowKey="#{listDNFormaUbicacion.IDNFORMACIONUBICACION}" resizableColumns="true">
+                    <f:facet name="header">
+                        <h:outputText value="..::Distribución en Rack::.." />
+                    </f:facet>
+                    <p:column style="width:15%;" filterBy="#{listDNFormaUbicacion.IDALMACEN}" filterMatchMode="contains" sortBy="#{listDNFormaUbicacion.IDALMACEN}">
+                        <f:facet name="header">
+                            <h:outputText value="Id Almacen" />
+                        </f:facet>
+                        <h:outputText value="#{listDNFormaUbicacion.IDALMACEN}"/>
+                    </p:column>
+                    <p:column style="width:15%;" filterBy="#{listDNFormaUbicacion.IDNFORMACIONUBICACION}" filterMatchMode="contains" sortBy="#{listDNFormaUbicacion.IDNFORMACIONUBICACION}">
+                        <f:facet name="header">
+                            <h:outputText value="Id" />
+                        </f:facet>
+                        <h:outputText value="#{listDNFormaUbicacion.IDNFORMACIONUBICACION}"/>
+                    </p:column>
+                    <p:column style="width:15%;" filterBy="#{listDNFormaUbicacion.DESCRIPCION}" filterMatchMode="contains" sortBy="#{listDNFormaUbicacion.DESCRIPCION}">
+                        <f:facet name="header">
+                            <h:outputText value="Descripcion" />
+                        </f:facet>
+                        <h:outputText value="#{listDNFormaUbicacion.DESCRIPCION}"/>
+                    </p:column>
+                    <p:column style="width:15%;" filterBy="#{listDNFormaUbicacion.FILAS}" filterMatchMode="contains" sortBy="#{listDNFormaUbicacion.FILAS}">
+                        <f:facet name="header">
+                            <h:outputText value="Filas" />
+                        </f:facet>
+                        <h:outputText value="#{listDNFormaUbicacion.FILAS}"/>
+                    </p:column>
+                    <p:column style="width:15%;" filterBy="#{listDNFormaUbicacion.COLUMNAS}" filterMatchMode="contains" sortBy="#{listDNFormaUbicacion.COLUMNAS}">
+                        <f:facet name="header">
+                            <h:outputText value="Columnas" />
+                        </f:facet>
+                        <h:outputText value="#{listDNFormaUbicacion.COLUMNAS}"/>
+                    </p:column>
+                    <p:column style="width:15%;" filterBy="#{listDNFormaUbicacion.ESTADO}" filterMatchMode="contains" sortBy="#{listDNFormaUbicacion.ESTADO}">
+                        <f:facet name="header">
+                            <h:outputText value="Estado" />
+                        </f:facet>
+                        <h:outputText value="#{listDNFormaUbicacion.ESTADO}"/>
+                    </p:column>
+                </p:dataTable> 
+            </p:panelGrid>
+            <p:growl id="growl" life="4000" showDetail="false"  />
+            <cmp:mDialogElimina_lst id="cmpDialog" bean="#{dNFormaUbicacionAction}" ventana="LST" />
+
+        </h:form>
+    </ui:define>
+</ui:composition>

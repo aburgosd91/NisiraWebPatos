@@ -1,0 +1,115 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:f="http://java.sun.com/jsf/core"
+                template="templatebanco.xhtml"
+                xmlns:cmp="http://java.sun.com/jsf/composite/cmp">
+    <ui:define name="metadata">
+    </ui:define>
+    <ui:define name="body">          
+        <h:form id="datos">
+            #{cpumovilAction.buscarTodo()}  
+            <p:panelGrid id="principal" columns="1" columnClasses="no-border, no-border">
+                <cmp:barra_lst bean="#{cpumovilAction}" mostrar_opciones="false" />
+                <p:dataTable id="tbl" var="listCpuMovil" value="#{cpumovilAction.listaDatos}" filteredValue="#{cpumovilAction.filtroDatos}" widgetVar="listCpuMovil" 
+                             paginatorTemplate="{FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {Exporters}" paginatorPosition="top"
+                             paginator="true" rows="15" style="margin-bottom:20px" selectionMode="single" selection="#{cpumovilAction.datoSeleccionado}" rowKey="#{listCpuMovil.idcpumovil}" resizableColumns="true">
+                    <f:facet name="{Exporters}">
+                        <p:commandButton value="Excel" ajax="false" image="ui-icon-excel">
+                            <p:dataExporter type="xls" target="tbl" fileName="listCpuMovil"/>
+                        </p:commandButton>
+                    </f:facet>
+                    <f:facet name="header">
+                        <h:outputText value="#{cpumovilAction.tituloHead}" />
+                    </f:facet>
+                    <p:column style="width:15%;" filterBy="#{listCpuMovil.idcpumovil}" filterMatchMode="contains" sortBy="#{listCpuMovil.idcpumovil}">
+                        <f:facet name="header">
+                            <h:outputText value="ID" />
+                        </f:facet>
+                        <h:outputText value="#{listCpuMovil.idcpumovil}"/>
+                    </p:column>
+                    <p:column style="width:20%;" filterBy="#{listCpuMovil.descripcion}" filterMatchMode="contains" sortBy="#{listCpuMovil.descripcion}">
+                        <f:facet name="header" >
+                            <h:outputText value="DESCRIPCIÓN" />
+                        </f:facet>
+                        <h:outputText value="#{listCpuMovil.descripcion}" />
+                    </p:column>
+                    <p:column style="width:20%;" filterBy="#{listCpuMovil.modelo}" filterMatchMode="contains" sortBy="#{listCpuMovil.modelo}">
+                        <f:facet name="header" >
+                            <h:outputText value="MODELO" />
+                        </f:facet>
+                        <h:outputText value="#{listCpuMovil.modelo}" />
+                    </p:column>
+                    <p:column style="width:20%;" filterBy="#{listCpuMovil.modelo}" filterMatchMode="contains" sortBy="#{listCpuMovil.modelo}">
+                        <f:facet name="header" >
+                            <h:outputText value="MARCA" />
+                        </f:facet>
+                        <h:outputText value="#{listCpuMovil.marca}" />
+                    </p:column>
+                    <p:column style="width:20%;" filterBy="#{listCpuMovil.procesador}" filterMatchMode="contains" sortBy="#{listCpuMovil.procesador}">
+                        <f:facet name="header" >
+                            <h:outputText value="PROCESADOR" />
+                        </f:facet>
+                        <h:outputText value="#{listCpuMovil.procesador}" />
+                    </p:column>
+                    <p:column style="width:20%;" filterBy="#{listCpuMovil.ram}" filterMatchMode="contains" sortBy="#{listCpuMovil.ram}">
+                        <f:facet name="header" >
+                            <h:outputText value="RAM" />
+                        </f:facet>
+                        <h:outputText value="#{listCpuMovil.ram}" />
+                    </p:column>
+                    <p:column style="width:20%;" filterBy="#{listCpuMovil.so}" filterMatchMode="contains" sortBy="#{listCpuMovil.so}">
+                        <f:facet name="header" >
+                            <h:outputText value="SO" />
+                        </f:facet>
+                        <h:outputText value="#{listCpuMovil.so}" />
+                    </p:column>
+                    <p:column style="width:20%;" filterBy="#{listCpuMovil.estado}">
+                        <f:facet name="header">
+                            <h:outputText value="ESTADO"/>
+                        </f:facet>
+                        <f:facet name="filter">
+                            <p:selectOneButton onchange="PF('listCpuMovil').filter()">
+                                <f:selectItem  itemLabel="Activo" itemValue="#{1}"/>
+                                <f:selectItem itemLabel="Inactivo" itemValue="#{0}"/>
+                            </p:selectOneButton>
+                        </f:facet>
+                        <h:graphicImage value="../images/img/#{listCpuMovil.estado == 1?'activo':'inactivo'}.png"/>
+                        <h:outputText value="#{listCpuMovil.estado == 1?'Activo':'Inactivo'}" />
+                    </p:column>
+                </p:dataTable>  
+            </p:panelGrid>
+            <p:dialog id="dlGuardarCpuMovil" header="..:: MANTENEDOR CPU - MOVIL ::." widgetVar="dlGuardarCpuMovil" modal="true" showEffect="popup" closable="false">
+                <p:messages id="messages" autoUpdate="true" closable="true" style="font-size:10px"/>
+                <p:panelGrid columns="2" columnClasses="no-border, no-border,no-border">
+                    <p:outputLabel value="Id: " />
+                    <p:inputText value="#{cpumovilAction.datoEdicion.idcpumovil}" disabled="true" readonly="#{!cpumovilAction.edicion}"/>
+                    <p:outputLabel for="descripcion" value="Descripción: " />
+                    <p:inputTextarea id="descripcion" cols="40" rows="2"  value="#{cpumovilAction.datoEdicion.descripcion}" onkeyup="javascript:this.value = this.value.toUpperCase();" disabled="#{!cpumovilAction.edicion}"/>
+                    <p:outputLabel for="modelo" value="Modelo: " />
+                    <p:inputText id="modelo" value="#{cpumovilAction.datoEdicion.modelo}" readonly="#{!cpumovilAction.edicion}"/>
+                    <p:outputLabel for="marca" value="Marca: " />
+                    <p:inputText id="marca" value="#{cpumovilAction.datoEdicion.marca}" readonly="#{!cpumovilAction.edicion}"/>
+                    <p:outputLabel for="procesador" value="Procesador: " />
+                    <p:spinner id="procesador" value="#{cpumovilAction.datoEdicion.procesador}" min="0" readonly="#{!cpumovilAction.edicion}"/>
+                    <p:outputLabel for="ram" value="Ram: " />
+                    <p:spinner id="ram" value="#{cpumovilAction.datoEdicion.ram}" min="0" readonly="#{!cpumovilAction.edicion}"/>
+                    <p:outputLabel for="so" value="SO: " />
+                    <p:inputText id="so" value="#{cpumovilAction.datoEdicion.so}" readonly="#{!cpumovilAction.edicion}"/>
+                    <h:outputText value="Estado?:" />
+                    <p:selectBooleanCheckbox value="#{cpumovilAction.estado}" disabled="#{!cpumovilAction.edicion}"/>
+                </p:panelGrid>
+                <br/>
+                <p:toolbar>
+                    <f:facet name="right">
+                        <p:commandButton id="buttonGuardar" value="Grabar" ajax="true" actionListener="#{cpumovilAction.grabar()}" image="ui-icon-grabar" />
+                        <p:commandButton id="buttonCancelar" value="Cancelar" image="ui-icon-cancelar" onclick="PF('dlGuardarCpuMovil').hide()"/>
+                    </f:facet>
+                </p:toolbar>          
+            </p:dialog> 
+            <p:growl id="growl" life="4000" showDetail="false"  />
+            <cmp:mDialogElimina_lst id="cmpDialog" bean="#{cpumovilAction}" ventana="LST" />
+        </h:form>
+    </ui:define>
+</ui:composition>

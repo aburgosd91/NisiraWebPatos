@@ -1,0 +1,43 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:f="http://java.sun.com/jsf/core"
+                template="templatebanco.xhtml"
+                xmlns:pm="http://primefaces.org/mobile">
+    <ui:define name="metadata">
+    </ui:define>
+    <ui:define name="body">
+        #{almacenAction.getRecordAlmacenEmpresaActivo()}
+        <p:panelGrid id="principal" columns="2" columnClasses="no-border, no-border">
+            <h:form id="datosAlmacen">
+                <p:dataTable id="tbl" var="listAlmacen" value="#{almacenAction.listAlmacen}" widgetVar="listAlmacen" filteredValue="#{almacenAction.filterAlmacen}"
+                             paginatorTemplate="{FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {Exporters}"
+                             paginator="true" paginatorPosition="top" rows="15" style="margin-bottom:20px" selectionMode="single" selection="#{almacenAction.selectAlmacen}" rowKey="#{listAlmacen.IDALMACEN}">
+                    <p:ajax event="rowDblselect" listener="#{almacenAction.onRowSelectAlmacen}"/>
+                    <f:facet name="header">
+                        <h:outputText value="ALMACEN" />
+                    </f:facet>
+                    <f:facet name="{Exporters}">
+                        <p:commandButton value="Excel" ajax="false" image="ui-icon-excel">
+                            <p:dataExporter type="xls" target="tbl" fileName="listAlmacen"/>
+                        </p:commandButton>
+                    </f:facet>
+                    <p:column style="width:10%;" headerText="ID" filterBy="#{listAlmacen.IDALMACEN}" filterMatchMode="contains" sortBy="#{listAlmacen.IDALMACEN}">
+                        <h:outputText value="#{listAlmacen.IDALMACEN}" />
+                    </p:column>
+                    <p:column style="width:60%;"  headerText="SUCURSAL" filterBy="#{listAlmacen.SUCURSAL}" filterMatchMode="contains" sortBy="#{listAlmacen.SUCURSAL}">
+                        <h:outputText value="#{listAlmacen.SUCURSAL}" />
+                    </p:column>
+                    <p:column style="width:60%;"  headerText="DESCRIPCION" filterBy="#{listAlmacen.DESCRIPCION}" filterMatchMode="contains" sortBy="#{listAlmacen.DESCRIPCION}">
+                        <h:outputText value="#{listAlmacen.DESCRIPCION}" />
+                    </p:column>
+                    <p:column style="width:30%;" headerText="ESTADO">
+                        <h:graphicImage value="../images/img/#{listAlmacen.ESTADO==1?'activo':'inactivo'}.png"/>
+                        <h:outputText value="#{listAlmacen.ESTADO==1?'Activo':'Inactivo'}" />
+                    </p:column>
+                </p:dataTable>
+            </h:form>
+        </p:panelGrid>
+    </ui:define>
+</ui:composition>

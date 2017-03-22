@@ -1,0 +1,69 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:f="http://java.sun.com/jsf/core"
+                template="templatebanco.xhtml"
+                xmlns:pm="http://primefaces.org/mobile"
+                xmlns:cmp="http://java.sun.com/jsf/composite/cmp">
+    <ui:define name="metadata">
+    </ui:define>
+    <ui:define name="body">
+        <h:form id="datos">            
+            #{zonaGeneralAction.buscarTodo()}  
+            <p:panelGrid id="principal" columns="1" columnClasses="no-border, no-border">
+                <cmp:barra_lst bean="#{zonaGeneralAction}" mostrar_opciones="false" />
+                <p:dataTable id="tbl" var="listaDatos" value="#{zonaGeneralAction.listaDatos}" filteredValue="#{zonaGeneralAction.filtroDatos}" widgetVar="listaDatos" paginatorTemplate="{FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {Exporters}" paginatorPosition="top"
+                             paginator="true" rows="15" style="margin-bottom:20px" selectionMode="single" selection="#{zonaGeneralAction.datoSeleccionado}" rowKey="#{listaDatos.IDZONAGENERAL}" resizableColumns="true">
+                    <f:facet name="header">
+                        <h:outputText value="#{zonaGeneralAction.tituloHead}" />
+                    </f:facet>
+                    <p:column style="width:15%;" filterBy="#{listaDatos.IDSUCURSAL}" filterMatchMode="contains" sortBy="#{listaDatos.IDSUCURSAL}">
+                        <f:facet name="header">
+                            <h:outputText value="IDSUCURSAL" />
+                        </f:facet>
+                        <h:outputText value="#{listaDatos.IDSUCURSAL}"/>
+                    </p:column>
+                    <p:column style="width:15%;" filterBy="#{listaDatos.SUCURSAL}" filterMatchMode="contains" sortBy="#{listaDatos.SUCURSAL}">
+                        <f:facet name="header">
+                            <h:outputText value="SUCURSAL" />
+                        </f:facet>
+                        <h:outputText value="#{listaDatos.SUCURSAL}"/>
+                    </p:column>
+                    <p:column style="width:15%;" filterBy="#{listaDatos.IDZONAGENERAL}" filterMatchMode="contains" sortBy="#{listaDatos.IDZONAGENERAL}">
+                        <f:facet name="header">
+                            <h:outputText value="IDZONAGENERAL" />
+                        </f:facet>
+                        <h:outputText value="#{listaDatos.IDZONAGENERAL}"/>
+                    </p:column>
+                    <p:column style="width:15%;" filterBy="#{listaDatos.AREA}" filterMatchMode="contains" sortBy="#{listaDatos.AREA}">
+                        <f:facet name="header">
+                            <h:outputText value="AREA" />
+                        </f:facet>
+                        <h:outputText value="#{listaDatos.AREA}"/>
+                    </p:column>
+                    <p:column style="width:15%;" filterBy="#{listaDatos.LARGO}" filterMatchMode="contains" sortBy="#{listaDatos.LARGO}">
+                        <f:facet name="header">
+                            <h:outputText value="LARGO" />
+                        </f:facet>
+                        <h:outputText value="#{listaDatos.LARGO}"/>
+                    </p:column>
+                    <p:column style="width:15%;" filterBy="#{listaDatos.ANCHO}" filterMatchMode="contains" sortBy="#{listaDatos.ANCHO}">
+                        <f:facet name="header">
+                            <h:outputText value="ANCHO" />
+                        </f:facet>
+                        <h:outputText value="#{listaDatos.ANCHO}"/>
+                    </p:column>
+                    <p:column style="width:15%;" filterBy="#{listaDatos.ESTADO}" filterMatchMode="contains" sortBy="#{listaDatos.ESTADO}">
+                        <f:facet name="header">
+                            <h:outputText value="ESTADO" />
+                        </f:facet>
+                        <h:outputText value="#{listaDatos.ESTADO}"/>
+                    </p:column>
+                </p:dataTable> 
+            </p:panelGrid>
+            <p:growl id="growl" life="4000" showDetail="false"  />
+            <cmp:mDialogElimina_lst id="cmpDialog" bean="#{zonaGeneralAction}" ventana="LST" />
+        </h:form>
+    </ui:define>
+</ui:composition>

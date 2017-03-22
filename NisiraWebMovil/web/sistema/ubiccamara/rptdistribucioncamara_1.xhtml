@@ -1,0 +1,48 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:pm="http://primefaces.org/mobile">
+    <f:view renderKitId="PRIMEFACES_MOBILE" />  
+
+    <h:head>
+        <f:loadBundle basename="titulos" var="titulos" />
+    </h:head>
+    <h:body>
+        <pm:page title="Reporte Distribucion Camara" id="page1">
+            <pm:header title="Reporte Distribucion Camara" fixed="true" >
+                <f:facet name="left"><p:button  value="Atrás" icon="back"  href="/faces/sistema/menu.xhtml?faces-redirect=true"/></f:facet>
+                
+                <script type="text/javascript" src="../js/validadispositivo.js"></script>
+                
+                
+            </pm:header>
+            
+            <pm:content>
+                <h:outputLabel value="#{MovUbicacionPaletaAction.IniciarDistribucion()}" />
+                
+                <h:form id="FormDistribucioncamara">                                        
+                    <p:inputText id="txtbuscarpaleta" value="#{MovUbicacionPaletaAction.numeroPaletaBuscar}"/>
+                    <p:commandButton ajax="false" id="btnbuscarpaleta" value="BUSCAR PALETA" type="submit" actionListener="#{MovUbicacionPaletaAction.buscarPaletaEnDistribuciondeCamara_1()}"/>
+                    <br></br>
+                    BUSQUEDA DE UBICACION PARA LA PALETA NRO #{MovUbicacionPaletaAction.numeroPaletaBuscar}
+                    <br></br>
+                    <p:dataGrid   var="columna" value="#{MovUbicacionPaletaAction.columnas_ubicacionpaletadistribucion}" columns="9"  id="columnas" style="text-align:center;align:center;width:100%">
+                        <f:facet name="header">
+                            CAMARA  #{columna.idcamara} - RACK NRO #{columna.idrack} - NIVEL #{columna.idpiso}
+                        </f:facet>
+                        <h:inputText readonly="true" value="#{columna.codigocliente}" style="text-align:center;width:100%;"/>
+                        <p:commandButton value="#{columna.nropaleta}" style="text-align:center;width:100%;background-color: #{columna.color}" action="verdatosPaleta(columna.nropaleta)"/>                        
+                    </p:dataGrid>
+                </h:form>
+
+                <br></br><br></br><br></br><br></br><br></br><br></br><br></br><br></br>
+            </pm:content>
+            <pm:footer swatch="a" fixed="true">
+                <h1 style="font-size: x-small" >© 2013 <img border="0" height="10px" src="../images/logoWeb.png"/> Nisira Systems SAC </h1>         
+            </pm:footer>  
+    </pm:page>
+    </h:body> 
+</html>

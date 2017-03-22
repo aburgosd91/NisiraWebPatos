@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:pm="http://primefaces.org/mobile"
+      xmlns:pt="http://xmlns.jcp.org/jsf/passthrough"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      template="templatebanco.xhtml"
+      xmlns:cmp="http://java.sun.com/jsf/composite/cmp">
+    <f:view renderKitId="PRIMEFACES_MOBILE"/>
+    <h:head>
+    </h:head>
+    <h:body>
+        <h:form id="datos">
+            #{asignacionChips.buscarTodo()}
+            <p:panelGrid columns="1">
+                <cmp:mbarra_lst bean="#{asignacionChips}" mostrar_opciones="false" />
+                <p:dataTable id="tbl" var="listAC" value="#{asignacionChips.listaDatos}"
+                             paginator="true" rows="15" selectionMode="single" selection="#{asignacionChips.datoSeleccionado}" rowKey="#{listAC.idasignacionchips}" tableStyleClass="ui-table-columntoggle">              
+                    <p:column headerText="Codigo Empresa" style="width:30%;" filterBy="#{listAC.idempresa}" filterMatchMode="contains" sortBy="#{listAC.idempresa}">
+                        <h:outputText value="#{listAC.idempresa}" />
+                    </p:column>
+                    <p:column headerText="Codigo Sucursal" style="width:30%;" filterBy="#{listAC.idsucursal}" filterMatchMode="contains" sortBy="#{listAC.idsucursal}">
+                        <h:outputText value="#{listAC.idsucursal}" />
+                    </p:column>
+                    <p:column headerText="Codigo Asignacion" style="width:30%;" filterBy="#{listAC.idasignacionchips}" filterMatchMode="contains" sortBy="#{listAC.idasignacionchips}">
+                        <h:outputText value="#{listAC.idasignacionchips}" />
+                    </p:column>
+                    <p:column headerText="Codigo Zona" style="width:30%;" filterBy="#{listAC.idzona}" filterMatchMode="contains" sortBy="#{listAC.idzona}">
+                        <h:outputText value="#{listAC.idzona}" />
+                    </p:column>
+                    <p:column headerText="Numero de Tags" style="width:30%;" filterBy="#{listAC.numtag}" filterMatchMode="contains" sortBy="#{listAC.numtag}">
+                        <h:outputText value="#{listAC.numtag}" />
+                    </p:column>
+                    <p:column headerText="Observaciones" style="width:30%;" filterBy="#{listAC.observacion}" filterMatchMode="contains" sortBy="#{listAC.observacion}">
+                        <h:outputText value="#{listAC.observacion}" />
+                    </p:column>
+                    <p:column style="width:20%;" filterBy="#{listRl.estado}">
+                        <f:facet name="header">
+                            <h:outputText value="ESTADO"/>
+                        </f:facet>
+                        <f:facet name="filter">
+                            <p:selectOneButton onchange="PF('listRl').filter()">
+                                <f:converter converterId="javax.faces.Boolean" />
+                                <f:selectItem  itemLabel="Activo" itemValue="true"/>
+                                <f:selectItem itemLabel="Inactivo" itemValue="false"/>
+                            </p:selectOneButton>
+                        </f:facet>
+                        <h:graphicImage value="../images/img/#{listRl.estado==1?'activo':'inactivo'}.png"/>
+                        <h:outputText value="#{listRl.estado==1?'Activo':'Inactivo'}" />
+                    </p:column>
+                </p:dataTable>
+            </p:panelGrid>
+            <p:growl id="growl" life="4000" showDetail="false"  />
+            <cmp:mmDialogElimina_lst id="cmpDialog" bean="#{asignacionChips}" ventana="LST" />
+        </h:form>
+    </h:body>
+</html>

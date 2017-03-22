@@ -1,0 +1,48 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:f="http://java.sun.com/jsf/core"
+                template="templatebanco.xhtml"
+                xmlns:pm="http://primefaces.org/mobile"
+                xmlns:cmp="http://java.sun.com/jsf/composite/cmp">
+    >
+    <ui:define name="metadata">        
+    </ui:define>
+    <ui:define name="body">
+        <h:form id="datos" >
+            <cmp:barra_mnt bean="#{equipoAction}"/>
+            <p:panelGrid id="cabecera" columns="2" columnClasses="no-border,no-border,no-border">
+                <f:facet name="header">
+                    #{equipoAction.tituloHead}
+                </f:facet>
+                <p:outputLabel for="descripcion"  value="Descripcion:" />
+                <p:inputTextarea id="descripcion" cols="60" rows="2" 
+                                 disabled="#{!equipoAction.edicion}"
+                                 value="#{equipoAction.datoEdicion.DESCRIPCION}" 
+                                 onkeyup="javascript:this.value = this.value.toUpperCase();"
+                                 >
+                    <p:ajax event="valueChange" immediate="true" process="@this"/>
+                </p:inputTextarea>
+                <p:outputLabel value="Nro Serie: " />
+                <p:inputText 
+                    id="nroserie" size="100" maxlength="100"
+                    disabled="#{!equipoAction.edicion}" 
+                    value="#{equipoAction.datoEdicion.NROSERIE}" 
+                    onkeyup="javascript:this.value = this.value.toUpperCase();"
+                    >
+                    <p:ajax event="valueChange" immediate="true" process="@this"/>
+                </p:inputText>
+                <p:outputLabel value="Tipo Equipo: " />
+                <p:selectOneMenu  id="base" style="width: 220px !important;font-size: 11px" 
+                                  value="#{equipoAction.datoEdicion.IDTIPOEQUIPOMONTACARGA}" 
+                                  disabled="#{!equipoAction.edicion}">        
+                    <f:selectItem itemLabel="Seleccione Tipo Código" itemValue=""/>                        
+                    <f:selectItems value="#{equipoAction.listMultitabla}" var="tipoEtiqueta" itemLabel="#{tipoEtiqueta.DESCRIPCION}" itemValue="#{tipoEtiqueta.VALOR}" />
+                </p:selectOneMenu>
+            </p:panelGrid>
+            <p:growl id="growl" life="4000" showDetail="false"  />
+            <cmp:mDialogElimina_lst id="cmpDialog" bean="#{equipoAction}" ventana="MNT" />
+        </h:form>
+    </ui:define>
+</ui:composition>

@@ -1,0 +1,74 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:f="http://java.sun.com/jsf/core"
+                template="templatebanco.xhtml"
+                >
+    <ui:define name="metadata">
+    </ui:define>
+    <ui:define name="body">
+        #{regionesAction.llenarCatalogo()}
+        <h:form style="font-size: 15px" id="datos">
+            <p:panelGrid columns="2" styleClass="bordePanelGrid" columnClasses="no-border, no-border">
+                <p:panelGrid columns="1" styleClass="bordePanelGrid" columnClasses="no-border, no-border">
+                    <p:panelGrid columns="2" columnClasses="no-border, no-border">
+                        <p:outputLabel value="Plantilla: "/>
+                        <p:selectOneMenu value="#{regionesAction.tipo_arbol}">
+                            <f:selectItem itemLabel=" :::... Seleccionar plantilla ...:::" itemValue="0"/>
+                            <f:selectItems value="#{regionesAction.lista_tg30wbmodulo}" var="est" itemValue="#{est.IDPLANTILLA}" itemLabel="#{est.DESCRIPCION}"/>
+                            <p:ajax listener="#{regionesAction.llenarArbol()}" update=":datos:arbol,:datos:datosTree" />
+                        </p:selectOneMenu> 
+                    </p:panelGrid>
+                    <h:outputLabel value="#{regionesAction.llenarArbol()}" id="llenarA" />
+                    <p:panelGrid style="font-size: 11px" columns="3" layout="grid" columnClasses="no-border, no-border">
+                        <p:commandButton update=":datos:datosTree"  value="Nuevo"  actionListener="#{regionesAction.nuevo_contenido_pagina_productos()}"/>
+                        <p:commandButton update=":datos:datosTree"  value="Nuevo Secundario"  actionListener="#{regionesAction.nuevo_Secundario_contenido_pagina_productos()}" />
+                        <p:commandButton update=":datos,:datos:datosTree"  value="Borrar"  actionListener="#{regionesAction.borrar_contenido_pagina_productos()}"/>
+                    </p:panelGrid>
+                    <p:tree style="min-height:  380px !important; width: 100%"  id="arbol" 
+                            value="#{regionesAction.patriarca}" var="ar"  
+                            selectionMode="single"  
+                            selection="#{regionesAction.nodoSeleccionado}" 
+                            dynamic="true">  
+                        <p:ajax event="select" update=":datos:datosTree" listener="#{regionesAction.onNodeSelect}" />  
+                        <p:treeNode expandedIcon="ui-icon-folder-open"  
+                                    collapsedIcon="ui-icon-folder-collapsed" >  
+                            <h:outputText value="(#{ar[5]},#{ar[6]})" />  
+                        </p:treeNode>  
+                    </p:tree>
+                </p:panelGrid>
+                <p:panelGrid id="datosTree" columns="2">
+                    <h:outputLabel value="Id: " />
+                    <h:panelGrid columns="3">
+                        <h:inputText size="3" disabled="true" value="#{regionesAction.nodoS[2]}" />
+                        <h:outputLabel value="Jerarquia: " />
+                        <h:inputText  size="40"  disabled="true" value="#{regionesAction.return_descripcion(regionesAction.nodoS[3])}" />
+                    </h:panelGrid>
+                    <h:outputLabel value="Tipo: " />
+                    <h:inputText  disabled="true"  value="#{regionesAction.nodoS[1]}" />
+                    <h:outputLabel value="Generación Código: " />
+                    <p:selectOneMenu id="generacion" value="#{regionesAction.IDGENERACION}">  
+                       <f:selectItem itemLabel="" itemValue="0"/>
+                       <f:selectItems value="#{regionesAction.listGeneracionCodigo}" var="genera" itemLabel="#{genera.DESCRIPCION}" itemValue="#{genera.IDGENERACION}"/>
+                    </p:selectOneMenu>
+                    <h:outputLabel value="Prioridad: " />
+                    <h:inputText value="#{regionesAction.nodoS[4]}" />
+                    <h:outputLabel value="Cordenada X: " />
+                    <h:panelGrid columns="3">
+                        <p:spinner id="cx" value="#{regionesAction.nodoS[5]}" min="0"/>
+                        <h:outputLabel value="Cordenada Y:" />
+                        <p:spinner id="cy" value="#{regionesAction.nodoS[6]}" min="0"/>
+                    </h:panelGrid>
+                    <h:outputLabel value="Largo: " />
+                    <p:spinner id="largo" value="#{regionesAction.nodoS[7]}" min="0"/>
+                    <h:outputLabel value="Ancho: " />
+                    <p:spinner id="ancho" value="#{regionesAction.nodoS[8]}" min="0"/>
+                    <p:commandButton update=":datos,:datos:datosTree" value="Grabar"  actionListener="#{regionesAction.grabar_tg30wbmenu()}"  />
+                </p:panelGrid>
+            </p:panelGrid>
+            <p:growl id="growl" life="4000" showDetail="false" escape="false" />
+        </h:form>
+        <!--        -->
+    </ui:define>
+</ui:composition>

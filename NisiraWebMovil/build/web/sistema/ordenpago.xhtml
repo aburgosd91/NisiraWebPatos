@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+To change this template, choose Tools | Templates
+and open the template in the editor.
+-->
+<!DOCTYPE html>
+
+<f:view xmlns="http://www.w3.org/1999/xhtml"
+        xmlns:f="http://java.sun.com/jsf/core"
+        xmlns:h="http://java.sun.com/jsf/html"
+        xmlns:p="http://primefaces.org/ui"
+        xmlns:pm="http://primefaces.org/mobile"
+        contentType="text/html"
+        renderKitId="PRIMEFACES_MOBILE">
+    <pm:page title="Orden Pago">
+            <pm:header title="Orden Pago" swatch="a" fixed="true" >
+                <f:facet name="left"><p:button  value="Atrás" icon="back" href="/faces/sistema/menu.xhtml?faces-redirect=true"/></f:facet>
+                <f:facet name="right"><p:button value="Salir" icon="delete" onclick="dlg.show()" /></f:facet>
+                <script type="text/javascript" src="../js/validadispositivo.js"></script>
+                
+
+                <p:dialog header="Advertencia" widgetVar="dlg" modal="true">
+                    <f:attribute name="contentSwatch" value="a" />
+                    <p:outputPanel id="noteDetail" layout="block"  style="padding:4px 10px">
+                        <h:outputText value="Desea Salir?"/>
+                        <p:button value="Si" onclick="window.location = '#{facesContext.externalContext.requestContextPath}/faces/Sistema/CerrarSesion.xhtml';" icon="check"/>
+                    </p:outputPanel>
+                </p:dialog>
+            </pm:header>
+            <pm:content>
+                <h:outputLabel value="#{ordenpagoAction.iniciar}" />
+                <h:outputLabel value="#{ordenpagoAction.buscarTodas()}" /> 
+                <h:form id="listOrdencompraForm">
+                    <p style="color: darkorange; font-size: 18px;"><b>Restan: #{ordenpagoAction.contador} órdenes de pago </b></p> 
+                    <p:dataList id="ordencompra" value="#{ordenpagoAction.listaOrdenpago}" var="orden" type="inset">
+
+                        <f:attribute name="filter" value="true"/>
+
+                        <h:outputLink value="#main" style="width: 75%"> 
+
+                               <!-- <p style="color: red; font-size: 18px;"><b>#{orden.idordenpago}</b></p> -->
+                            <p style="color: red; font-size: 18px;"><b>#{orden.idestado}</b></p> 
+                            <p style="color: blue ; font-size: 15px;"><b>#{orden.idareadesc}</b></p>
+                            <p style="font-size: 18px;"><b>#{orden.iddocumento}-#{orden.serie}</b></p>                                                
+                            <p style="font-size: 15px;"><b>#{orden.idclieprov}</b></p>   
+                            <p style="color: darkorange; font-size: 18px;">#{orden.idmoneda}#{orden.total}</p>
+                            <h:outputText value="#{orden.fecha}" >  
+                                <f:convertDateTime pattern="dd/MM/yyyy" timeZone="EST" />  
+                            </h:outputText>
+                            <p:commandButton value="Aceptar" oncomplete="confirmar.show()" update=":listOrdencompraForm:aprobar1" icon="check" >
+                                <f:attribute name="swatch" value="a" />
+                                <f:setPropertyActionListener value="#{orden}" target="#{ordenpagoAction.ordenpagoSeleccionado}" />
+                            </p:commandButton> 
+                        </h:outputLink> 
+
+                        <p:commandLink title="fggg" value="" action="/faces/sistema/Dordenpago.xhtml?faces-redirect=true" update=":detalles" ajax="falce" style="width: 15%">
+                            <f:setPropertyActionListener value="#{orden}" target="#{ordenpagoAction.ordenpagoSeleccionado}" />
+                        </p:commandLink>
+
+                    </p:dataList>
+
+                    <p:dialog id="aprobar" header="Advertencia" widgetVar="confirmar" modal="true">
+                        <p:outputPanel id="aprobar1" layout="block"  style="padding:4px 10px">
+                            <h:outputLabel value="#{ordenpagoAction.menuaprobar()}" /> 
+                            <h:outputLabel value="#{ordenpagoAction.DetalleOrdenpago()}" />
+                            <h:outputText value="Está seguro de reaizar esta operación?"/>
+                            <center>
+                                <p:commandButton type="submit" value="Si" action="#{ordenpagoAction.aprobar}"  icon="check">
+                                    <f:attribute name="swatch" value="b" />
+                                    <f:setPropertyActionListener value="#{ordenpagoAction.menuapro}" target="#{ordenpagoAction.ordenpagoSeleccionado2.idestado}" />
+                                </p:commandButton>
+                            </center>
+                        </p:outputPanel>
+                    </p:dialog>
+                </h:form>
+
+                <br></br><br></br><br></br><br></br><br></br><br></br><br></br><br></br>
+            </pm:content>
+            <pm:footer swatch="a" fixed="true">
+                <h1 style="font-size: x-small" >© 2013 <img border="0" height="10px" src="../images/logoWeb.png"/> Nisira Systems SAC </h1>         
+            </pm:footer>  
+    </pm:page>
+</f:view>

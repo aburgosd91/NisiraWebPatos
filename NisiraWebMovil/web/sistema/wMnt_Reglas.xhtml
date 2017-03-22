@@ -1,0 +1,82 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:f="http://java.sun.com/jsf/core"
+                template="templatebanco.xhtml"
+                xmlns:pm="http://primefaces.org/mobile"
+                xmlns:cmp="http://java.sun.com/jsf/composite/cmp">
+    <ui:define name="metadata">
+    </ui:define>
+    <ui:define name="body">
+        #{reglasAction.dReglasReglas()}
+        <h:form id="datos">
+            <div style="width:100%;text-align: center; padding: 0px">
+                <cmp:barra_mnt bean="#{reglasAction}"/>
+                <h:panelGrid style="width:100%;text-align: left" id="pnl_reprogramar" >
+                    <p:focus context="pnl_reprogramar"/>
+                    <h:panelGrid  columns="4">
+                        <p:outputLabel value="Id Regla" escape="false" /> <br/>
+                        <p:inputText maxlength="4" style="width: 100px !important;font-size: 11px" value="#{reglasAction.datoEdicion.idregla}" disabled="true">
+                        </p:inputText><br/>
+                        <p:outputLabel value="Descripcion:" escape="false" /> <br/>
+                        <p:inputText style="width: 200px !important;font-size: 11px" value="#{reglasAction.datoEdicion.descripcion}" disabled="#{!reglasAction.edicion}">
+                        </p:inputText><br/>
+                        <p:outputLabel value="Cantidad de parametros" escape="false" /> <br/>
+                        <p:spinner style="width: 200px !important;font-size: 11px" value="#{reglasAction.datoEdicion.cantidadparametros}" disabled="#{!reglasAction.edicion}" min="0"/><br/>
+                            <p:outputLabel value="Estado" escape="false" />  <br/>
+                            <p:outputLabel style="width: 100px !important;font-size: 11px; color: #{(reglasAction.datoEdicion.estado==1)? 'blue' : 'red'}; font-weight: bold" value="#{(reglasAction.datoEdicion.estado==1)? 'ACTIVO' : 'ANULADO'}" />  <br/> 
+                            <p:commandButton  actionListener="#{reglasAction.newDRegla()}" update="tblVariedades" icon="ui-icon-plus"  value="Agregar" disabled="#{reglasAction.barraVista}"/>
+                            <p:commandButton  icon="ui-icon-plus"  value="Quitar" actionListener="#{reglasAction.delDRegla()}" update="tblVariedades" disabled="#{reglasAction.barraVista}"/>
+                    </h:panelGrid>
+                </h:panelGrid>
+                <h:panelGrid columns="1" styleClass="top-aligned-columns">
+                    <p:dataTable id="tblVariedades" var="var" value="#{reglasAction.listDReglas}"  selectionMode="single" selection="#{reglasAction.selectReglas}" rowKey="#{var.idparamentro}" style="font-size: 10px;" >
+                        <f:facet name="header">
+                            Detalle de Regla
+                        </f:facet>
+                        <p:column headerText="Parametro" style="width:80%; text-align: center">                      
+                            <p:selectOneMenu id="cbotipoalmacen" value="#{var.idparamentro}" required="true"> 
+                                <f:selectItem itemLabel="Seleccione Tipo Almacen" itemValue=""/>                        
+                                <f:selectItems value="#{reglasAction.listMultitabla}" var="tipoAlmacen" itemLabel="#{tipoAlmacen.DESCRIPCION}" itemValue="#{tipoAlmacen.VALOR}"/>
+                            </p:selectOneMenu>
+                        </p:column>
+                        <p:column headerText="Descripción " style="width:80%; text-align: center">
+                            <p:inputText style="width: 90% !important;font-size: 11px" value="#{var.descripcion}" disabled="#{reglasAction.barraVista}"/>
+                        </p:column>
+                        <p:column headerText="Prioridad" style="width:80%; text-align: center">
+                            <p:selectOneMenu value="#{var.prioridad}" style="width: 150px" disabled="#{!reglasAction.edicion}">   
+                                <f:selectItem itemLabel="1" itemValue="#{1}" /> 
+                                <f:selectItem itemLabel="2" itemValue="#{2}" /> 
+                                <f:selectItem itemLabel="3" itemValue="#{3}" /> 
+                                <f:selectItem itemLabel="4" itemValue="#{4}" /> 
+                                <f:selectItem itemLabel="5" itemValue="#{5}" /> 
+                            </p:selectOneMenu>
+                        </p:column>
+                        <p:column headerText="Tipo" style="width:80%; text-align: center">
+                            <p:selectOneMenu value="#{var.tipo}" style="width: 150px" disabled="#{!reglasAction.edicion}">   
+                                <f:selectItem itemLabel="Int" itemValue="Int" /> 
+                                <f:selectItem itemLabel="Varchar" itemValue="Varchar" /> 
+                                <f:selectItem itemLabel="Numeric" itemValue="Numeric" /> 
+                                <f:selectItem itemLabel="Char" itemValue="Char" /> 
+                                <f:selectItem itemLabel="Datetime" itemValue="Datetime" /> 
+                            </p:selectOneMenu>
+                        </p:column>
+                        <p:column headerText="valor" style="width:80%; text-align: center">
+                            <p:inputText style="width: 90% !important;font-size: 11px" value="#{var.valor}" disabled="#{reglasAction.barraVista}"/>
+                        </p:column>
+                        <p:column headerText="condicion" style="width:80%; text-align: center">
+                            <p:inputText style="width: 90% !important;font-size: 11px" value="#{var.condicion}" disabled="#{reglasAction.barraVista}"/>
+                        </p:column>
+                        <p:column headerText="estado" style="width:80%; text-align: center">
+                            <p:inputText style="width: 90% !important;font-size: 11px" value="#{var.estado}" disabled="#{reglasAction.barraVista}"/>
+                        </p:column>
+                    </p:dataTable>
+                </h:panelGrid>
+            </div>
+
+            <p:growl id="growl" life="4000" showDetail="false"  />
+            <cmp:mDialogElimina_lst id="cmpDialog" bean="#{reglasAction}" ventana="MNT" />
+        </h:form>
+    </ui:define>
+</ui:composition>

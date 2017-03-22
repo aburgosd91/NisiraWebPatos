@@ -1,0 +1,68 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:f="http://java.sun.com/jsf/core"
+                template="templatebanco.xhtml"
+                xmlns:pm="http://primefaces.org/mobile"
+                xmlns:cmp="http://java.sun.com/jsf/composite/cmp">
+    <ui:define name="metadata">
+    </ui:define>
+    <ui:define name="body">
+        <h:form id="datos">
+            #{puertocomAction.buscarTodo()}  
+            <p:messages autoUpdate="true" closable="true" showIcon="true" style="font-size:10px"/>
+            <p:panelGrid id="principal" columns="1" columnClasses="no-border, no-border">
+                <cmp:barra_lst bean="#{puertocomAction}" mostrar_opciones="false" />
+                <p:dataTable id="tbl" var="lstPcom" value="#{puertocomAction.listaDatos}" filteredValue="#{puertocomAction.filtroDatos}" widgetVar="lstPcom" 
+                             paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink}"
+                             paginator="true" rows="15" style="margin-bottom:20px" selectionMode="single" selection="#{puertocomAction.datoSeleccionado}" rowKey="#{lstPcom.idpuertocom}" resizableColumns="true">
+                    <f:facet name="header">
+                        <h:outputText value="#{puertocomAction.tituloHead}" />
+                    </f:facet>
+                    <p:column style="width:10%;" filterBy="#{lstPcom.idpuertocom}" filterMatchMode="contains" sortBy="#{lstPcom.idpuertocom}">
+                        <f:facet name="header">
+                            <h:outputText value="CODIGO" />
+                        </f:facet>
+                        <h:outputText value="#{lstPcom.idpuertocom}" />
+                    </p:column>
+                    <p:column style="width:10%;" filterBy="#{lstPcom.descripcion}" filterMatchMode="contains" sortBy="#{lstPcom.descripcion}">
+                        <f:facet name="header">
+                            <h:outputText value="Descripcion" />
+                        </f:facet>
+                        <h:outputText value="#{lstPcom.descripcion}" />
+                    </p:column>
+                    <p:column style="width:30%;" filterBy="#{lstPcom.estado}">
+                        <f:facet name="header">
+                            <h:outputText value="ESTADO"/>
+                        </f:facet>
+                        <f:facet name="filter">
+                            <p:selectOneButton onchange="PF('lstPcom').filter()">
+                                <f:selectItem  itemLabel="Activo" itemValue="#{1}"/>
+                                <f:selectItem itemLabel="Inactivo" itemValue="#{0}"/>
+                            </p:selectOneButton>
+                        </f:facet>
+                        <h:graphicImage value="../images/img/#{lstPcom.estado==1?'activo':'inactivo'}.png"/>
+                        <h:outputText value="#{lstPcom.estado==1?'Activo':'Anulado'}" />
+                    </p:column>
+                </p:dataTable>
+            </p:panelGrid>
+            <p:dialog id="dlGuardarPuertos" header="..:: MANTENEDOR PUERTOS ::." widgetVar="dlGuardarPuertos" modal="true" showEffect="popup" closable="false">
+                <p:messages id="messages" autoUpdate="true" closable="true" style="font-size:10px"/>
+                <p:panelGrid columns="2" columnClasses="no-border, no-border,no-border">
+                    <p:outputLabel value="Descripcion " />
+                    <p:inputTextarea value="#{puertocomAction.datoEdicion.descripcion}" disabled="#{!puertocomAction.edicion}"/>
+                </p:panelGrid>
+                <br/>
+                <p:toolbar>
+                    <f:facet name="right">
+                        <p:commandButton id="buttonGuardar" value="Grabar" ajax="true" actionListener="#{puertocomAction.grabar()}" image="ui-icon-grabar" />
+                        <p:commandButton id="buttonCancelar" value="Cancelar" image="ui-icon-cancelar" onclick="PF('dlGuardarPuertos').hide()"/>
+                    </f:facet>
+                </p:toolbar>
+            </p:dialog>
+            <p:growl id="growl" life="4000" showDetail="false"  />
+            <cmp:mDialogElimina_lst id="cmpDialog" bean="#{puertocomAction}" ventana="LST" />
+        </h:form>
+    </ui:define>
+</ui:composition>

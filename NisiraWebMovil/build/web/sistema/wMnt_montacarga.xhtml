@@ -1,0 +1,119 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:f="http://java.sun.com/jsf/core"
+                template="templatebanco.xhtml"
+                xmlns:pm="http://primefaces.org/mobile"
+                xmlns:cmp="http://java.sun.com/jsf/composite/cmp">
+    <ui:define name="metadata">
+    </ui:define>
+    <ui:define name="body">
+        <h:form id="datos">
+            #{montacargaAction.findDetalles()}
+            #{montacargaAction.findCpuMovil()}
+            <div style="width:100%;text-align: center; padding: 0px">
+                <cmp:barra_mnt bean="#{montacargaAction}"/>
+                <h:panelGrid style="width:100%;text-align: left" id="pnl_reprogramar" >
+                    <p:panelGrid id="cabecera" columns="2" columnClasses="no-border,no-border,no-border">
+                        <p:outputLabel value="Cod.Montacarga: " />
+                        <p:inputText 
+                            id="codigo" size="3" maxlength="3" disabled="true" 
+                            value="#{montacargaAction.datoEdicion.IDMONTACARGA}">
+                        </p:inputText>
+                        <p:outputLabel for="descripcion"  value="Descripcion:" />
+                        <p:inputTextarea id="descripcion" cols="60" rows="2" 
+                                         disabled="#{!montacargaAction.edicion}"
+                                         value="#{montacargaAction.datoEdicion.DESCRIPCION}" 
+                                         onkeyup="javascript:this.value = this.value.toUpperCase();"
+                                         >
+                        </p:inputTextarea>
+                    </p:panelGrid>
+                    <p:toolbar>
+                        <f:facet name="left">
+                            <p:commandButton value="det." ajax="true" image="ui-icon-nuevo" actionListener="#{montacargaAction.getActionAgregarDetalle()}" disabled="#{!montacargaAction.edicion}"/>
+                            
+                            <p:commandButton value="det." ajax="true" image="ui-icon-eliminar" actionListener="#{montacargaAction.getActionEliminarDetalle()}" disabled="#{!montacargaAction.edicion}" >
+                            </p:commandButton>                            
+                        </f:facet> 
+                    </p:toolbar>
+                </h:panelGrid>
+                <p:fieldset legend="Detalle" toggleable="true" toggleSpeed="500" style="margin-bottom:20px">
+                    <p:tabView id="tab">
+                        <p:tab title="CPU - MOVIL">
+                            <p:panelGrid id="principal2" columns="2" columnClasses="no-border, no-border">
+                                <p:panelGrid style="font-size: 12px;text-align:center;" id="panel2" columns="1" columnClasses="no-border, no-border">
+                                    <p:dataTable id="tbl2" var="detalle2" value="#{montacargaAction.listDMontacargaCpuMovil}" widgetVar="listDMontacargaCpuMovil" 
+                                                 paginatorTemplate="{FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink}"
+                                                 paginator="true" paginatorPosition="top" rows="15" style="margin-bottom:20px" selectionMode="single" 
+                                                 selection="#{montacargaAction.selectDMontacargaCpuMovil}" 
+                                                 rowKey="#{detalle2.IDCPUMOVIL}"
+                                                 sortBy="#{detalle2.IDCPUMOVIL}">
+                                        <p:column style="width: 50px;text-align: right" headerText="Codigo"> 
+                                            #{detalle2.IDCPUMOVIL} 
+                                        </p:column> 
+                                        <p:column headerText="Descripcion"> 
+                                            #{detalle2.CPUMOVILDESCRIPCION}
+                                        </p:column> 
+                                    </p:dataTable>  
+                                </p:panelGrid>
+                            </p:panelGrid>
+                        </p:tab>
+                    </p:tabView>
+                </p:fieldset>
+            </div>
+            <p:dialog id="dlg_detalleequipo" header="..:: CPU - MOVIL ::." widgetVar="dlg_detalleequipo"  showEffect="popup" closable="false">
+                <p:panelGrid columns="1" columnClasses="no-border">
+                    <p:messages id="mensajeDialogDetalleEquipo" for="mensajeDialogDetalleEquipo" autoUpdate="true" closable="true" style="font-size:10px"/>
+                    <p:panelGrid columns="2" columnClasses="no-border, no-border,no-border">
+                        <p:outputLabel for="idequipo"  value="Cod.Equipo: " />
+                        <p:panelGrid columns="3" id="contenedorequipo" columnClasses="no-border, no-border,no-border">
+                            <p:commandButton ajax="true" id="btnbuscarequipo" icon="ui-icon-search" onclick="PF('dlg_equipo').show()"
+                                             style="padding-right: 0px;"
+                                             />
+                            <p:inputText id="idequipo" maxlength="3" size="3"  readonly="true"
+                                         style="margin-right:0px"
+                                         value="#{montacargaAction.selectDMontacargaCpuMovil.IDCPUMOVIL}" >  
+                                <p:ajax event="valueChange" immediate="true" process="@this"/>
+                            </p:inputText>
+                            <p:inputText id="descequipo" size="40"  readonly="true"
+                                         style="margin-right:0px"
+                                         value="#{montacargaAction.selectDMontacargaCpuMovil.CPUMOVIL.descripcion}">
+                            </p:inputText>
+                        </p:panelGrid>
+                    </p:panelGrid>
+                    <br/>
+                    <p:toolbar>
+                        <f:facet name="right">
+                            <p:commandButton value="Agregar" ajax="true" actionListener="#{montacargaAction.AgregarEditarDetalle()}" image="ui-icon-grabar" />
+                            <p:commandButton value="Cancelar" image="ui-icon-cancelar" onclick="PF('dlg_detalleequipo').hide()">
+                            </p:commandButton>
+                        </f:facet>
+                    </p:toolbar>                       
+                </p:panelGrid>                      
+            </p:dialog>
+   
+            <p:dialog id="dlg_equipo" header="..::  CPU - MOVIL  ::.." widgetVar="dlg_equipo"  showEffect="popup" closable="true"
+                       height="450" width="550" resizable="true">
+                <p:messages for="mensajeBusquedaEquipo" autoUpdate="false" closable="true" style="font-size:10px"/>
+                <p:dataTable id="tablaEquipo" var="cpumovil" value="#{montacargaAction.listbusquedaCpuMovil}"
+                             selection="#{montacargaAction.selectbusquedaCpuMovil}" rowKey="#{cpumovil.idcpumovil}"  selectionMode="single"
+                             rows="10"
+                             paginator="true"
+                             styleClass="mystyle"
+                             paginatorTemplate="{FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} ">
+                    <p:ajax event="rowDblselect" listener="#{montacargaAction.llenarEQ()}"/>
+                    <p:column style="width: 50px;text-align: right" headerText="Codigo"> 
+                        #{cpumovil.idcpumovil} 
+                    </p:column> 
+                    <p:column headerText="Descripcion"> 
+                        #{cpumovil.descripcion}
+                    </p:column> 
+
+                </p:dataTable>                               
+            </p:dialog>
+            <p:growl id="growl" life="4000" showDetail="false"  />
+            <cmp:mDialogElimina_lst id="cmpDialog" bean="#{montacargaAction}" ventana="MNT" />
+        </h:form>
+    </ui:define>
+</ui:composition>

@@ -1,0 +1,146 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:f="http://java.sun.com/jsf/core"
+                template="templatebanco.xhtml"
+                xmlns:pm="http://primefaces.org/mobile"
+                xmlns:cmp="http://java.sun.com/jsf/composite/cmp">
+    <ui:define name="metadata">
+    </ui:define>
+    <ui:define name="body">
+        #{notificacionAction.findDetalles()}
+        <!--p:messages id="messages" autoUpdate="true" closable="true" style="font-size:10px"/><br/-->
+        <h:form id="datos" style="width:100%;position:relative;">
+            <cmp:barra_mnt bean="#{notificacionAction}"/>
+            <p:panelGrid columns="4" columnClasses="no-border, no-border, no-border , no-border">
+                <p:outputLabel value="Id: " />
+                <p:inputText size="3" disabled="true" value="#{notificacionAction.datoEdicion.idnotificacion}"/>
+
+                <p:outputLabel for="mensaje"  value="Mensaje:" />
+                <p:panelGrid columns="2" columnClasses="no-border, no-border">
+                    <p:inputTextarea id="mensaje" cols="60" rows="2" value="#{notificacionAction.datoEdicion.mensaje}" 
+                                     onblur="javascript:this.value = this.value.toUpperCase();" 
+                                     style="text-transform: uppercase"
+                                     disabled="#{!notificacionAction.edicion}">
+                    </p:inputTextarea>
+                    <p:commandButton value="Notas" ajax="true" actionListener="#{notificacionAction.openDialogQuickNote()}" image="ui-icon-note" />
+                </p:panelGrid>
+
+                <p:outputLabel value="Cod. Referencial" escape="false" />
+                <p:inputText value="#{notificacionAction.datoEdicion.toquen}"  disabled="#{!notificacionAction.edicion}"/>
+
+                <p:outputLabel for="modalidad"  value="Modalidad:" />
+                <p:selectOneMenu id="modalidad" value="#{notificacionAction.datoEdicion.modo}" style="width: 100%"  disabled="#{!notificacionAction.edicion}"> 
+                        <f:selectItem itemLabel="MANUAL" itemValue="MA"/>
+                        <f:selectItem itemLabel="AUTOMÁTICO" itemValue="AU"/>  
+                </p:selectOneMenu>
+
+                <h:outputText value="Estado?:" />
+                <p:selectBooleanCheckbox value="#{notificacionAction.estado}" disabled="#{!notificacionAction.edicion}"/>
+            </p:panelGrid>
+            <p:fieldset legend="Detalle Envio Notificaciones" toggleable="true" toggleSpeed="500" style="margin-bottom:20px">
+                <p:panelGrid id="principal" columns="2" columnClasses="no-border, no-border">
+                    <p:panelGrid style="font-size: 12px;text-align:center;" id="panel1" columns="1" columnClasses="no-border, no-border">
+                        <p:dataTable id="tbl" var="listEnvioNotificacion" value="#{notificacionAction.listEnvioNotificacion}" widgetVar="listEnvioNotificacion"
+                                     paginatorTemplate="{Comandos} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {Exporters}"
+                                     paginator="true" paginatorPosition="top" rows="15" style="margin-bottom:20px" selectionMode="single" 
+                                     selection="#{notificacionAction.selectNotificacion}" rowKey="#{listEnvioNotificacion.idenvionotificacion}">
+                            <p:ajax event="rowSelect" listener="#{notificacionAction.onRowSelectEnvioNotificacion()}"/>
+                            <p:ajax event="rowUnselect" listener="#{notificacionAction.onRowSelectEnvioNotificacion()}" update="datos:tbl" />
+                            <f:facet name="{Comandos}">
+                                <p:commandButton value="Envio" ajax="true" image="ui-icon-nuevo" disabled="#{!notificacionAction.edicion}" actionListener="#{notificacionAction.openDialogMontacarga()}"/>
+                            </f:facet>
+                            <f:facet name="{Exporters}">
+                                <p:commandButton value="Excel" ajax="false" image="ui-icon-excel">
+                                    <p:dataExporter type="xls" target="tbl" fileName="listEnvioNotificacion"/>
+                                </p:commandButton>
+                            </f:facet>
+                            <f:facet name="header">
+                                <p:commandButton id="toggler" type="button" value="Columns" style="float:right" icon="ui-icon-calculator" />
+                                <p:columnToggler datasource="tbl" trigger="toggler" />
+                            </f:facet>
+                            <p:column style="width:20%;" sortBy="#{listEnvioNotificacion.fechaenvio}" filterBy="#{listEnvioNotificacion.fechaenvio}">
+                                <f:facet name="header" >
+                                    <h:outputText value="F.ENVIO" />
+                                </f:facet>
+                                <h:outputText value="#{listEnvioNotificacion.fechaenvio}" />
+                            </p:column>
+                            <p:column style="width:20%;" filterBy="#{listEnvioNotificacion.idmontacarga}">
+                                <f:facet name="header" >
+                                    <h:outputText value="COD.MONTACARGA" />
+                                </f:facet>
+                                <h:outputText value="#{listEnvioNotificacion.idmontacarga}" />
+                            </p:column>
+                            <p:column style="width:40%;" filterBy="#{listEnvioNotificacion.montacarga}">
+                                <f:facet name="header" >
+                                    <h:outputText value="MONTACARGA" />
+                                </f:facet>
+                                <h:outputText value="#{listEnvioNotificacion.montacarga}" />
+                            </p:column>
+                            
+                            <p:column style="width:20%;" sortBy="#{listEnvioNotificacion.fecharecepcion}">
+                                <f:facet name="header" >
+                                    <h:outputText value="F.RECEPCIÓN" />
+                                </f:facet>
+                                <h:outputText value="#{listEnvioNotificacion.fecharecepcion}" />
+                            </p:column>
+                        </p:dataTable>  
+                    </p:panelGrid>
+                </p:panelGrid>
+            </p:fieldset>
+            <p:dialog id="dlgnew_montacarga" header="..::Envio Montacarga::." widgetVar="dlgnew_montacarga" modal="true" showEffect="popup" closable="false">
+                <!--p:messages id="messagesNewOperario" autoUpdate="true" closable="true" style="font-size:10px"/-->
+                <p:dataTable id="listMontacarga" var="listMontacarga" value="#{notificacionAction.listMontacarga}"
+                             selection="#{notificacionAction.selectListMontacarga}" rowKey="#{listMontacarga.IDMONTACARGA}" 
+                                   resizableColumns="true" resizeMode="expand" style="text-align: center;">
+                   <p:ajax event="rowSelectCheckbox" immediate="true" listener="#{notificacionAction.onCheck_()}" process="@this" />
+                   <p:ajax event="rowUnselectCheckbox" immediate="true" listener="#{notificacionAction.onCheck_()}" process="@this" />
+                  <p:column selectionMode="multiple" style="width:16px;text-align:center"/>
+                  <p:column headerText="ID">
+                      <h:outputText value="#{listMontacarga.IDMONTACARGA}" />
+                  </p:column>
+                  <p:column style="width:80%;" filterBy="#{listMontacarga.DESCRIPCION}" filterMatchMode="contains">
+                    <f:facet name="header" >
+                        <h:outputText value="MONTACARGA" />
+                    </f:facet>
+                    <h:outputText value="#{listMontacarga.DESCRIPCION}" />
+                  </p:column>
+                </p:dataTable> 
+                <p:toolbar>
+                    <f:facet name="right">
+                        <p:commandButton value="Guardar" ajax="true" actionListener="#{notificacionAction.EnviarNotificacion()}" image="ui-icon-grabar" />
+                        <p:commandButton value="Cancelar" image="ui-icon-cancelar" onclick="PF('dlgnew_operario').hide()">
+                        </p:commandButton>
+                    </f:facet>
+                </p:toolbar>   
+            </p:dialog>
+            <p:dialog id="dlgnew_quicknotes" header="..:: Notas Rápidas ::." widgetVar="dlgnew_quicknotes" modal="true" showEffect="popup" closable="false">
+                <!--p:messages id="messagesNewOperario" autoUpdate="true" closable="true" style="font-size:10px"/-->
+                <p:dataTable id="listQuickNotes" var="listQuickNotes" value="#{notificacionAction.listQuickNotes}"
+                             selection="#{notificacionAction.selectQuickNotes}" rowKey="#{listQuickNotes.idnotes}" 
+                                   resizableColumns="true" resizeMode="expand" style="text-align: center;">
+                  <p:ajax event="rowSelectRadio" listener="#{notificacionAction.onCheck()}"/>
+                  <p:column selectionMode="single" style="width:16px;text-align:center"/>
+                  <p:column headerText="ID" style="width:10%;">
+                      <h:outputText value="#{listQuickNotes.idnotes}" />
+                  </p:column>
+                  <p:column style="width:80%;" filterBy="#{listQuickNotes.mensaje}" filterMatchMode="contains">
+                    <f:facet name="header" >
+                        <h:outputText value="MENSAJE" />
+                    </f:facet>
+                    <h:outputText value="#{listQuickNotes.mensaje}" />
+                  </p:column>
+                </p:dataTable> 
+                <p:toolbar>
+                    <f:facet name="right">
+                        <p:commandButton value="Asignar" image="ui-icon-cancelar" onclick="PF('dlgnew_quicknotes').hide()">
+                        </p:commandButton>
+                    </f:facet>
+                </p:toolbar>   
+            </p:dialog>
+            <p:growl id="growl" life="4000" showDetail="false"  />
+            <cmp:mDialogElimina_lst id="cmpDialog" bean="#{notificacionAction}" ventana="MNT" />
+        </h:form>
+    </ui:define>
+</ui:composition>

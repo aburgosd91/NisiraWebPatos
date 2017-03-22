@@ -1,0 +1,64 @@
+
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:f="http://java.sun.com/jsf/core"
+                template="templatebanco.xhtml"
+                xmlns:cmp="http://java.sun.com/jsf/composite/cmp">
+    <ui:define name="metadata">
+    </ui:define>
+    <ui:define name="body">
+        <h:form id="FormularioConfirmacion" >
+            <p:confirmDialog widgetVar="dlg_confirmacion" global="true" showEffect="fade" hideEffect="fade">
+                <p:commandButton value="SI" type="button" styleClass="ui-confirmdialog-yes" icon="ui-icon-check" />
+                <p:commandButton value="NO" type="button" styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
+            </p:confirmDialog>
+        </h:form>
+        <h:form id="datos">
+            #{montacargaAction.buscarTodo()}  
+            <p:messages autoUpdate="true" closable="true" showIcon="true" style="font-size:10px"/>
+            <p:panelGrid id="principal" columns="2" columnClasses="no-border, no-border">                
+                <p:panelGrid style="font-size: 12px;text-align:center;" id="panel1" columns="1" columnClasses="no-border, no-border">
+                    <p:panelGrid id="cabecera" columns="7" columnClasses="no-border, no-border, no-border, no-border, no-border, no-border, no-border">
+                        <cmp:barra_lst bean="#{montacargaAction}" mostrar_opciones="false" />
+                    </p:panelGrid>
+                    <p:dataTable id="tbl" var="listMontacarga" value="#{montacargaAction.listaDatos}" filteredValue="#{montacargaAction.filtroDatos}" widgetVar="listMontacarga"  paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink}"
+                                 paginator="true" rows="15" style="margin-bottom:20px" selectionMode="single" selection="#{montacargaAction.datoSeleccionado}" rowKey="#{listMontacarga.IDMONTACARGA}" resizableColumns="true">
+                        <f:facet name="header">
+                            <h:outputText value="#{montacargaAction.tituloHead}" />
+                        </f:facet>
+                        <p:column style="width:10%;" filterBy="#{listMontacarga.IDMONTACARGA}" filterMatchMode="contains" sortBy="#{listMontacarga.IDMONTACARGA}">
+                            <f:facet name="header">
+                                <h:outputText value="ID" />
+                            </f:facet>
+                            <h:outputText value="#{listMontacarga.IDMONTACARGA}" />
+                        </p:column>
+                        <p:column style="width:60%;" filterBy="#{listMontacarga.DESCRIPCION}" filterMatchMode="contains" sortBy="#{listMontacarga.DESCRIPCION}">
+                            <f:facet name="header" >
+                                <h:outputText value="DESCRIPCION" />
+                            </f:facet>
+                            <h:outputText value="#{listMontacarga.DESCRIPCION}" />
+                        </p:column>
+
+                        <p:column style="width:30%;" filterBy="#{listMontacarga.ESTADO}">
+                            <f:facet name="header">
+                                <h:outputText value="ESTADO"/>
+                            </f:facet>
+                            <f:facet name="filter">
+                                <p:selectOneButton onchange="PF('listMontacarga').filter()">
+                                    <f:selectItem  itemLabel="Activo" itemValue="#{1}" />
+                                    <f:selectItem itemLabel="Anulado" itemValue="#{0}" />
+                                </p:selectOneButton>
+                            </f:facet>
+                            <h:graphicImage value="../images/img/#{listMontacarga.ESTADO eq 1?'activo':'inactivo'}.png"/>
+                            <h:outputText value="#{listMontacarga.ESTADO eq 1?'Activo':'Anulado'}" />
+                        </p:column>
+                    </p:dataTable>  
+                </p:panelGrid>
+            </p:panelGrid>
+            <p:growl id="growl" life="4000" showDetail="false"  />
+            <cmp:mDialogElimina_lst id="cmpDialog" bean="#{montacargaAction}" ventana="LST" />
+        </h:form>
+    </ui:define>
+</ui:composition>

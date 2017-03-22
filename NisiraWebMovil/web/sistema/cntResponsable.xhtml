@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui">
+
+    <h:head>
+        <title>Operarios</title>
+        <style type="text/css">
+            .ui-widget {
+                font-size: 90%;
+            }
+        </style>
+    </h:head>
+
+    <h:body>
+        <h:form>
+            <p:dataTable var="car" value="#{cntResponsableAction.datos}" 
+                         paginator="true"
+                         rows="7"
+                         resizableColumns="true"
+                         style="width: 100%;font-size: 11px;height: 100%"
+                         >
+                <p:column headerText="Código" filterBy="#{car.idresponsable}" filterMatchMode="contains" filterStyle="width: 75%" style="width: 20%;padding: 3px !important;text-align: center">
+                    <h:outputText value="#{car.idresponsable}" />
+                </p:column>
+
+                <p:column headerText="Apellido P" filterBy="#{car.idoperario}" filterMatchMode="contains" filterStyle="width: 75%" style="width: 20%;padding: 3px !important;text-align: center">
+                    <h:outputText value="#{car.idoperario}" />
+                </p:column>
+                <p:column headerText="Apellido P" filterBy="#{car.nombre}" filterMatchMode="contains" filterStyle="width: 75%" style="width: 20%;padding: 3px !important;text-align: center">
+                    <h:outputText value="#{car.nombre}" />
+                </p:column>
+                <p:column  headerText="Estado" filterBy="#{car.estado}">
+                    <h:graphicImage value="../images/img/#{car.estado==1?'activo':'inactivo'}.png"/>
+                    <h:outputText value="#{car.estado==1?'Activo':'Inactivo'}" />
+                </p:column>
+                <p:column headerText="Ver" style="text-align: center">
+                    <p:commandButton icon="ui-icon-check" actionListener="#{cntResponsableAction.selectFromDialog(car)}" />
+                </p:column>
+            </p:dataTable>
+        </h:form>
+    </h:body>
+
+</html>

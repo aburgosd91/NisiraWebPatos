@@ -1,0 +1,97 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:f="http://java.sun.com/jsf/core"
+                template="templatebanco.xhtml"
+                xmlns:pm="http://primefaces.org/mobile"
+                xmlns:cmp="http://java.sun.com/jsf/composite/cmp">
+    <ui:define name="metadata">
+    </ui:define>
+    <ui:define name="body">
+        <h:form id="datos"> 
+             #{ProgramacionTareaRecepcionPTAction.findetalle()}
+            <cmp:barra_mnt bean="#{ProgramacionTareaRecepcionPTAction}"/>
+            <p:panelGrid columns="1" style="width:100%; text-align: left" id="pnl_reprogramar" columnClasses="no-border">
+                <f:facet name="header">
+                    <p:outputLabel value="#{ProgramacionTareaRecepcionPTAction.tituloHead}"/>
+                </f:facet>
+                <div class="ui-grid ">
+                    <div class="ui-grid-row">
+                        <p:fieldset legend="Datos" style="width: 100%" >
+                            <div class="ui-grid-col-5">
+                                <p:panelGrid  columns="2" columnClasses="no-border, no-border" style="width: 100%">
+                                    <p:outputLabel value="Id Empresa" escape="false" />
+                                    <p:inputText value="#{ProgramacionTareaRecepcionPTAction.datoEdicion.idprogramaciontarea}" disabled="true"/>
+                                    <p:outputLabel for="proceso"  value="Proceso:" />
+                                    <p:selectOneMenu id="proceso" value="#{ProgramacionTareaRecepcionPTAction.datoEdicion.idproceso}"  disabled="#{!ProgramacionTareaRecepcionPTAction.edicion}"> 
+                                        <p:ajax listener="#{ProgramacionTareaRecepcionPTAction.onProcesoSelect()}" update="datos:tab:tbllle datos:tab:cbozon" />
+                                        <f:selectItem itemLabel="Seleccione Proceso" itemValue="#{0}"/>                        
+                                        <f:selectItems value="#{ProgramacionTareaRecepcionPTAction.lstproceso}" var="tipoProceso" itemLabel="#{tipoProceso.descripcion}" itemValue="#{tipoProceso.idproceso}" />
+                                    </p:selectOneMenu>
+                                    <p:outputLabel for="generacion"  value="Generacion" />
+                                    <p:selectOneMenu id="generacion" value="#{ProgramacionTareaRecepcionPTAction.datoEdicion.generacion}" disabled="true">                        
+                                        <f:selectItem itemLabel="Manual" itemValue="#{0}"/>   
+                                        <f:selectItem itemLabel="Automativa" itemValue="#{1}"/> 
+                                    </p:selectOneMenu>
+                                    <p:outputLabel for="Estado"  value="Estado" />
+                                    <p:selectOneMenu id="Estado" value="#{ProgramacionTareaRecepcionPTAction.datoEdicion.estado}"  disabled="#{!ProgramacionTareaRecepcionPTAction.edicion}"> 
+                                        <f:selectItem itemLabel="Seleccione Estado" itemValue=""/>     
+                                        <f:selectItems value="#{ProgramacionTareaRecepcionPTAction.listMultitabla}" var="tipoEstado" itemLabel="#{tipoEstado.DESCRIPCION}" itemValue="#{tipoEstado.VALOR}" />
+                                    </p:selectOneMenu>   
+                                </p:panelGrid>
+                            </div>
+                            <div class="ui-grid-col-6">
+                                <p:panelGrid  columns="2" columnClasses="no-border, no-border" >
+                                    <p:outputLabel value="Documentos"/>
+                                    <p:panelGrid  columns="3" columnClasses="no-border, no-border,no-border">
+                                        <p:selectOneMenu id="cboiddoc" value="#{ProgramacionTareaRecepcionPTAction.datoEdicion.iddocumento}" style="width:150px">
+                                            <p:ajax listener="#{ProgramacionTareaRecepcionPTAction.oncDocChange}" update="cboserie num" />
+                                            <f:selectItems value="#{ProgramacionTareaRecepcionPTAction.lstdocs}" var="iddocs" itemLabel="#{iddocs.DESCRIPCION}" itemValue="#{iddocs.IDDOCUMENTO}"/>
+                                        </p:selectOneMenu>
+                                        <p:selectOneMenu id="cboserie" value="#{ProgramacionTareaRecepcionPTAction.datoEdicion.serie}" style="width:150px">
+                                            <f:selectItems value="#{ProgramacionTareaRecepcionPTAction.lstnume}" var="nume" itemLabel="#{nume.SERIE}" itemValue="#{nume.SERIE}"/>
+                                        </p:selectOneMenu>
+                                        <p:inputText id="num" maxlength="4" style="width: 100px !important;font-size: 11px" value="#{ProgramacionTareaRecepcionPTAction.numero}"/>
+                                    </p:panelGrid>
+                                    <p:outputLabel value="Montacarga" escape="false" />
+                                    <h:panelGrid id="cntMont" cellpadding="0" cellspacing="0" columns="3">
+                                        <p:commandButton styleClass="boton_buscar" ajax="true" actionListener="#{ProgramacionTareaRecepcionPTAction.verCntMontacarga()}" disabled="#{!ProgramacionTareaRecepcionPTAction.edicion}"  icon="ui-icon-search">
+                                            <p:ajax event="dialogReturn" listener="#{ProgramacionTareaRecepcionPTAction.valorMontaarga}" update="cntMont"/>
+                                        </p:commandButton>
+                                        <p:inputText  style="text-align: center" size="3" readonly="true"  value="#{ProgramacionTareaRecepcionPTAction.mo.IDMONTACARGA}"/>
+                                        <p:inputText size="41" readonly="true" value="#{ProgramacionTareaRecepcionPTAction.mo.DESCRIPCION}" />
+                                    </h:panelGrid>
+                                    <p:outputLabel for="obs" value="Observaciones"/>
+                                    <p:inputTextarea id="obs" value="#{ProgramacionTareaRecepcionPTAction.datoEdicion.observacion}" style="width: 100%" />
+                                </p:panelGrid>
+                                <p:panelGrid columns="2" style="width: 100%" columnClasses="no-border, no-border,no-border">
+
+                                    <p:outputLabel value="Fecha Prog" escape="false"/>
+                                    <p:calendar id="button1" value="#{ProgramacionTareaRecepcionPTAction.fechaprogramaciont}" showOn="button" pattern="dd/MM/yyyy" mask="true" disabled="true">
+                                        <!--<p:ajax event="dateSelect" listener="{planventaAction.updateCampañas}" update="lstCampaña"/>-->
+                                    </p:calendar>
+                                    <p:outputLabel value="Fecha Ejecucion" escape="false"/>
+                                    <p:calendar id="button2" value="#{ProgramacionTareaRecepcionPTAction.fechaejecuciont}" showOn="button" pattern="dd/MM/yyyy" mask="true" disabled="#{!ProgramacionTareaRecepcionPTAction.edicion}">
+                                        <!--<p:ajax event="dateSelect" listener="{planventaAction.updateCampañas}" update="lstCampaña"/>-->
+                                    </p:calendar>
+                                    <p:outputLabel value="Fecha Finaliza" escape="false"/>
+                                    <p:calendar id="button3" value="#{ProgramacionTareaRecepcionPTAction.fechafinalizaciont}" showOn="button" pattern="dd/MM/yyyy" mask="true" disabled="#{!ProgramacionTareaRecepcionPTAction.edicion}">
+                                        <!--<p:ajax event="dateSelect" listener="{planventaAction.updateCampañas}" update="lstCampaña"/>-->
+                                    </p:calendar>
+                                </p:panelGrid>
+                            </div> 
+                        </p:fieldset>
+                    </div>
+                    <div class="ui-grid-row">
+                        <p:fieldset legend="Detalle de Programacion"  style="width: 100%">
+
+                        </p:fieldset>
+                    </div>
+                </div>
+            </p:panelGrid>
+            <p:growl id="growl" life="4000" showDetail="false"  />
+            <cmp:mDialogElimina_lst id="cmpDialog" bean="#{ProgramacionTareaRecepcionPTAction}" ventana="MNT" />
+        </h:form>
+    </ui:define>    
+</ui:composition>

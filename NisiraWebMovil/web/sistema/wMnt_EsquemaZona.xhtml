@@ -1,0 +1,129 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:my="http://example.com/jsf"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:f="http://java.sun.com/jsf/core"
+                template="templatebanco.xhtml"
+                xmlns:pm="http://primefaces.org/mobile">
+    <ui:define name="metadata">
+    </ui:define>
+    <ui:define name="body">
+        #{esquemaZonaAction.iniciarMantenedorEsquemaZona()}
+        <h:form id="FormularioEsquemaZona" style="width:100%;position:relative;">
+            <p:toolbar>
+                <f:facet name="left">
+                    <div style="color:#069; font-size: 14px; padding-top: 5px"><p:outputLabel  value="#{esquemaZonaAction.tituloHead}" /></div>
+                    <p:messages id="messages" autoUpdate="true" closable="true" style="font-size:10px"/>
+                </f:facet>
+                <f:facet name="right">
+                    <p:commandButton value="Grabar" ajax="true" actionListener="#{esquemaZonaAction.grabar()}" image="ui-icon-grabar" />
+                    <p:commandButton value="Cancelar" actionListener="#{esquemaZonaAction.doVerLista()}" update="FormularioEsquemaZona" image="ui-icon-cancelar"/>
+                </f:facet>
+            </p:toolbar>
+            <br/>
+            <div class="ui-grid ">
+                <div class="ui-grid-row">
+                    <div class="ui-grid-col-2">
+                        <p:panelGrid columns="2" columnClasses="no-border, no-border">
+                            <f:facet name="header">
+                                <div style="color:#069; font-size: 14px; padding-top: 5px"><p:outputLabel  value="Datos Generales" /></div>
+                            </f:facet>
+                            <p:outputLabel value="ID SUCURSAL: " /> 
+                            <p:outputLabel value="#{esquemaZonaAction.cerosIzquierda(esquemaZonaAction.datoEdicion.IDSUCURSAL,3)}" /> 
+
+                            <p:outputLabel value="SUCURSAL: " /> 
+                            <p:outputLabel value="#{esquemaZonaAction.datoEdicion.SUCURSAL}" /> 
+
+                            <p:outputLabel value="ID ZONA: " /> 
+                            <p:outputLabel value="#{esquemaZonaAction.cerosIzquierda(esquemaZonaAction.datoEdicion.IDZONA,6)}" /> 
+
+                            <p:outputLabel value="ZONA: " /> 
+                            <p:outputLabel value="#{esquemaZonaAction.datoEdicion.DESCRIPCION}" /> 
+                        </p:panelGrid> 
+                    </div>
+                    <div class="ui-grid-col-3">
+                        <p:panelGrid columns="2" columnClasses="no-border,no-border">
+                            <f:facet name="header">
+                                <div style="color:#069; font-size: 14px; padding-top: 5px"><p:outputLabel  value="Configuración" /></div>
+                            </f:facet>
+                            <p:outputLabel>Margen: </p:outputLabel>
+                            <h:panelGrid columns="1" style="margin-bottom: 10px">
+                                <h:outputText id="output" value="Escala al %#{esquemaZonaAction.escala}" />
+                                <h:inputHidden id="escala" value="#{esquemaZonaAction.escala}" />
+                                <p:slider for="escala" display="output" style="width: 200px" displayTemplate="Escala al  %{value}">
+                                    <p:ajax process="@this" event="slideEnd" listener="#{esquemaZonaAction.onSlideEnd}" update="listDZonaDiagrama" />
+                                </p:slider>
+                            </h:panelGrid>
+                        </p:panelGrid>
+                    </div>
+                    <div class="ui-grid-col-3">
+                        <p:panel id="toggleable" header="Leyenda" toggleable="true" widgetVar="panel" style="margin-bottom:20px">
+                            <p:panelGrid columns="1" columnClasses="no-border">
+                                <p:dataTable id="leyenda" var="leyenda" value="#{esquemaZonaAction.listLeyenda}"  >
+                                    <p:column headerText="N°" style="text-align: center">
+                                        <h:outputText value="#{leyenda.NUM}" />
+                                    </p:column>
+                                    <p:column headerText="Descripción" style="text-align: center" sortBy="#{leyenda.DESCRIPCION}">
+                                        <h:outputText value="#{leyenda.DESCRIPCION}" />
+                                    </p:column>
+                                    <p:column headerText="Color">
+                                        <button disabled='true' style="background: #{leyenda.COLOR}; width: 100%;height:20px;"></button>
+                                    </p:column>
+                                </p:dataTable>
+                            </p:panelGrid>                            
+                        </p:panel>
+                    </div>
+                </div>
+                <p:toolbar id="tb">
+                    <f:facet name="left">
+                        <p:outputLabel value="Color :"  />
+                        <p:colorPicker id="colorPicker" value="#{esquemaZonaAction.color}"/>
+                        <p:outputLabel>Accesorios: </p:outputLabel>
+                        <p:commandButton oncomplete="PF('dlAlmacenZonas').show()" icon="ui-icon-search" title="View"/>
+                        <p:outputLabel>Definir Forma: </p:outputLabel>
+                        <p:selectBooleanCheckbox value="#{esquemaZonaAction.preform}">
+                            <p:ajax event="change" update="largo ancho" /> 
+                        </p:selectBooleanCheckbox>
+                        <p:outputLabel value="Largo :"  />
+                        <p:inputText id="largo" value="#{esquemaZonaAction.largo}" disabled="#{!esquemaZonaAction.preform}"/>
+                        <p:outputLabel value="Ancho :"  />
+                        <p:inputText id="ancho" value="#{esquemaZonaAction.ancho}" disabled="#{!esquemaZonaAction.preform}"/>
+                    </f:facet>
+                </p:toolbar>
+                <p:sticky target="tb" />
+                <div class="ui-grid-row">
+                    <p:fieldset legend=" DISTRIBUCIÓN DE ZONA " style="width:#{esquemaZonaAction.datoEdicion.ANCHOUNIDADDIAGRAMA * esquemaZonaAction.escala}px">
+                        <p:dataGrid var="listDZonaDiagrama" value="#{esquemaZonaAction.lstDZonaDiagram}" columns="#{esquemaZonaAction.datoEdicion.LARGOUNIDADDIAGRAMA}"
+                                    rows="#{esquemaZonaAction.datoEdicion.ANCHOUNIDADDIAGRAMA * esquemaZonaAction.datoEdicion.LARGOUNIDADDIAGRAMA}" paginator="true" 
+                                    id="listDZonaDiagrama" paginatorPosition="top" style="width:#{esquemaZonaAction.datoEdicion.LARGOUNIDADDIAGRAMA * esquemaZonaAction.escala}px"
+                                    paginatorTemplate="{Comandos}">
+                            <f:facet name="{Comandos}">
+                                <p:commandButton value="Reset" ajax="true" actionListener="#{esquemaZonaAction.getClear()}" image="ui-icon-aceptar" />
+                            </f:facet>
+                            <p:commandLink  action="#{esquemaZonaAction.ubicacionSeleccionado()}" ajax="true">                                
+                                <f:setPropertyActionListener value="#{listDZonaDiagrama}" target="#{esquemaZonaAction.slcDzonaDiagram}"/>
+                                <p:panel id="boton"  style="background:#{listDZonaDiagrama.COLOR};width:30px;height:30px;padding: 0px">
+                                    <h:panelGrid columns="1" style="width: 100%;alignment-adjust: central">
+                                        <h:outputText value="R#{listDZonaDiagrama.IDACCESORIO}" rendered="#{listDZonaDiagrama.IDACCESORIO!=null?true:false}"/>
+                                    </h:panelGrid>
+                                </p:panel>
+                            </p:commandLink>
+                        </p:dataGrid>
+                    </p:fieldset>
+                </div>
+            </div>
+            <p:dialog  id="dlAlmacenZonas" header="..:: ESTRUCTURA DE ALMACEN ::." widgetVar="dlAlmacenZonas" modal="true" dynamic="true" showEffect="popup"  closable="true" >
+                <p:dataTable rowStyleClass="#{tablaAcc.picked==true?'old':null}" id="tablaAlmacen" var="tablaAcc" value="#{esquemaZonaAction.lstDZonaAcc}" style="text-align: center;width:500px;height: 400px" scrollable="true" selection="#{esquemaZonaAction.sltDZonaAcc}" selectionMode="single" rowKey="#{tablaAcc.IDACCESORIO}">
+                    <p:ajax event="rowDblselect"  oncomplete="PF('dlAlmacenZonas').hide()"/>
+                    <p:column headerText="ID" style="width: 10%">
+                        <h:outputText value="#{tablaAcc.IDACCESORIO}" />
+                    </p:column>
+                    <p:column headerText="Descripcion" style="width: 50%">
+                        <h:outputText value="#{tablaAcc.DESCRIPCION}" />
+                    </p:column>
+                </p:dataTable>
+            </p:dialog>
+        </h:form>
+    </ui:define>
+</ui:composition>

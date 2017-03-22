@@ -1,0 +1,66 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:f="http://java.sun.com/jsf/core"
+                template="templatebanco.xhtml"
+                xmlns:pm="http://primefaces.org/mobile"
+                xmlns:cmp="http://java.sun.com/jsf/composite/cmp">
+    <ui:define name="metadata">
+    </ui:define>
+    <ui:define name="body">
+        <h:form id="datos">
+            #{generacionCodigoAction.buscarTodo()}  
+            <cmp:barra_lst bean="#{generacionCodigoAction}" mostrar_opciones="false" />
+            <p:panelGrid id="principal" columns="2" columnClasses="no-border, no-border">
+                
+                <p:dataTable id="tbl" var="listGeneracionCodigo" value="#{generacionCodigoAction.listaDatos}" filteredValue="#{generacionCodigoAction.filtroDatos}" widgetVar="listGeneracionCodigo" 
+                        paginatorTemplate="{FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink}"
+                        paginator="true" rows="15" style="margin-bottom:20px;text-align: center" selectionMode="single" selection="#{generacionCodigoAction.datoSeleccionado}" rowKey="#{listGeneracionCodigo.IDGENERACION}" resizableColumns="true">
+                        <f:facet name="header">
+                                <h:outputText value="#{procesosAction.tituloHead}" />
+                        </f:facet>
+                    <p:column style="width:10%;" filterBy="#{listGeneracionCodigo.IDGENERACION}" filterMatchMode="contains" sortBy="#{listGeneracionCodigo.IDGENERACION}">
+                           <f:facet name="header">
+                               <h:outputText value="ID" />
+                           </f:facet>
+                           <h:outputText value="#{listGeneracionCodigo.IDGENERACION}" />
+                       </p:column>
+                        <p:column style="width:15%;" filterBy="#{listGeneracionCodigo.PARAMETRO}" filterMatchMode="contains" sortBy="#{listGeneracionCodigo.PARAMETRO}">
+                           <f:facet name="header" >
+                               <h:outputText value="TIPO CÓDIGO" />
+                           </f:facet>
+                           <h:outputText value="#{listGeneracionCodigo.PARAMETRO}" />
+                       </p:column>
+                       <p:column style="width:60%;" filterBy="#{listGeneracionCodigo.DESCRIPCION}" filterMatchMode="contains" sortBy="#{listGeneracionCodigo.DESCRIPCION}">
+                           <f:facet name="header" >
+                               <h:outputText value="DESCRIPCION" />
+                           </f:facet>
+                           <h:outputText value="#{listGeneracionCodigo.DESCRIPCION}" />
+                       </p:column>
+                        <p:column style="width:30%;" sortBy="#{listGeneracionCodigo.NUMDIGITOTOTAL}">
+                           <f:facet name="header" >
+                               <h:outputText value="N° Total" />
+                           </f:facet>
+                            <h:outputText value="#{listGeneracionCodigo.NUMDIGITOTOTAL}" />
+                       </p:column>
+                        <p:column style="width:30%;" filterBy="#{listGeneracionCodigo.ESTADO}">
+                           <f:facet name="header">
+                               <h:outputText value="ESTADO"/>
+                           </f:facet>
+                           <f:facet name="filter">
+                                <p:selectOneButton onchange="PF('listGeneracionCodigo').filter()">
+                                    <f:selectItem  itemLabel="Activo" itemValue="#{1}" />
+                                    <f:selectItem itemLabel="Inactivo" itemValue="#{0}" />
+                                </p:selectOneButton>
+                            </f:facet>
+                           <h:graphicImage value="../images/img/#{listGeneracionCodigo.ESTADO eq 1?'activo':'inactivo'}.png"/>
+                           <h:outputText value="#{listGeneracionCodigo.ESTADO eq 1?'Activo':'Inactivo'}" />
+                       </p:column>
+                    </p:dataTable>  
+            </p:panelGrid>
+            <p:growl id="growl" life="4000" showDetail="false"  />
+            <cmp:mDialogElimina_lst id="cmpDialog" bean="#{generacionCodigoAction}" ventana="LST" />
+        </h:form>
+    </ui:define>
+</ui:composition>

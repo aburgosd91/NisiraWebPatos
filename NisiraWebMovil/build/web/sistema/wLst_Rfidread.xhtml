@@ -1,0 +1,45 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:f="http://java.sun.com/jsf/core"
+                template="templatebanco.xhtml"
+                xmlns:cmp="http://java.sun.com/jsf/composite/cmp">
+    <ui:define name="metadata">
+    </ui:define>
+    <ui:define name="body">
+        <h:form id="datos">            
+            #{rfidreaderAction.buscarTodo()}  
+            <cmp:barra_lst bean="#{rfidreaderAction}" mostrar_opciones="true" />
+            <p:panelGrid id="principal" columns="1" columnClasses="no-border, no-border">               
+                <p:dataTable  id="tbl" var="listRF" value="#{rfidreaderAction.listaDatos}" filteredValue="#{rfidreaderAction.filtroDatos}" widgetVar="listRF" paginatorTemplate="{FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink}" paginatorPosition="top"
+                              paginator="true" rows="15" style="margin-bottom:20px" selectionMode="single" selection="#{rfidreaderAction.datoSeleccionado}" rowKey="#{listRF.idequiporeader}" resizableColumns="true">
+                    <f:facet name="header">
+                        <h:outputText value="#{rfidreaderAction.tituloHead}" />
+                    </f:facet>  
+                    <p:column headerText="Numero de Serie" style="width:30%;" filterBy="#{listRF.nroserie}" filterMatchMode="contains" sortBy="#{listRF.nroserie}">
+                        <h:outputText value="#{listRF.nroserie}" />
+                    </p:column>
+                    <p:column headerText="Descripcion" style="width:30%;" filterBy="#{listRF.observacion}" filterMatchMode="contains" sortBy="#{listRF.observacion}">
+                        <h:outputText value="#{listRF.observacion}" />
+                    </p:column>
+                    <p:column style="width:20%;" filterBy="#{listRF.estado}">
+                        <f:facet name="header">
+                            <h:outputText value="ESTADO"/>
+                        </f:facet>
+                        <f:facet name="filter">
+                            <p:selectOneButton onchange="PF('listRF').filter()">
+                                <f:selectItem  itemLabel="Activo" itemValue="#{1}"/>
+                                <f:selectItem itemLabel="Inactivo" itemValue="#{0}"/>
+                            </p:selectOneButton>
+                        </f:facet>
+                        <h:graphicImage value="../images/img/#{listRF.estado==1?'activo':'inactivo'}.png"/>
+                        <h:outputText value="#{listRF.estado==1?'Activo':'Inactivo'}" />
+                    </p:column>
+                </p:dataTable>
+            </p:panelGrid>
+            <p:growl id="growl" life="4000" showDetail="false"  />
+            <cmp:mDialogElimina_lst id="cmpDialog" bean="#{rfidreaderAction}" ventana="LST" />
+        </h:form>
+    </ui:define>
+</ui:composition>

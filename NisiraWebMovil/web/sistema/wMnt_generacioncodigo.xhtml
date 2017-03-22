@@ -1,0 +1,121 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:f="http://java.sun.com/jsf/core"
+                template="templatebanco.xhtml"
+                xmlns:pm="http://primefaces.org/mobile"
+                xmlns:cmp="http://java.sun.com/jsf/composite/cmp">
+    <ui:define name="metadata">
+    </ui:define>
+    <ui:define name="body">
+        #{generacionCodigoAction.findDetalles()}
+        <p:messages id="messages" autoUpdate="true" closable="true" style="font-size:10px"/><br/>
+        <h:form id="datos" style="width:100%;position:relative;">
+            <cmp:barra_mnt bean="#{generacionCodigoAction}"/>
+            <p:panelGrid style="width:100%" columns="2" columnClasses="no-border, no-border,no-border">                
+                <f:facet name="header">
+                    <p:outputLabel  value="#{procesosAction.tituloHead}" />
+                </f:facet>
+                <p:panelGrid columns="4" columnClasses="no-border, no-border, no-border , no-border, no-border, no-border, no-border">
+                    <p:outputLabel value="Id: " />
+                    <p:inputText size="3" disabled="true" value="#{generacionCodigoAction.datoEdicion.IDGENERACION}"/>
+                    <p:outputLabel for="descripcion"  value="Descripcion:" />
+                    <p:inputTextarea id="descripcion" cols="60" rows="2" value="#{generacionCodigoAction.datoEdicion.DESCRIPCION}" onkeyup="javascript:this.value = this.value.toUpperCase();"  disabled="#{!generacionCodigoAction.edicion}">
+                    </p:inputTextarea>
+                    <p:outputLabel for="tipoetiqueta"  value="Tipo Etiqueta:" />
+                    <p:selectOneMenu id="tipoetiqueta" value="#{generacionCodigoAction.datoEdicion.TIPO}" style="width: 100%"  disabled="#{!generacionCodigoAction.edicion}"> 
+                        <f:selectItem itemLabel="Seleccione Tipo Código" itemValue=""/>                        
+                        <f:selectItems value="#{generacionCodigoAction.listMultitabla_codigo}" var="tipoEtiqueta" itemLabel="#{tipoEtiqueta.DESCRIPCION}" itemValue="#{tipoEtiqueta.VALOR}" />
+                    </p:selectOneMenu>
+                    <p:outputLabel value="Parametro" escape="false" />
+                    <p:inputText value="#{generacionCodigoAction.datoEdicion.PARAMETRO}"  disabled="#{!generacionCodigoAction.edicion}"/>
+                    <p:outputLabel for="numdigitototal"  value="N° Dígito Total:" />                    
+                    <p:spinner id="numdigitototal"  value="#{generacionCodigoAction.datoEdicion.NUMDIGITOTOTAL}" min="0"   disabled="#{!generacionCodigoAction.edicion}">
+                        <p:ajax update="datos:dlgnew_dgeneracioncodigo" listener="#{generacionCodigoAction.calcularDigitosDisponibles()}"/>
+                    </p:spinner>
+                    <p:outputLabel for="proceso"  value="Proceso:" />
+                    <p:selectOneMenu  id="proceso" value="#{generacionCodigoAction.datoEdicion.IDPROCESO}" style="width: 100%"  disabled="#{!generacionCodigoAction.edicion}"> 
+                        <f:selectItem itemLabel="Seleccione Proceso" itemValue=""/>                        
+                        <f:selectItems value="#{generacionCodigoAction.listProces}" var="tipoProceso" itemLabel="#{tipoProceso.descripcion}" itemValue="#{tipoProceso.idproceso}" />
+                    </p:selectOneMenu>
+
+                    <h:outputText value="Estado?:" />
+                    <p:selectBooleanCheckbox value="#{generacionCodigoAction.datoEdicion.BEstado}" />
+                </p:panelGrid>
+
+            </p:panelGrid>
+            <p:fieldset legend="Detalle Generación de Código" toggleable="true" toggleSpeed="500" style="margin-bottom:20px">
+                <p:panelGrid id="principal" columns="2" columnClasses="no-border, no-border">
+                    <p:panelGrid style="font-size: 12px;text-align:center;" id="panel1" columns="1" columnClasses="no-border, no-border">
+                        <p:dataTable id="tbl" var="listDCodigo" value="#{generacionCodigoAction.listDGeneracionCodigo}" filteredValue="#{generacionCodigoAction.fillDGeneracionCodigo}" widgetVar="listDCodigo"
+                                     paginatorTemplate="{Comandos} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {Exporters}"
+                                     paginator="true" paginatorPosition="top" rows="15" style="margin-bottom:20px" selectionMode="single" selection="#{generacionCodigoAction.selectDGeneracionCodigo}" rowKey="#{listDCodigo.IDREGISTROCODIGO}">
+                            <p:ajax event="rowSelect" listener="#{generacionCodigoAction.onRowSelectDGeneracionCodigo}" update="datos:tbl" />
+                            <p:ajax event="rowUnselect" listener="#{generacionCodigoAction.onRowUnselectDGeneracionCodigo}" update="datos:tbl" />
+                            <f:facet name="{Comandos}">
+                                <p:commandButton value="Nuevo" ajax="true" image="ui-icon-nuevo" onclick="PF('dlgnew_dgeneracioncodigo').show()"/>
+                                <p:commandButton value="Eliminar" ajax="true" image="ui-icon-eliminar" actionListener="#{generacionCodigoAction.InhabilitarDGeneracionCodigo()}" disabled="#{generacionCodigoAction.botonCodigoEliminarDGeneracion}"/>
+                            </f:facet>
+                            <f:facet name="{Exporters}">
+                                <p:commandButton value="Excel" ajax="false" image="ui-icon-excel">
+                                    <p:dataExporter type="xls" target="tbl" fileName="listDGeneracionCodigo"/>
+                                </p:commandButton>
+                            </f:facet>
+                            <p:column style="width:60%;" filterBy="#{listDCodigo.PARAMETRO}" filterMatchMode="contains" sortBy="#{listDCodigo.PARAMETRO}">
+                                <f:facet name="header" >
+                                    <h:outputText value="PARAMETRO" />
+                                </f:facet>
+                                <h:outputText value="#{listDCodigo.PARAMETRO}" />
+                            </p:column>
+                            <p:column style="width:30%;" filterBy="#{listDCodigo.NUMDIGITO}" filterMatchMode="contains" sortBy="#{listDCodigo.NUMDIGITO}">
+                                <f:facet name="header" >
+                                    <h:outputText value="#DIGITOS" />
+                                </f:facet>
+                                <h:outputText value="#{listDCodigo.NUMDIGITO}" />
+                            </p:column>
+                        </p:dataTable>  
+                    </p:panelGrid>
+                </p:panelGrid>
+            </p:fieldset>
+            <p:dialog id="dlgnew_dgeneracioncodigo" header="..::Nuevo Item::." widgetVar="dlgnew_dgeneracioncodigo" modal="true" showEffect="popup" closable="false">
+                <p:messages id="messagesNewAlmacen" autoUpdate="true" closable="true" style="font-size:10px"/>
+                <p:panelGrid columns="1" columnClasses="no-border">
+                    <p:panelGrid columns="2" columnClasses="no-border,no-border">
+                        <h:outputText  value="Digitos Disponibles: " />
+                        <h:outputText id="digdisp" value="#{generacionCodigoAction.digitosDisponibles}" style="font-weight: bold;color: #008200"/>
+                    </p:panelGrid>
+                    <p:panelGrid columns="2" columnClasses="no-border,no-border">
+                        <h:outputText value="Total de Digitos: "/>
+                        <h:outputText value="#{generacionCodigoAction.datoEdicion.NUMDIGITOTOTAL}" style="font-weight: bold;color: red"/>  
+                    </p:panelGrid>
+                </p:panelGrid>
+                <p:panelGrid columns="1" columnClasses="no-border" style="width: 400px">
+                    <p:panelGrid columns="2" columnClasses="no-border, no-border" style="width: 100%">
+                        <p:outputLabel for="cboparametro" value="Tipo Parametro"  />
+                        <h:selectOneMenu id="cboparametro" value="#{generacionCodigoAction.nuDGeneracionCodigo.IDPARAMETRO}" style="width: 100%" > 
+                            <f:selectItem itemLabel="Seleccione Parámetro" itemValue=""/>                        
+                            <f:selectItems value="#{generacionCodigoAction.listMultitabla}" var="tipoParametro" itemLabel="#{tipoParametro.DESCRIPCION}" itemValue="#{tipoParametro.VALOR}"/>
+                        </h:selectOneMenu>
+                        <p:outputLabel for="numdigito"  value="N° Dígito:" />
+                        <p:spinner id="numdigito" value="#{generacionCodigoAction.nuDGeneracionCodigo.NUMDIGITO}" min="0"/>
+                        <p:outputLabel for="tipovalor"  value="Tipo Valor:" />
+                        <h:selectOneMenu id="tipovalor" value="#{generacionCodigoAction.nuDGeneracionCodigo.TIPOVALOR}" style="width: 100%" > 
+                            <f:selectItem itemLabel="Seleccione Tipo Valor" itemValue=""/>                        
+                            <f:selectItems value="#{generacionCodigoAction.listMultitabla_proceso}" var="tipoEtiqueta" itemLabel="#{tipoEtiqueta.DESCRIPCION}" itemValue="#{tipoEtiqueta.VALOR}" />
+                        </h:selectOneMenu>
+                    </p:panelGrid>
+                    <br/>
+                    <p:toolbar style="width: 100%">
+                        <f:facet name="right">
+                            <p:commandButton value="Grabar" ajax="true" actionListener="#{generacionCodigoAction.agregarDGeneracionCodigo()}" image="ui-icon-grabar" />
+                            <p:commandButton value="Cancelar" image="ui-icon-cancelar" onclick="PF('dlgnew_dgeneracioncodigo').hide()"/>
+                        </f:facet>
+                    </p:toolbar>                         
+                </p:panelGrid>                              
+            </p:dialog>
+            <p:growl id="growl" life="4000" showDetail="false"  />
+            <cmp:mDialogElimina_lst id="cmpDialog" bean="#{generacionCodigoAction}" ventana="MNT" />
+        </h:form>
+    </ui:define>
+</ui:composition>

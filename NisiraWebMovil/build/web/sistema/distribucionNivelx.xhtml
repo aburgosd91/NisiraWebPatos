@@ -1,0 +1,745 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets">
+    <body>
+        <canvas id="ejemplo" width="500" height="500">
+            Su navegador no soporta el uso de Canvas.
+        </canvas>
+        <script type="text/javascript">
+            //<![CDATA[
+            /*VARIABLES UNIVERSALES*/
+            var intervalo;
+            var objetoVariables = "1";
+            var i;
+            var j;
+            var numero;
+            var color;
+            var variableColor;
+            var example = document.getElementById('ejemplo');
+            var context = example.getContext('2d');
+            /*+++++++++++++++++OBTENER PARAMETRO POR URL - ARCHIVO HTML+++++++++++++++++*/
+            /*var src = String( window.location.href ).split('?')[1];
+            var vrs = src.split('&');
+            for (var x = 0, c = vrs.length; x < c; x++){
+                objetoVariables[vrs[x].split('=')[0]] = decodeURI(vrs[x].split('=')[1]);
+            }*/
+            /*++++++++++++++++++++PARAMETRO ORDENAMIENTO+++++++++++++++++*/
+            context.font = "25px serif";
+            clearInterval(intervalo);
+            switch(objetoVariables){
+                case "1":
+                    var text = "ORDENAMIENTO N-1";
+                    context.fillText(text, 140,80);
+                    principal_1();
+                    ;break;
+                case "2":
+                    var text = "ORDENAMIENTO N-2";
+                    context.fillText(text, 140,80);
+                    principal_2();
+                    ;break;
+                case "3":
+                    var text = "ORDENAMIENTO N-3";
+                    context.fillText(text, 140,80);
+                    principal_3();
+                    ;break;
+                case "4":
+                    var text = "ORDENAMIENTO N-4";
+                    context.fillText(text, 140,80);
+                    principal_4();
+                    ;break;
+                case "5":
+                    var text = "ORDENAMIENTO N-5";
+                    context.fillText(text, 140,80);
+                    principal_5();
+                    ;break;
+                case "6":
+                    var text = "ORDENAMIENTO N-6";
+                    context.fillText(text, 140,80);
+                    principal_6();
+                    ;break;
+                case "7":
+                    var text = "ORDENAMIENTO N-7";
+                    context.fillText(text, 140,80);
+                    principal_7();
+                    ;break;
+                case "8":
+                    var text = "ORDENAMIENTO N-8";
+                    context.fillText(text, 140,80);
+                    principal_8();
+                    ;break;
+                case "9":
+                    var text = "ORDENAMIENTO N-9";
+                    context.fillText(text, 140,80);
+                    principal_9();
+                    ;break;
+                case "10":
+                    var text = "ORDENAMIENTO N-10";
+                    context.fillText(text, 140,80);
+                    principal_10();
+                    ;break;
+            }
+            function estructura(){
+                i=1;
+                context.font = "20px serif";
+                for (i=1;i<=6;i++)
+                {
+                    context.fillStyle = "rgb(255, 255, 255)";
+                    context.strokeStyle = "rgb(0, 0, 0)";
+                    for (j=1;j<=6;j++)
+                    {
+                        context.fillRect(20+i*60, 50+j*60, 60, 60);
+                        context.lineJoin = "miter";
+                        context.lineWidth = 6;
+                        context.strokeRect(20+i*60, 50+j*60, 60, 60);
+                    }
+                }
+            }
+            function principal_1(){
+                estructura();
+                i=1;
+                j=1;
+                numero=1;
+                color=true;
+                activar_1();
+            }
+            function principal_2(){
+                estructura();
+                i=1;
+                j=1;
+                numero=1;
+                color=true;
+                activar_2();
+            }
+            function principal_3(){
+                estructura();
+                i=1;
+                j=1;
+                numero=1;
+                color=true;
+                activar_3();
+            }
+            function principal_4(){
+                estructura();
+                i=1;
+                j=1;
+                numero=1;
+                color=true;
+                activar_4();
+            }
+            function principal_5(){
+                estructura();
+                i=1;
+                j=1;
+                numero=1;
+                color=true;
+                activar_5();
+            }
+            function principal_6(){
+                estructura();
+                i=1;
+                j=1;
+                numero=1;
+                color=true;
+                activar_6();
+            }
+            function principal_7(){
+                estructura();
+                i=1;
+                j=1;
+                numero=1;
+                color=true;
+                activar_7();
+            }
+            function principal_8(){
+                estructura();
+                i=1;
+                j=1;
+                numero=1;
+                color=true;
+                activar_8();
+            }
+            function principal_9(){
+                estructura();
+                i=1;
+                j=1;
+                numero=1;
+                color=true;
+                activar_9();
+            }
+            function principal_10(){
+                estructura();
+                i=1;
+                j=1;
+                numero=1;
+                color=true;
+                activar_10();
+            }
+            function pintar1(){
+                //alert("Color: "+color);
+                context.font = "20px serif";
+                if(i<=6){
+                    //color = !color;
+                    text = i;
+                    //context.fillText(text, 35 + i*50, 95);
+                    //context.fillText(text, 55, 80 + i * 50);
+                    if(j<=6){
+                        //intervalo = setInterval(pintarCuadrado(context,i,j)),1000);
+                        context.fillRect(20+j*60, 50+i*60, 60, 60);
+                        context.lineJoin = "miter";
+                        context.lineWidth = 6;
+                        context.strokeRect(20+j*60, 50+i*60, 60, 60);
+                        numeroCentro(35+j*60,90+i*60);
+                        numero++;
+                        j++;
+                    }else{
+                        desactivarForI_1();
+                    }
+                }
+                else{
+                    desactivarForJ_1();
+                }
+            }
+            function pintar2(){
+                //alert("Color: "+color);
+                context.font = "20px serif";
+                if(i<=6){
+                    text = i;
+                    if(j<=6){
+                        context.fillRect(20+(7-j)*60, 50+i*60, 60, 60);
+                        context.lineJoin = "miter";
+                        context.lineWidth = 6;
+                        context.strokeRect(20+(7-j)*60, 50+i*60, 60, 60);
+                        numeroCentro(35+(7-j)*60,90+i*60);
+                        numero++;
+                        j++;
+                    }else{
+                        desactivarForI_2();
+                    }
+                }
+                else{
+                    desactivarForJ_2();
+                }
+            }
+            function pintar3(){
+                context.font = "20px serif";
+                if(i<=6){
+                    if(i==3 || i==4){
+                        if(j<=6){
+                            context.fillRect(20+(7-j)*60, 50+i*60, 60, 60);
+                            context.lineJoin = "miter";
+                            context.lineWidth = 6;
+                            context.strokeRect(20+(7-j)*60, 50+i*60, 60, 60);
+                            numeroCentro(35+(7-j)*60,90+i*60);
+                            numero++;
+                            j++;
+                        }else{
+                            desactivarForI_3();
+                        }
+                    }
+                    else{
+                        if(j<=6){
+                            context.fillRect(20+j*60, 50+i*60, 60, 60);
+                            context.lineJoin = "miter";
+                            context.lineWidth = 6;
+                            context.strokeRect(20+j*60, 50+i*60, 60, 60);
+                            numeroCentro(35+j*60,90+i*60);
+                            numero++;
+                            j++;
+                        }else{
+                            desactivarForI_3();
+                        }
+                    }
+                }
+                else{
+                    desactivarForJ_3();
+                }
+            }
+            function pintar4(){
+                context.font = "20px serif";
+                if(i<=6){
+                    if(i==3 || i==4){
+                        if(j<=6){
+                            context.fillRect(20+j*60, 50+i*60, 60, 60);
+                            context.lineJoin = "miter";
+                            context.lineWidth = 6;
+                            context.strokeRect(20+j*60, 50+i*60, 60, 60);
+                            numeroCentro(35+j*60,90+i*60);
+                            numero++;
+                            j++;
+                        }else{
+                            desactivarForI_4();
+                        }
+                    }
+                    else{
+                        if(j<=6){
+                            context.fillRect(20+(7-j)*60, 50+i*60, 60, 60);
+                            context.lineJoin = "miter";
+                            context.lineWidth = 6;
+                            context.strokeRect(20+(7-j)*60, 50+i*60, 60, 60);
+                            numeroCentro(35+(7-j)*60,90+i*60);
+                            numero++;
+                            j++;
+                        }else{
+                            desactivarForI_4();
+                        }
+                    }
+                }
+                else{
+                    desactivarForJ_4();
+                }
+            }
+            function pintar5(){
+                context.font = "20px serif";
+                if(i<=6){
+                    if(i%2==0 & i!=1){
+                        if(j<=6){
+                            context.fillRect(20+(7-j)*60, 50+i*60, 60, 60);
+                            context.lineJoin = "miter";
+                            context.lineWidth = 6;
+                            context.strokeRect(20+(7-j)*60, 50+i*60, 60, 60);
+                            numeroCentro(35+(7-j)*60,90+i*60);
+                            numero++;
+                            j++;
+                        }else{
+                            desactivarForI_5();
+                        }
+                    }
+                    else{
+                        if(j<=6){
+                            context.fillRect(20+j*60, 50+i*60, 60, 60);
+                            context.lineJoin = "miter";
+                            context.lineWidth = 6;
+                            context.strokeRect(20+j*60, 50+i*60, 60, 60);
+                            numeroCentro(35+j*60,90+i*60);
+                            numero++;
+                            j++;
+                        }else{
+                            desactivarForI_5();
+                        }
+                    }
+                }
+                else{
+                    desactivarForJ_5();
+                }
+                /************************************************************************************/
+                
+            }
+            function pintar6(){
+                context.font = "20px serif";
+                if(i<=6){
+                    if(i%2==0 & i!=1){
+                        if(j<=6){
+                            context.fillRect(20+j*60, 50+i*60, 60, 60);
+                            context.lineJoin = "miter";
+                            context.lineWidth = 6;
+                            context.strokeRect(20+j*60, 50+i*60, 60, 60);
+                            numeroCentro(35+j*60,90+i*60);
+                            numero++;
+                            j++;
+                            
+                        }else{
+                            desactivarForI_6();
+                        }
+                    }
+                    else{
+                        if(j<=6){
+                            context.fillRect(20+(7-j)*60, 50+i*60, 60, 60);
+                            context.lineJoin = "miter";
+                            context.lineWidth = 6;
+                            context.strokeRect(20+(7-j)*60, 50+i*60, 60, 60);
+                            numeroCentro(35+(7-j)*60,90+i*60);
+                            numero++;
+                            j++;
+                        }else{
+                            desactivarForI_6();
+                        }
+                    }
+                }
+                else{
+                    desactivarForJ_6();
+                }
+                /************************************************************************************/
+                
+            }
+            function pintar7(){
+                context.font = "20px serif";
+                if(i<=6){
+                    text = i;
+                    if(j<=6){
+                        context.fillRect(20+i*60, 50+j*60, 60, 60);
+                        context.lineJoin = "miter";
+                        context.lineWidth = 6;
+                        context.strokeRect(20+i*60, 50+j*60, 60, 60);
+                        numeroCentro(35+i*60,90+j*60);
+                        numero++;
+                        j++;
+                    }else{
+                        desactivarForI_7();
+                    }
+                }
+                else{
+                    desactivarForJ_7();
+                }
+            }
+            function pintar8(){
+                //alert("Color: "+color);
+                context.font = "20px serif";
+                if(i<=6){
+                    text = i;
+                    if(j<=6){
+                        context.fillRect(20+(7-i)*60, 50+j*60, 60, 60);
+                        context.lineJoin = "miter";
+                        context.lineWidth = 6;
+                        context.strokeRect(20+(7-i)*60, 50+j*60, 60, 60);
+                        numeroCentro(35+(7-i)*60,90+j*60);
+                        numero++;
+                        j++;
+                    }else{
+                        desactivarForI_8();
+                    }
+                }
+                else{
+                    desactivarForJ_8();
+                }
+            }
+            function pintar9(){
+                context.font = "20px serif";
+                if(i<=6){
+                    text = i;
+                    if(j<=6){
+                        context.fillRect(20+i*60, 50+(7-j)*60, 60, 60);
+                        context.lineJoin = "miter";
+                        context.lineWidth = 6;
+                        context.strokeRect(20+i*60, 50+(7-j)*60, 60, 60);
+                        numeroCentro(35+i*60,90+(7-j)*60);
+                        numero++;
+                        j++;
+                    }else{
+                        desactivarForI_9();
+                    }
+                }
+                else{
+                    desactivarForJ_9();
+                }
+            }
+            function pintar10(){
+                //alert("Color: "+color);
+                context.font = "20px serif";
+                if(i<=6){
+                    text = i;
+                    if(j<=6){
+                        context.fillRect(20+(7-i)*60, 50+(7-j)*60, 60, 60);
+                        context.lineJoin = "miter";
+                        context.lineWidth = 6;
+                        context.strokeRect(20+(7-i)*60, 50+(7-j)*60, 60, 60);
+                        numeroCentro(35+(7-i)*60,90+(7-j)*60);
+                        numero++;
+                        j++;
+                    }else{
+                        desactivarForI_10();
+                    }
+                }
+                else{
+                    desactivarForJ_10();
+                }
+            }
+            function numeroCentro(i,j){
+                var example1 = document.getElementById('ejemplo');
+                var context1 = example1.getContext('2d');
+                var text = numero;
+                /*CUADRO NORMAL*/
+                context1.fillStyle = "rgb(0, 0, 0)";
+                context1.font = "35px serif"; 
+                context1.fillText(text, i,j);
+                context1.fillStyle = variableColor;
+            }
+            function pintar(){
+                var example = document.getElementById('ejemplo');
+                var context = example.getContext('2d');
+                i=1;
+                var color = true;
+                var text = "ORDENAMIENTO N-1";
+                context.font = "25px serif"; 
+                context.fillText(text, 60,60);
+                context.font = "20px serif";
+                for (i=1;i<=6;i++)
+                {
+                    color = !color;
+                    text = i;
+                    context.fillText(text, 35 + i*50, 95);
+                    context.fillText(text, 55, 80 + i * 50);
+                    for (j=1;j<=6;j++)
+                    {
+                        if (color)
+                        {
+                            context.fillStyle = "rgb(255, 0, 0)";
+                            color = false;
+                        }                
+                        else
+                        {
+                            context.fillStyle = "rgb(0, 0, 0)";
+                            color = true;
+                        }
+                        //intervalo = setInterval(pintarCuadrado(context,i,j)),1000);
+                        context.fillRect(20+i*60, 50+j*60, 60, 60);
+                    } 
+
+                }
+                
+            }
+            function activar_1(){
+                if (color)
+                {
+                    context.fillStyle = "rgb(13, 66, 188)";
+                    variableColor="rgb(13, 66, 188)";
+                    color = false;
+                }                
+                else
+                {
+                    context.fillStyle = "rgb(67, 82, 118)";
+                    variableColor="rgb(67, 82, 118)";
+                    color = true;
+                }
+                intervalo = setInterval(pintar1,200);
+            }
+            function activar_2(){
+                if (color)
+                {
+                    context.fillStyle = "rgb(13, 66, 188)";
+                    variableColor="rgb(13, 66, 188)";
+                    color = false;
+                }                
+                else
+                {
+                    context.fillStyle = "rgb(67, 82, 118)";
+                    variableColor="rgb(67, 82, 118)";
+                    color = true;
+                }
+                intervalo = setInterval(pintar2,200);
+            }
+            function activar_3(){
+                if (color)
+                {
+                    context.fillStyle = "rgb(13, 66, 188)";
+                    variableColor="rgb(13, 66, 188)";
+                    color = false;
+                }                
+                else
+                {
+                    context.fillStyle = "rgb(67, 82, 118)";
+                    variableColor="rgb(67, 82, 118)";
+                    color = true;
+                }
+                intervalo = setInterval(pintar3,200);
+            }
+            function activar_4(){
+                if (color)
+                {
+                    context.fillStyle = "rgb(13, 66, 188)";
+                    variableColor="rgb(13, 66, 188)";
+                    color = false;
+                }                
+                else
+                {
+                    context.fillStyle = "rgb(67, 82, 118)";
+                    variableColor="rgb(67, 82, 118)";
+                    color = true;
+                }
+                intervalo = setInterval(pintar4,200);
+            }
+            function activar_5(){
+                if (color)
+                {
+                    context.fillStyle = "rgb(13, 66, 188)";
+                    variableColor="rgb(13, 66, 188)";
+                    color = false;
+                }                
+                else
+                {
+                    context.fillStyle = "rgb(67, 82, 118)";
+                    variableColor="rgb(67, 82, 118)";
+                    color = true;
+                }
+                intervalo = setInterval(pintar5,200);
+            }
+            function activar_6(){
+                if (color)
+                {
+                    context.fillStyle = "rgb(13, 66, 188)";
+                    variableColor="rgb(13, 66, 188)";
+                    color = false;
+                }                
+                else
+                {
+                    context.fillStyle = "rgb(67, 82, 118)";
+                    variableColor="rgb(67, 82, 118)";
+                    color = true;
+                }
+                intervalo = setInterval(pintar6,200);
+            }
+            function activar_7(){
+                if (color)
+                {
+                    context.fillStyle = "rgb(205, 54, 26)";
+                    variableColor="rgb(205, 54, 26)";
+                    color = false;
+                }                
+                else
+                {
+                    context.fillStyle = "rgb(166, 154, 152)";
+                    variableColor="rgb(166, 154, 152)";
+                    color = true;
+                }
+                intervalo = setInterval(pintar7,200);
+            }
+            function activar_8(){
+                if (color)
+                {
+                    context.fillStyle = "rgb(205, 54, 26)";
+                    variableColor="rgb(205, 54, 26)";
+                    color = false;
+                }                
+                else
+                {
+                    context.fillStyle = "rgb(166, 154, 152)";
+                    variableColor="rgb(166, 154, 152)";
+                    color = true;
+                }
+                intervalo = setInterval(pintar8,200);
+            }
+            function activar_9(){
+                if (color)
+                {
+                    context.fillStyle = "rgb(205, 54, 26)";
+                    variableColor="rgb(205, 54, 26)";
+                    color = false;
+                }                
+                else
+                {
+                    context.fillStyle = "rgb(166, 154, 152)";
+                    variableColor="rgb(166, 154, 152)";
+                    color = true;
+                }
+                intervalo = setInterval(pintar9,200);
+            }
+            function activar_10(){
+                if (color)
+                {
+                    context.fillStyle = "rgb(205, 54, 26)";
+                    variableColor="rgb(205, 54, 26)";
+                    color = false;
+                }                
+                else
+                {
+                    context.fillStyle = "rgb(166, 154, 152)";
+                    variableColor="rgb(166, 154, 152)";
+                    color = true;
+                }
+                intervalo = setInterval(pintar10,200);
+            }
+            function desactivarForI_1(){
+                clearInterval(intervalo);
+                i++;
+                j=1;
+                activar_1();
+            }
+            function desactivarForJ_1(){
+                clearInterval(intervalo);
+                principal_1();
+            }
+            function desactivarForI_2(){
+                clearInterval(intervalo);
+                i++;
+                j=1;
+                activar_2();
+            }
+            function desactivarForJ_2(){
+                clearInterval(intervalo);
+                principal_2();
+            }
+            function desactivarForI_3(){
+                clearInterval(intervalo);
+                i++;
+                j=1;
+                activar_3();
+            }
+            function desactivarForJ_3(){
+                clearInterval(intervalo);
+                principal_3();
+            }
+            function desactivarForI_4(){
+                clearInterval(intervalo);
+                i++;
+                j=1;
+                activar_4();
+            }
+            function desactivarForJ_4(){
+                clearInterval(intervalo);
+                principal_4();
+            }
+            function desactivarForI_5(){
+                clearInterval(intervalo);
+                i++;
+                j=1;
+                activar_5();
+            }
+            function desactivarForJ_5(){
+                clearInterval(intervalo);
+                principal_5();
+            }
+            function desactivarForI_6(){
+                clearInterval(intervalo);
+                i++;
+                j=1;
+                activar_6();
+            }
+            function desactivarForJ_6(){
+                clearInterval(intervalo);
+                principal_6();
+            }
+            function desactivarForI_7(){
+                clearInterval(intervalo);
+                i++;
+                j=1;
+                activar_7();
+            }
+            function desactivarForJ_7(){
+                clearInterval(intervalo);
+                principal_7();
+            }
+            function desactivarForI_8(){
+                clearInterval(intervalo);
+                i++;
+                j=1;
+                activar_8();
+            }
+            function desactivarForJ_8(){
+                clearInterval(intervalo);
+                principal_8();
+            }
+            function desactivarForI_9(){
+                clearInterval(intervalo);
+                i++;
+                j=1;
+                activar_9();
+            }
+            function desactivarForJ_9(){
+                clearInterval(intervalo);
+                principal_9();
+            }
+            function desactivarForI_10(){
+                clearInterval(intervalo);
+                i++;
+                j=1;
+                activar_10();
+            }
+            function desactivarForJ_10(){
+                clearInterval(intervalo);
+                principal_10();
+            }
+            //]]>
+        </script>
+    </body>
+</html>

@@ -1,0 +1,109 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:f="http://java.sun.com/jsf/core"
+                template="templatebanco.xhtml"
+                xmlns:pm="http://primefaces.org/mobile"
+                xmlns:cmp="http://java.sun.com/jsf/composite/cmp">
+    <ui:define name="metadata">
+    </ui:define>
+    <script type="text/javascript">
+        function start() {
+            PF('statusDialog').show();
+        }
+
+        function stop() {
+            PF('statusDialog').hide();
+        }
+    </script>
+    <ui:define name="body">
+        <h:form id="datos">
+            #{empresaAction.buscarTodo()}  
+            <p:panelGrid id="principal" columns="1" columnClasses="no-border, no-border">
+                <p:toolbar style="font-size: 11px !important;background-color: rgb(232,235,241)">
+                    <p:toolbarGroup align="left">
+                        <h:panelGrid  id="botones" cellpadding="0" cellspacing="0"  columns="12">
+                            <p:commandButton rendered="#{empresaAction.aedtiar==1?true:false}" update=":datos:growl" value="Editar" ajax="true" actionListener="#{empresaAction.editar()}" icon="ui-icon-edit" />
+                            <p:commandButton rendered="#{empresaAction.aanular==1?true:false}" update="botones,:datos:growl,:datos:cmpDialog:lbl_opcion" value="Anular" actionListener="#{empresaAction.opcionEliminarDocumento('ANULAR','LST')}" icon="ui-icon-closethick" /> 
+                            <p:commandButton rendered="#{empresaAction.aeliminar==1?true:false}" update="botones,:datos:growl,:datos:cmpDialog:lbl_opcion" value="Eliminar" actionListener="#{empresaAction.opcionEliminarDocumento('ELIMINAR','LST')}" icon="ui-icon-eliminar" /> 
+                        </h:panelGrid>  
+
+                    </p:toolbarGroup>
+                </p:toolbar>
+                <p:dataTable id="tbl" var="listreglas" value="#{empresaAction.listaDatos}" filteredValue="#{empresaAction.filtroDatos}" widgetVar="listTipoZona" paginatorTemplate="{FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {Exporters}" paginatorPosition="top"
+                             paginator="true" rows="15" style="margin-bottom:20px" selectionMode="single" selection="#{empresaAction.datoSeleccionado}" rowKey="#{listreglas.idempresa}">
+                    <f:facet name="header">
+                        <h:outputText value="#{empresaAction.tituloHead}" />
+                    </f:facet>
+                    <p:column style="width:15%;" filterBy="#{listreglas.razon_social}" filterMatchMode="contains" sortBy="#{listreglas.razon_social}">
+                        <f:facet name="header">
+                            <h:outputText value="Razon Social" />
+                        </f:facet>
+                        <h:outputText value="#{listreglas.razon_social}"/>
+                    </p:column>
+                    <p:column style="width:15%;" filterBy="#{listreglas.direccion}" filterMatchMode="contains" sortBy="#{listreglas.direccion}">
+                        <f:facet name="header">
+                            <h:outputText value="Direccion" />
+                        </f:facet>
+                        <h:outputText value="#{listreglas.direccion}"/>
+                    </p:column>
+                    <p:column style="width:15%;" filterBy="#{listreglas.ruc}" filterMatchMode="contains" sortBy="#{listreglas.ruc}">
+                        <f:facet name="header">
+                            <h:outputText value="RUC" />
+                        </f:facet>
+                        <h:outputText value="#{listreglas.ruc}"/>
+                    </p:column>
+                    <p:column style="width:15%;" filterBy="#{listreglas.ruta_exportar}" filterMatchMode="contains" sortBy="#{listreglas.ruta_exportar}">
+                        <f:facet name="header">
+                            <h:outputText value="Ruta de Exportacion" />
+                        </f:facet>
+                        <h:outputText value="#{listreglas.ruta_exportar}"/>
+                    </p:column>
+                    <p:column style="width:15%;" filterBy="#{listreglas.ruta_reportes}" filterMatchMode="contains" sortBy="#{listreglas.ruta_reportes}">
+                        <f:facet name="header">
+                            <h:outputText value="Ruta de Reportes" />
+                        </f:facet>
+                        <h:outputText value="#{listreglas.ruta_reportes}"/>
+                    </p:column>
+                </p:dataTable>
+            </p:panelGrid>
+            <p:growl id="growl" life="4000" showDetail="false"  />
+            <cmp:mDialogElimina_lst id="cmpDialog" bean="#{empresaAction}" ventana="LST" />
+            <p:dialog id="empresaEdt" resizable="false" width="350" height="350" header="Empresa" widgetVar="empresaEdt" modal="true">
+                <div style="width:100%;text-align: center; padding: 0px">
+                    <p:panelGrid columns="1" id="pnl_reprogramar" columnClasses="no-border, no-border">
+                        <p:panelGrid columns="2" columnClasses="no-border, no-border">
+                            <p:outputLabel value="Id Empresa"/>
+                            <p:inputText maxlength="8" style="width: 100px !important;font-size: 11px" value="#{empresaAction.datoEdicion.idempresa}" disabled="true"/>
+                        </p:panelGrid>
+                        <p:panelGrid columns="2" columnClasses="no-border, no-border">
+                            <p:outputLabel value=" Razon Social"/>
+                            <p:inputText maxlength="8" style="width: 100px !important;font-size: 11px" value="#{empresaAction.datoEdicion.razon_social}" disabled="#{!empresaAction.edicion}"/>
+                        </p:panelGrid>
+                        <p:panelGrid columns="2" columnClasses="no-border, no-border">
+                            <p:outputLabel value="Direccion"/>
+                            <p:inputText maxlength="200" style="width: 200px !important;font-size: 11px" value="#{empresaAction.datoEdicion.direccion}" disabled="#{!empresaAction.edicion}"/>
+                        </p:panelGrid>
+                        <p:panelGrid columns="2" columnClasses="no-border, no-border">
+                            <p:outputLabel value="RUC"/>
+                            <p:inputText maxlength="11" style="width: 100px !important;font-size: 11px" value="#{empresaAction.datoEdicion.ruc}" disabled="#{!empresaAction.edicion}"/>
+                        </p:panelGrid>
+                        <p:panelGrid columns="2" columnClasses="no-border, no-border">
+                            <p:outputLabel value="Ruta de Exportacion"/>
+                            <p:inputText maxlength="100" style="width: 100px !important;font-size: 11px" value="#{empresaAction.datoEdicion.ruta_exportar}" disabled="#{!empresaAction.edicion}"/>
+                        </p:panelGrid>
+                        <p:panelGrid columns="2" columnClasses="no-border, no-border">
+                            <p:outputLabel value="Ruta de Reported"/>
+                            <p:inputText maxlength="100" style="width: 100px !important;font-size: 11px" value="#{empresaAction.datoEdicion.ruta_reportes}" disabled="#{!empresaAction.edicion}"/>
+                        </p:panelGrid>
+                        <p:panelGrid columns="2" columnClasses="no-border, no-border">
+                            <p:commandButton update=":datos" value="Grabar" onclick="PF('empresaEdt').hide()" ajax="true" actionListener="#{empresaAction.grabar()}" icon="ui-icon-circle-check" />
+                            <p:commandButton  onclick="PF('empresaEdt').hide()" icon="ui-icon-circle-close" />
+                        </p:panelGrid>
+                    </p:panelGrid>
+                </div>
+            </p:dialog>
+        </h:form>
+    </ui:define>
+</ui:composition>

@@ -1,0 +1,105 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:f="http://java.sun.com/jsf/core"
+                template="templatebanco.xhtml"
+                xmlns:cmp="http://java.sun.com/jsf/composite/cmp">
+    <ui:define name="metadata">
+    </ui:define>
+    <ui:define name="body">
+        <h:form id="datos">
+            #{parametroDistribucionAction.buscarTodo()}              
+            <p:panelGrid id="principal" columns="1" columnClasses="no-border, no-border">
+                <cmp:barra_lst bean="#{parametroDistribucionAction}" mostrar_opciones="false" />
+                <p:dataTable id="tbl" var="listParametroDistribucion" value="#{parametroDistribucionAction.listaDatos}" filteredValue="#{parametroDistribucionAction.filtroDatos}" widgetVar="listParametroDistribucion"
+                             paginatorTemplate="{FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {Exporters}" paginatorPosition="top"
+                             paginator="true" rows="15" style="margin-bottom:20px;text-align: center" selectionMode="single" selection="#{parametroDistribucionAction.datoSeleccionado}" rowKey="#{listParametroDistribucion.IDPARAMETRO}">
+                    <f:facet name="{Exporters}">
+                        <p:commandButton value="Excel" ajax="false" image="ui-icon-excel">
+                            <p:dataExporter type="xls" target="tbl" fileName="listParametroDistribucion"/>
+                        </p:commandButton>
+                    </f:facet>
+                    <f:facet name="header">
+                        <h:outputText value="#{parametroDistribucionAction.tituloHead}" />
+                    </f:facet>
+                    <p:column filterBy="#{listParametroDistribucion.IDPARAMETRO}" filterMatchMode="contains" sortBy="#{listParametroDistribucion.IDPARAMETRO}">
+                        <f:facet name="header">
+                            <h:outputText value="ID" />
+                        </f:facet>
+                        <h:outputText value="#{listParametroDistribucion.IDPARAMETRO}"/>
+                    </p:column>
+                    <p:column filterBy="#{listParametroDistribucion.NOMBRE}" filterMatchMode="contains" sortBy="#{listParametroDistribucion.NOMBRE}">
+                        <f:facet name="header" >
+                            <h:outputText value="NOMBRE" />
+                        </f:facet>
+                        <h:outputText value="#{listParametroDistribucion.NOMBRE}" />
+                    </p:column>
+                    <p:column filterBy="#{listParametroDistribucion.TIPOREGLA}" filterMatchMode="contains" sortBy="#{listParametroDistribucion.TIPOREGLA}">
+                        <f:facet name="header" >
+                            <h:outputText value="TIPO REGLA" />
+                        </f:facet>
+                        <h:outputText value="#{listParametroDistribucion.TIPOREGLA}" />
+                    </p:column>
+                    <p:column filterBy="#{listParametroDistribucion.FECHACREACION}" filterMatchMode="contains" sortBy="#{listParametroDistribucion.FECHACREACION}">
+                        <f:facet name="header" >
+                            <h:outputText value="FECHA CREACION" />
+                        </f:facet>
+                        <h:outputText value="#{listParametroDistribucion.FECHACREACION}" />
+                    </p:column>
+                    <p:column filterBy="#{listParametroDistribucion.FECHA_DETALLE}" filterMatchMode="contains" sortBy="#{listParametroDistribucion.FECHA_DETALLE}">
+                        <f:facet name="header" >
+                            <h:outputText value="FECHA PARAMETRO" />
+                        </f:facet>
+                        <h:outputText value="#{listParametroDistribucion.FECHA_DETALLE}" />
+                    </p:column>
+                    <p:column style="width:10%;" filterBy="#{listParametroDistribucion.ESTADO}">
+                        <f:facet name="header">
+                            <h:outputText value="ESTADO"/>
+                        </f:facet>
+                        <f:facet name="filter">
+                            <p:selectOneButton onchange="PF('listParametroDistribucion').filter()">
+                                <f:converter converterId="javax.faces.Boolean" />
+                                <f:selectItem  itemLabel="Activo" itemValue="true"/>
+                                <f:selectItem itemLabel="Inactivo" itemValue="false"/>
+                            </p:selectOneButton>
+                        </f:facet>
+                        <h:graphicImage value="../images/img/#{listParametroDistribucion.ESTADO?'activo':'inactivo'}.png"/>
+                        <h:outputText value="#{listParametroDistribucion.ESTADO?'Activo':'Inactivo'}" />
+                    </p:column>
+                </p:dataTable>  
+            </p:panelGrid>
+            <p:dialog id="dlGuardarParametroDistribucion" header="..:: MANTENEDOR PARÁMETRO DISTRIBUCIÓN ::." widgetVar="dlGuardarParametroDistribucion" modal="true" showEffect="popup" closable="false">
+                <p:messages id="messages" autoUpdate="true" closable="true" style="font-size:10px"/>
+                <p:panelGrid columns="2" columnClasses="no-border, no-border,no-border">
+                    <p:outputLabel value="Id: " />
+                    <p:inputText disabled="true" value="#{parametroDistribucionAction.datoEdicion.IDPARAMETRO}" />
+                    <h:outputLabel  value="Tipo - Regla:" />
+                    <p:selectOneMenu style="width: 80%;" value="#{parametroDistribucionAction.datoEdicion.TIPO}" disabled="#{!parametroDistribucionAction.edicion}">
+                        <p:ajax listener="#{parametroDistribucionAction.onTipoParametroChange}" update="datos:fechaDetalle" />
+                        <f:selectItem itemLabel="Seleccionar Tipo Regla" itemValue="0"/>
+                        <f:selectItems value="#{parametroDistribucionAction.listMultitabla}" var="tipoRegla" itemLabel="#{tipoRegla.DESCRIPCION}" itemValue="#{tipoRegla.VALOR}"/>
+                    </p:selectOneMenu>
+                    <p:outputLabel  value="Descripción: " />
+                    <p:inputTextarea  cols="60" rows="3" value="#{parametroDistribucionAction.datoEdicion.NOMBRE}" onkeyup="javascript:this.value = this.value.toUpperCase();"  disabled="#{!parametroDistribucionAction.edicion}">
+                    </p:inputTextarea>
+                    <h:outputLabel  value="Fecha Creación:"/>
+                    <p:calendar id="fechaCreacion" value="#{parametroDistribucionAction.fechaCreacion}" pattern="dd-MM-yyyy" mask="true" readonly="true"  disabled="#{!parametroDistribucionAction.edicion}"/>
+                    <h:outputLabel value="Fecha Parámetro:" rendered="#{parametroDistribucionAction.visibleFechaDetalle}"/>
+                    <p:calendar id="fechaDetalle" value="#{parametroDistribucionAction.fechaDetalle}" pattern="dd-MM-yyyy" mask="true" rendered="#{parametroDistribucionAction.visibleFechaDetalle}"  disabled="#{!parametroDistribucionAction.edicion}"/>
+                    <h:outputText value="Estado?:" />
+                    <p:selectBooleanCheckbox value="#{parametroDistribucionAction.datoEdicion.ESTADO}"  disabled="#{!parametroDistribucionAction.edicion}"/>
+                </p:panelGrid>
+                <br/>
+                <p:toolbar>
+                    <f:facet name="right">
+                        <p:commandButton id="buttonGuardar" value="Grabar" ajax="true" actionListener="#{parametroDistribucionAction.grabar()}" image="ui-icon-grabar" />
+                        <p:commandButton id="buttonCancelar" value="Cancelar" update="datos" image="ui-icon-cancelar" onclick="PF('dlGuardarParametroDistribucion').hide()" />
+                    </f:facet>
+                </p:toolbar>            
+            </p:dialog>   
+            <p:growl id="growl" life="4000" showDetail="false"  />
+            <cmp:mDialogElimina_lst id="cmpDialog" bean="#{parametroDistribucionAction}" ventana="LST" />
+        </h:form>
+    </ui:define>
+</ui:composition>

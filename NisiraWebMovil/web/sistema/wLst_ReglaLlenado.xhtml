@@ -1,0 +1,46 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:f="http://java.sun.com/jsf/core"
+                template="templatebanco.xhtml"
+                xmlns:pm="http://primefaces.org/mobile"
+                xmlns:cmp="http://java.sun.com/jsf/composite/cmp">
+    <ui:define name="metadata">
+    </ui:define>
+    <ui:define name="body">
+        <h:form id="datos">            
+            #{reglallenadoAction.buscarTodo()}  
+            <p:panelGrid id="principal" columns="1" columnClasses="no-border, no-border">
+                <cmp:barra_lst bean="#{reglallenadoAction}" mostrar_opciones="false" />
+                <p:dataTable  id="tbl" var="listRl" value="#{reglallenadoAction.listaDatos}" filteredValue="#{reglallenadoAction.filtroDatos}" widgetVar="listRl" paginatorTemplate="{FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {Exporters}" paginatorPosition="top"
+                              paginator="true" rows="15" style="margin-bottom:20px" selectionMode="single" selection="#{reglallenadoAction.datoSeleccionado}" rowKey="#{listRl.idreglas}" resizableColumns="true">
+                    <f:facet name="header">
+                        <h:outputText value="#{reglallenadoAction.tituloHead}" />
+                    </f:facet>                    
+                    <p:column headerText="Codigo Regla" style="width:30%;" filterBy="#{listRl.idreglas}" filterMatchMode="contains" sortBy="#{listRl.idreglas}">
+                        <h:outputText value="#{listRl.idreglas}" />
+                    </p:column>
+                    <p:column headerText="Descripcion" style="width:30%;" filterBy="#{listRl.descripcion}" filterMatchMode="contains" sortBy="#{listRl.descripcion}">
+                              <h:outputText value="#{listRl.descripcion}" />
+                    </p:column>
+                    <p:column style="width:20%;" filterBy="#{listRl.estado}">
+                        <f:facet name="header">
+                            <h:outputText value="ESTADO"/>
+                        </f:facet>
+                        <f:facet name="filter">
+                            <p:selectOneButton onchange="PF('listRl').filter()">
+                                <f:selectItem  itemLabel="Activo" itemValue="#{1}"/>
+                                <f:selectItem itemLabel="Inactivo" itemValue="#{0}"/>
+                            </p:selectOneButton>
+                        </f:facet>
+                        <h:graphicImage value="../images/img/#{listRl.estado==1?'activo':'inactivo'}.png"/>
+                        <h:outputText value="#{listRl.estado==1?'Activo':'Inactivo'}" />
+                    </p:column>
+                </p:dataTable>
+            </p:panelGrid>
+            <p:growl id="growl" life="4000" showDetail="false"  />
+            <cmp:mDialogElimina_lst id="cmpDialog" bean="#{reglallenadoAction}" ventana="LST" />
+        </h:form>
+    </ui:define>    
+</ui:composition>

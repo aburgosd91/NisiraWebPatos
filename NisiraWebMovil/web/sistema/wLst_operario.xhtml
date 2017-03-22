@@ -1,0 +1,100 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:f="http://java.sun.com/jsf/core"
+                template="templatebanco.xhtml"
+                xmlns:cmp="http://java.sun.com/jsf/composite/cmp">
+    <ui:define name="metadata">
+    </ui:define>
+    <ui:define name="body">          
+        <h:form id="datos">
+            #{operarioAction.buscarTodo()}  
+            <p:panelGrid id="principal" columns="1" columnClasses="no-border, no-border">
+                <cmp:barra_lst bean="#{operarioAction}" mostrar_opciones="false" />
+                <p:dataTable id="tbl" var="listOperario" value="#{operarioAction.listaDatos}" filteredValue="#{operarioAction.filtroDatos}" widgetVar="listOperario" 
+                             paginatorTemplate="{FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink}" paginatorPosition="top"
+                             paginator="true" rows="15" style="margin-bottom:20px" selectionMode="single" selection="#{operarioAction.datoSeleccionado}" rowKey="#{listOperario.IDOPERARIO}" resizableColumns="true">
+                    <f:facet name="header">
+                        <h:outputText value="#{operarioAction.tituloHead}" />
+                    </f:facet>
+                    <p:column style="width:15%;" filterBy="#{listOperario.IDOPERARIO}" filterMatchMode="contains" sortBy="#{listOperario.IDOPERARIO}">
+                        <f:facet name="header">
+                            <h:outputText value="ID" />
+                        </f:facet>
+                        <h:outputText value="#{listOperario.IDOPERARIO}"/>
+                    </p:column>
+                    <p:column style="width:20%;" filterBy="#{listOperario.AP_PATERNO}" filterMatchMode="contains" sortBy="#{listOperario.AP_PATERNO}">
+                        <f:facet name="header" >
+                            <h:outputText value="AP. PATERNO" />
+                        </f:facet>
+                        <h:outputText value="#{listOperario.AP_PATERNO}" />
+                    </p:column>
+                    <p:column style="width:20%;" filterBy="#{listOperario.AP_MATERNO}" filterMatchMode="contains" sortBy="#{listOperario.AP_MATERNO}">
+                        <f:facet name="header" >
+                            <h:outputText value="AP. MATERNO" />
+                        </f:facet>
+                        <h:outputText value="#{listOperario.AP_MATERNO}" />
+                    </p:column>
+                    <p:column style="width:20%;" filterBy="#{listOperario.NOMBRES}" filterMatchMode="contains" sortBy="#{listOperario.NOMBRES}">
+                        <f:facet name="header" >
+                            <h:outputText value="NOMBRES" />
+                        </f:facet>
+                        <h:outputText value="#{listOperario.NOMBRES}" />
+                    </p:column>
+                    <p:column style="width:10%;" filterBy="#{listOperario.BREVETE}" filterMatchMode="contains" sortBy="#{listOperario.BREVETE}">
+                        <f:facet name="header" >
+                            <h:outputText value="BREVETE" />
+                        </f:facet>
+                        <h:outputText value="#{listOperario.BREVETE}" />
+                    </p:column>
+                    <p:column style="width:20%;" filterBy="#{listOperario.ESTADO}">
+                        <f:facet name="header">
+                            <h:outputText value="ESTADO"/>
+                        </f:facet>
+                        <f:facet name="filter">
+                            <p:selectOneButton onchange="PF('listOperario').filter()">
+                                <f:converter converterId="javax.faces.Boolean" />
+                                <f:selectItem  itemLabel="Activo" itemValue="true"/>
+                                <f:selectItem itemLabel="Inactivo" itemValue="false"/>
+                            </p:selectOneButton>
+                        </f:facet>
+                        <h:graphicImage value="../images/img/#{listOperario.ESTADO?'activo':'inactivo'}.png"/>
+                        <h:outputText value="#{listOperario.ESTADO?'Activo':'Inactivo'}" />
+                    </p:column>
+                </p:dataTable>  
+            </p:panelGrid>
+            <p:dialog id="dlGuardarOperario" header="..:: MANTENEDOR OPERARIO ::." widgetVar="dlGuardarOperario" modal="true" showEffect="popup" closable="false">
+                <p:messages id="messages" autoUpdate="true" closable="true" style="font-size:10px"/>
+                <p:panelGrid columns="2" columnClasses="no-border, no-border,no-border">
+                    <p:outputLabel value="Id: " />
+                    <p:panelGrid columns="3" columnClasses="no-border, no-border, no-border">
+                        <p:inputText value="#{operarioAction.datoEdicion.IDOPERARIO}" maxlength="8" readonly="#{!operarioAction.edicion}"/>
+                        <p:outputLabel for="apellidopaterno" value="Ape. Paterno: " />
+                        <p:inputTextarea id="apellidopaterno" cols="40" rows="1"  value="#{operarioAction.datoEdicion.AP_PATERNO}" onkeyup="javascript:this.value = this.value.toUpperCase();" disabled="#{!operarioAction.edicion}">
+                        </p:inputTextarea>
+                    </p:panelGrid>
+                    <p:outputLabel for="apellidomaterno" value="Ape. Materno: " />
+                    <p:inputTextarea id="apellidomaterno" cols="60" rows="1"  value="#{operarioAction.datoEdicion.AP_MATERNO}" onkeyup="javascript:this.value = this.value.toUpperCase();" disabled="#{!operarioAction.edicion}">
+                    </p:inputTextarea>
+                    <p:outputLabel for="nombres" value="Ape. Nombres: " />
+                    <p:inputTextarea id="nombres" cols="60" rows="1" value="#{operarioAction.datoEdicion.NOMBRES}" onkeyup="javascript:this.value = this.value.toUpperCase();" disabled="#{!operarioAction.edicion}" >
+                    </p:inputTextarea>
+                    <p:outputLabel for="brevete" value="Brevete:" onkeyup="javascript:this.value = this.value.toUpperCase();"/>
+                    <p:inputText id="brevete" size="5" value="#{operarioAction.datoEdicion.BREVETE}" disabled="#{!operarioAction.edicion}"/>
+                    <h:outputText value="Estado?:" />
+                    <p:selectBooleanCheckbox value="#{operarioAction.datoEdicion.ESTADO}" disabled="#{!operarioAction.edicion}"/>
+                </p:panelGrid>
+                <br/>
+                <p:toolbar>
+                    <f:facet name="right">
+                        <p:commandButton id="buttonGuardar" value="Grabar" ajax="true" actionListener="#{operarioAction.grabar()}" image="ui-icon-grabar" />
+                        <p:commandButton id="buttonCancelar" value="Cancelar" image="ui-icon-cancelar" onclick="PF('dlGuardarOperario').hide()"/>
+                    </f:facet>
+                </p:toolbar>          
+            </p:dialog> 
+            <p:growl id="growl" life="4000" showDetail="false"  />
+            <cmp:mDialogElimina_lst id="cmpDialog" bean="#{operarioAction}" ventana="LST" />
+        </h:form>
+    </ui:define>
+</ui:composition>

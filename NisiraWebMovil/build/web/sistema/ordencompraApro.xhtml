@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+To change this template, choose Tools | Templates
+and open the template in the editor.
+-->
+<!DOCTYPE html>
+
+<f:view xmlns="http://www.w3.org/1999/xhtml"
+        xmlns:f="http://java.sun.com/jsf/core"
+        xmlns:h="http://java.sun.com/jsf/html"
+        xmlns:p="http://primefaces.org/ui"
+        xmlns:pm="http://primefaces.org/mobile"
+        contentType="text/html"
+        renderKitId="PRIMEFACES_MOBILE">
+
+
+    <pm:page title="Orden Compra">
+
+        <pm:view id="main" swatch="d" >
+            <pm:header title="Orden Compra" swatch="a" fixed="true" >
+                <f:facet name="left"><p:button  value="Atrás" icon="back" onclick="PrimeFaces.back()"/></f:facet>
+                <f:facet name="right"><p:button value="Salir" icon="delete" onclick="dlg.show()" /></f:facet>
+                <script type="text/javascript" src="../js/validadispositivo.js"></script>
+                
+                <p:dialog header="Advertencia" widgetVar="dlg" modal="true">
+                    <f:attribute name="contentSwatch" value="a" />
+                    <p:outputPanel id="noteDetail" layout="block"  style="padding:4px 10px">
+                        <h:outputText value="Desea Salir?"/>
+                        <p:button value="Si" onclick="window.location = '#{facesContext.externalContext.requestContextPath}/faces/Sistema/CerrarSesion.xhtml';" icon="check"/>
+                    </p:outputPanel>
+                </p:dialog>
+            </pm:header>
+          
+            <pm:content>
+                <p:panelGrid style="width: 100%" >
+                    <p:row>
+                        <p:column>
+                            <center><b>HISTORIAL</b></center>
+                        </p:column>
+                    </p:row> 
+                </p:panelGrid>
+                <br></br>
+                    
+
+
+                <h:outputLabel value="#{ordencompraAction.buscarAprobados()}" /> 
+                <h:form id="listOrdencompraForm">
+
+                    <p:dataList id="ordencompra" value="#{ordencompraAction.listaaprobados}" var="orden" type="inset">
+
+                        <f:attribute name="filter" value="true"/>
+
+                                <p style="color: blue; font-size: 18px;"><b>#{orden.idestado}</b></p> 
+                                <p style="color: blue ; font-size: 15px;"><b>#{orden.idarea}</b></p>
+                                <p style=" font-size: 18px;"><b>#{orden.iddocumento}</b></p> 
+                                <p style=" font-size: 15px;"><b>#{orden.idclieprov}</b></p>
+                                <p style="color: red ; font-size: 15px;"><b>#{orden.idmoneda}#{orden.total}</b></p>
+
+                                <h:outputText value="#{orden.fecha}" style="color: darkorange" >  
+                                    <f:convertDateTime pattern="dd/MM/yyyy" timeZone="EST" />  
+                                </h:outputText>
+
+                    </p:dataList>
+
+                </h:form>
+
+                <br></br><br></br><br></br><br></br><br></br><br></br><br></br><br></br><br></br><br></br><br></br>
+            </pm:content>
+            <pm:footer swatch="a" fixed="true">
+                <h1 style="font-size: x-small" >© 2013 <img border="0" height="10px" src="../images/logoWeb.png"/> Nisira Systems SAC </h1>         
+            </pm:footer>  
+        </pm:view>
+
+    </pm:page>
+</f:view>

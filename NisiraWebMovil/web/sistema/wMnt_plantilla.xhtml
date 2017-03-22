@@ -1,0 +1,108 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:f="http://java.sun.com/jsf/core"
+                template="templatebanco.xhtml"
+                xmlns:pm="http://primefaces.org/mobile">
+    <ui:define name="metadata">
+    </ui:define>
+    <ui:define name="body">
+        <h:form id="formCabecera">
+            <p:toolbar>
+                <f:facet name="left">
+                    <p:commandButton id="buttonNuevo" value="Nuevo" ajax="true" image="ui-icon-nuevo" actionListener="#{plantillaAction.getActionNuevoPlantilla()}"/>
+                    <p:commandButton id="buttonEditar" value="Editar" ajax="true" image="ui-icon-edit" actionListener="#{plantillaAction.getActionEditarPlantilla()}" disabled="#{plantillaAction.botonEditar}"/> 
+                    <p:commandButton id="buttonEliminar" value="Eliminar" ajax="true" image="ui-icon-eliminar" actionListener="#{plantillaAction.InhabilitarPlantilla()}" disabled="#{plantillaAction.botonEliminar}"/>
+                </f:facet>
+            </p:toolbar>
+        </h:form>
+        <p:dialog id="dlGuardarPlantilla" header="..:: MANTENEDOR PLANTILLA ::." widgetVar="dlGuardarPlantilla" modal="true" showEffect="popup" closable="false">
+            <p:messages id="messages" autoUpdate="true" closable="true" style="font-size:10px"/>
+            <h:form id="FormularioGrabarPlantilla">
+                <p:panelGrid columns="2" columnClasses="no-border, no-border,no-border">
+                    <p:outputLabel value="Id: " />
+                    <p:panelGrid columns="5" columnClasses="no-border, no-border, no-border, no-border, no-border">
+                        <p:inputText size="3" disabled="true" value="#{plantillaAction.variablePlantilla.IDPLANTILLA}" />
+                        <p:outputLabel for="width"  value="Ancho:" />
+                        <p:spinner id="width" value="#{plantillaAction.variablePlantilla.WIDTH}" required="true" min="0"/>
+                        <p:outputLabel for="height"  value="Height:" />
+                        <p:spinner id="height" value="#{plantillaAction.variablePlantilla.HEIGHT}" required="true" min="0"/>
+                    </p:panelGrid>
+                    <p:outputLabel for="descripcion" value="Descripción: " />
+                    <p:inputTextarea id="descripcion" cols="60" rows="3"  required="true"  value="#{plantillaAction.variablePlantilla.DESCRIPCION}" onkeyup="javascript:this.value=this.value.toUpperCase();">
+                    </p:inputTextarea>
+                    <h:outputText value="Estado?:" />
+                    <p:selectBooleanCheckbox value="#{plantillaAction.variablePlantilla.ESTADO}"/>
+                </p:panelGrid>
+                <br/>
+                <p:toolbar>
+                    <f:facet name="right">
+                        <p:commandButton id="buttonGuardar" value="Grabar" ajax="true" actionListener="#{plantillaAction.GrabarPlantilla()}" image="ui-icon-grabar" />
+                        <p:commandButton id="buttonCancelar" value="Cancelar" process="@this" update="datos" image="ui-icon-cancelar" onclick="PF('dlGuardarPlantilla').hide()">
+                            <p:resetInput target="FormularioGrabarPlantilla" />
+                        </p:commandButton>
+                    </f:facet>
+                </p:toolbar>
+            </h:form>                 
+        </p:dialog>   
+        <br/>
+        <h:form id="datos">
+            <p:panelGrid id="principal" columns="1" columnClasses="no-border, no-border">
+                #{plantillaAction.getRecordPlantilla()}  
+                <p:dataTable id="tbl" var="listPlantilla" value="#{plantillaAction.listPlantilla}" widgetVar="listPlantilla" filteredValue="#{plantillaAction.filtroPlantilla}"
+                             paginatorTemplate="{FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {Exporters}" paginatorPosition="top"
+                        paginator="true" rows="15" style="margin-bottom:20px" selectionMode="single" selection="#{plantillaAction.selectPlantilla}" rowKey="#{listPlantilla.IDPLANTILLA}">
+                        <p:ajax event="rowSelect" listener="#{plantillaAction.onRowSelect}" update="formCabecera" />
+                        <p:ajax event="rowUnselect" listener="#{plantillaAction.onRowUnselect}" update="formCabecera" />
+                        <f:facet name="{Exporters}">
+                            <p:commandButton value="Excel" ajax="false" image="ui-icon-excel">
+                            <p:dataExporter type="xls" target="tbl" fileName="listPlantilla"/>
+                            </p:commandButton>
+                        </f:facet>
+                        <f:facet name="header">
+                                <h:outputText value="..::PLANTILLA::.." />
+                        </f:facet>
+                        <p:column style="width:10%;" filterBy="#{listPlantilla.IDPLANTILLA}" filterMatchMode="contains">
+                           <f:facet name="header">
+                               <h:outputText value="ID" />
+                           </f:facet>
+                           <h:outputText value="#{listPlantilla.IDPLANTILLA}"/>
+                       </p:column>
+                        <p:column style="width:55%;" filterBy="#{listPlantilla.DESCRIPCION}" filterMatchMode="contains">
+                           <f:facet name="header" >
+                               <h:outputText value="DESCRIPCION" />
+                           </f:facet>
+                        <h:outputText value="#{listPlantilla.DESCRIPCION}" />
+                       </p:column>
+                        <p:column style="width:10%;" filterBy="#{listPlantilla.HEIGHT}" filterMatchMode="contains">
+                           <f:facet name="header" >
+                               <h:outputText value="ALTO" />
+                           </f:facet>
+                        <h:outputText value="#{listPlantilla.HEIGHT}" />
+                       </p:column>
+                        <p:column style="width:10%;" filterBy="#{listPlantilla.WIDTH}" filterMatchMode="contains">
+                           <f:facet name="header" >
+                               <h:outputText value="ANCHO" />
+                           </f:facet>
+                            <h:outputText value="#{listPlantilla.WIDTH}" />
+                       </p:column>
+                        <p:column style="width:20%;" filterBy="#{listPlantilla.ESTADO}">
+                           <f:facet name="header">
+                               <h:outputText value="ESTADO"/>
+                           </f:facet>
+                           <f:facet name="filter">
+                                <p:selectOneButton onchange="PF('listPlantilla').filter()">
+                                    <f:converter converterId="javax.faces.Boolean" />
+                                    <f:selectItem  itemLabel="Activo" itemValue="true"/>
+                                    <f:selectItem itemLabel="Inactivo" itemValue="false"/>
+                                </p:selectOneButton>
+                            </f:facet>
+                           <h:graphicImage value="../images/img/#{listPlantilla.ESTADO?'activo':'inactivo'}.png"/>
+                           <h:outputText value="#{listPlantilla.ESTADO?'Activo':'Inactivo'}" />
+                       </p:column>
+                    </p:dataTable>  
+            </p:panelGrid>
+        </h:form>
+    </ui:define>
+</ui:composition>

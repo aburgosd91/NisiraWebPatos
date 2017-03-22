@@ -1,0 +1,39 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:f="http://java.sun.com/jsf/core"
+                template="templatebanco.xhtml"
+                xmlns:pm="http://primefaces.org/mobile"
+                xmlns:cmp="http://java.sun.com/jsf/composite/cmp">
+    <ui:define name="metadata">
+    </ui:define>
+    <ui:define name="body">
+        <h:form id="datos">            
+            #{programacioLlenadoAction.buscarTodo()}  
+             <cmp:barra_lst bean="#{programacioLlenadoAction}" mostrar_opciones="true" />
+            <p:panelGrid id="principal" columns="1" columnClasses="no-border, no-border">               
+                <p:dataTable  id="tbl" var="listPr" value="#{programacioLlenadoAction.listaDatos}" filteredValue="#{programacioLlenadoAction.filtroDatos}" widgetVar="listRl" paginatorTemplate="{FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink}" paginatorPosition="top"
+                              paginator="true" rows="15" style="margin-bottom:20px" selectionMode="single" selection="#{programacioLlenadoAction.datoSeleccionado}" rowKey="#{listPr.idprogramacionllenado}" resizableColumns="true">
+                    <f:facet name="header">
+                        <h:outputText value="#{programacioLlenadoAction.tituloHead}" />
+                    </f:facet>                    
+                    <p:column headerText="Codigo Programacion" style="width:30%;" filterBy="#{listPr.idprogramacionllenado}" filterMatchMode="contains" sortBy="#{listPr.idprogramacionllenado}">
+                        <h:outputText value="#{listPr.idprogramacionllenado}" />
+                    </p:column>
+                    <p:column headerText="Descricion" style="width:30%;" filterBy="#{listPr.descripcion}" filterMatchMode="contains" sortBy="#{listPr.descripcion}">
+                        <h:outputText value="#{listPr.descripcion}" />
+                    </p:column>
+                    <p:column headerText="Fecha inicio" style="width:30%;" filterBy="#{listPr.finicio}" filterMatchMode="contains" sortBy="#{listPr.finicio}">
+                        <h:outputText value="#{listPr.finicio}" />
+                    </p:column>
+                    <p:column headerText="Fecha fin" style="width:30%;" filterBy="#{listPr.ffin}" filterMatchMode="contains" sortBy="#{listPr.ffin}">
+                        <h:outputText value="#{listPr.ffin}" />
+                    </p:column>
+                </p:dataTable>
+            </p:panelGrid>
+            <p:growl id="growl" life="4000" showDetail="false"  />
+            <cmp:mDialogElimina_lst id="cmpDialog" bean="#{programacioLlenadoAction}" ventana="LST" />
+        </h:form>
+    </ui:define>
+</ui:composition>

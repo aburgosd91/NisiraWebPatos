@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:pm="http://primefaces.org/mobile"
+      xmlns:pt="http://xmlns.jcp.org/jsf/passthrough"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      template="templatebanco.xhtml"
+      xmlns:cmp="http://java.sun.com/jsf/composite/cmp">
+    <h:head>
+    </h:head>
+    <h:body>
+        <h:form id="datos">
+            #{asignacionChips.findDetalle()}
+            <cmp:mbarra_mnt bean="#{asignacionChips}" />
+            <p:panelGrid columns="1">
+                <h:panelGrid columns="6" styleClass="ui-responsive">
+                    <p:outputLabel value="Codigo"/>
+                    <h:inputText value="#{asignacionChips.datoEdicion.idasignacionchips}" style="width: 100%"  disabled="true"/>
+                    <p:outputLabel value="Sucursal"/>
+                    <h:inputText value="#{asignacionChips.datoEdicion.idsucursal}" style="width: 100%"  disabled="true"/>
+                    <p:outputLabel for="Zona"  value="Zona:" />
+                    <p:selectOneMenu id="Zona" value="#{asignacionChips.datoEdicion.idzona}" style="width: 100%"  disabled="#{!asignacionChips.edicion}"> 
+                        <p:ajax listener="#{asignacionChips.onZonaSelect()}" update="datos:" />
+                        <f:selectItem itemLabel="Seleccione Zona" itemValue=""/>                        
+                        <f:selectItems value="#{asignacionChips.lstZona}"  var="tipoZona" itemLabel="#{tipoZona.DESCRIPCION}" itemValue="#{tipoZona.IDZONA}" />
+                    </p:selectOneMenu>
+                </h:panelGrid>
+                <h:panelGrid columns="8">
+                    <p:outputLabel value="U.Sin Confirmar"/>
+                    <h:inputText />
+                    <p:outputLabel value="U.Confirmada"/>
+                    <h:inputText />
+                    <p:outputLabel value="Tags Asignado"/>
+                    <h:inputText />
+                    <p:outputLabel value="Tag Fallido"/>
+                    <h:inputText />
+                </h:panelGrid>
+                <h:panelGrid columns="2">
+                    <p:commandButton value="Sin Config" type="button"  styleClass="ui-btn-inline" style="background-color: #f00" />                    
+                    <p:commandButton value="Confirmado" type="button"  styleClass="ui-btn-inline" style="background-color: #41e63c"/>
+                </h:panelGrid>
+                <p:dataGrid var="listDasigna" value="#{asignacionChips.lstDAsigChips}" columns="#{asignacionChips.slcZona.LARGOUNIDADDIAGRAMA}"
+                            rows="#{asignacionChips.slcZona.ANCHOUNIDADDIAGRAMA * asignacionChips.slcZona.LARGOUNIDADDIAGRAMA}"
+                            id="listDasigna"  paginator="true" style="width:#{asignacionChips.slcZona.LARGOUNIDADDIAGRAMA * 50}px">
+                    <p:commandLink action="#{asignacionChips.confirmar()}" ajax="true">                                
+                        <f:setPropertyActionListener value="#{listDasigna}" target="#{asignacionChips.slcDAsigChip}"/>
+                        <p:panel id="boton"  style="background-color: #{listDasigna.color};width:30px;height:30px;padding: 0px">
+                            <h:panelGrid columns="1" style="width: 100%;alignment-adjust: central">
+                                <h:outputText value="#{listDasigna.desc}"/>
+                            </h:panelGrid>
+                        </p:panel>                               
+                    </p:commandLink>
+                </p:dataGrid>
+            </p:panelGrid>
+            <p:growl id="growl" life="4000" showDetail="false"  />
+            <cmp:mmDialogElimina_lst id="cmpDialog" bean="#{asignacionChips}" ventana="MNT" />
+        </h:form>
+    </h:body>
+</html>

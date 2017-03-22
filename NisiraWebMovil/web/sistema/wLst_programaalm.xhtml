@@ -1,0 +1,89 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:f="http://java.sun.com/jsf/core"
+                template="templatebanco.xhtml"
+                xmlns:pm="http://primefaces.org/mobile"
+                xmlns:cmp="http://java.sun.com/jsf/composite/cmp">
+    <ui:define name="metadata">
+    </ui:define>
+    <ui:define name="body">
+        <h:form id="datos">            
+            #{programaAlmAction.buscarTodo()}  
+            <p:panelGrid id="principal" columns="1" columnClasses="no-border, no-border">
+                <cmp:barra_lst bean="#{programaAlmAction}" mostrar_opciones="false" />
+                <p:dataTable id="tbl" var="listreglas" value="#{programaAlmAction.listaDatos}" widgetVar="listTipoZona" paginatorTemplate="{FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink}" paginatorPosition="top"
+                    <f:facet name="header">
+                        <h:outputText value="..::Programa Almacen::.." />
+                    </f:facet>
+                    <p:column style="width:15%;" filterBy="#{listreglas.idprogramaalm}" filterMatchMode="contains" sortBy="#{listreglas.idprogramaalm}">
+                        <f:facet name="header">
+                            <h:outputText value="IdPrograma almacen" />
+                        </f:facet>
+                        <h:outputText value="#{listreglas.idprogramaalm}"/>
+                    </p:column>
+                    <p:column style="width:15%;" filterBy="#{listreglas.idsucursal}" filterMatchMode="contains" sortBy="#{listreglas.idsucursal}">
+                        <f:facet name="header">
+                            <h:outputText value="Id Sucursal" />
+                        </f:facet>
+                        <h:outputText value="#{listreglas.idsucursal}"/>
+                    </p:column>
+                    <p:column style="width:15%;" filterBy="#{listreglas.iddocumento}" filterMatchMode="contains" sortBy="#{listreglas.iddocumento}">
+                        <f:facet name="header">
+                            <h:outputText value="Id documento" />
+                        </f:facet>
+                        <h:outputText value="#{listreglas.iddocumento}"/>
+                    </p:column>
+                    <p:column style="width:15%;" filterBy="#{listreglas.serie}" filterMatchMode="contains" sortBy="#{listreglas.serie}">
+                        <f:facet name="header">
+                            <h:outputText value="Serie" />
+                        </f:facet>
+                        <h:outputText value="#{listreglas.serie}"/>
+                    </p:column>
+                    <p:column style="width:15%;" filterBy="#{listreglas.numero}" filterMatchMode="contains" sortBy="#{listreglas.numero}">
+                        <f:facet name="header">
+                            <h:outputText value="Numero" />
+                        </f:facet>
+                        <h:outputText value="#{listreglas.numero}"/>
+                    </p:column>
+                    <p:column style="width:15%;" filterBy="#{listreglas.idestado}" filterMatchMode="contains" sortBy="#{listreglas.idestado}">
+                        <f:facet name="header">
+                            <h:outputText value="Id estado" />
+                        </f:facet>
+                        <h:outputText value="#{listreglas.idestado}"/>
+                    </p:column>
+                    <p:column style="width:15%;" filterBy="#{listreglas.idresponsable}" filterMatchMode="contains" sortBy="#{listreglas.idresponsable}">
+                        <f:facet name="header">
+                            <h:outputText value="Id Operario" />
+                        </f:facet>
+                        <h:outputText value="#{listreglas.idresponsable}"/>
+                    </p:column>
+                    <p:column style="width: 100px;padding: 3px !important" headerText="Fecha Progrmacion">  
+                        <h:outputText value="#{listreglas.fechaprogramacion}"   escape="false">
+                            <f:convertDateTime pattern="dd-MM-yyyy" />
+                        </h:outputText>
+                    </p:column>
+                    <p:column style="width: 100px;padding: 3px !important" headerText="Fecha Ejecucion">  
+                        <h:outputText value="#{listreglas.fechaejecucion}"   escape="false">
+                            <f:convertDateTime pattern="dd-MM-yyyy" />
+                        </h:outputText>
+                    </p:column>
+                    <p:column style="width: 100px;padding: 3px !important" headerText="Fecha Finalizacion">  
+                        <h:outputText value="#{listreglas.fechafinalizacion}"   escape="false">
+                            <f:convertDateTime pattern="dd-MM-yyyy" />
+                        </h:outputText>
+                    </p:column>
+                    <p:column style="width:15%;" filterBy="#{listreglas.ventana}" filterMatchMode="contains" sortBy="#{listreglas.ventana}">
+                        <f:facet name="header">
+                            <h:outputText value="Ventana" />
+                        </f:facet>
+                        <h:outputText value="#{listreglas.ventana}"/>
+                    </p:column>
+                </p:dataTable>
+            </p:panelGrid>
+            <p:growl id="growl" life="4000" showDetail="false"  />
+            <cmp:mDialogElimina_lst id="cmpDialog" bean="#{programaAlmAction}" ventana="LST" />
+        </h:form>
+    </ui:define>
+</ui:composition>

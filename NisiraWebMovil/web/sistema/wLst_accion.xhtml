@@ -1,0 +1,74 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:f="http://java.sun.com/jsf/core"
+                template="templatebanco.xhtml"
+                xmlns:cmp="http://java.sun.com/jsf/composite/cmp">
+    <ui:define name="metadata">
+    </ui:define>
+    <ui:define name="body">          
+        <h:form id="datos">
+            #{accionAction.buscarTodo()}  
+            <p:panelGrid id="principal" columns="1" columnClasses="no-border, no-border">
+                <cmp:barra_lst bean="#{accionAction}" mostrar_opciones="false" />
+                <p:dataTable id="tbl" var="listAccion" value="#{accionAction.listaDatos}" filteredValue="#{accionAction.filtroDatos}" widgetVar="listAccion" 
+                             paginatorTemplate="{FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink}" paginatorPosition="top"
+                             paginator="true" rows="15" style="margin-bottom:20px" selectionMode="single" selection="#{accionAction.datoSeleccionado}" rowKey="#{listAccion.idaccion}" resizableColumns="true">
+                    <f:facet name="header">
+                        <h:outputText value="#{accionAction.tituloHead}" />
+                    </f:facet>
+                    <p:column style="width:15%;" filterBy="#{listAccion.idaccion}" filterMatchMode="contains">
+                        <f:facet name="header">
+                            <h:outputText value="ID" />
+                        </f:facet>
+                        <h:outputText value="#{listAccion.idaccion}"/>
+                    </p:column>
+                    <p:column style="width:20%;" filterBy="#{listAccion.descripcion}" filterMatchMode="contains">
+                        <f:facet name="header" >
+                            <h:outputText value="DESCRIPCIÓN" />
+                        </f:facet>
+                        <h:outputText value="#{listAccion.descripcion}" />
+                    </p:column>
+                    <p:column style="width:20%;" filterBy="#{listAccion.estado}">
+                        <f:facet name="header">
+                            <h:outputText value="ESTADO"/>
+                        </f:facet>
+                        <f:facet name="filter">
+                            <p:selectOneButton onchange="PF('listAccion').filter()">
+                                <f:converter converterId="javax.faces.Boolean" />
+                                <f:selectItem  itemLabel="Activo" itemValue="#{1}"/>
+                                <f:selectItem itemLabel="Inactivo" itemValue="#{0}"/>
+                            </p:selectOneButton>
+                        </f:facet>
+                        <h:graphicImage value="../images/img/#{listAccion.estado == 1?'activo':'inactivo'}.png"/>
+                        <h:outputText value="#{listAccion.estado == 1?'Activo':'Inactivo'}" />
+                    </p:column>
+                </p:dataTable>  
+            </p:panelGrid>
+            <p:dialog id="dlGuardarAccion" header="..:: MANTENEDOR ACCIONES ::." widgetVar="dlGuardarAccion" modal="true" showEffect="popup" closable="false">
+                <p:messages id="messages" autoUpdate="true" closable="true" style="font-size:10px"/>
+                <p:panelGrid columns="2" columnClasses="no-border, no-border,no-border">
+                    <p:outputLabel value="Id: " />
+                    <p:panelGrid columns="3" columnClasses="no-border, no-border, no-border">
+                        <p:inputText value="#{accionAction.datoEdicion.idaccion}" disabled="true" readonly="#{!accionAction.edicion}"/>
+                        <p:outputLabel for="descripcion" value="Descripción: " />
+                        <p:inputTextarea id="descripcion" cols="40" rows="1"  value="#{accionAction.datoEdicion.descripcion}" onkeyup="javascript:this.value = this.value.toUpperCase();" disabled="#{!accionAction.edicion}">
+                        </p:inputTextarea>
+                    </p:panelGrid>
+                    <h:outputText value="Estado?:" />
+                    <p:selectBooleanCheckbox value="#{accionAction.estado}" disabled="#{!accionAction.edicion}"/>
+                </p:panelGrid>
+                <br/>
+                <p:toolbar>
+                    <f:facet name="right">
+                        <p:commandButton id="buttonGuardar" value="Grabar" ajax="true" actionListener="#{accionAction.grabar()}" image="ui-icon-grabar" />
+                        <p:commandButton id="buttonCancelar" value="Cancelar" image="ui-icon-cancelar" onclick="PF('dlGuardarAccion').hide()"/>
+                    </f:facet>
+                </p:toolbar>          
+            </p:dialog> 
+            <p:growl id="growl" life="4000" showDetail="false"  />
+            <cmp:mDialogElimina_lst id="cmpDialog" bean="#{accionAction}" ventana="LST" />
+        </h:form>
+    </ui:define>
+</ui:composition>

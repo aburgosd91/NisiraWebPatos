@@ -1,0 +1,36 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:f="http://java.sun.com/jsf/core"
+                template="templatebanco.xhtml"
+                xmlns:pm="http://primefaces.org/mobile"
+                xmlns:cmp="http://java.sun.com/jsf/composite/cmp">
+    <ui:define name="metadata">
+    </ui:define>
+    <ui:define name="body">
+        <h:form id="datos">
+            #{mPrivilegioUsuarioAction.buscarTodo()}  
+            <p:panelGrid id="principal" columns="1" columnClasses="no-border, no-border">             
+                <cmp:barra_lst bean="#{mPrivilegioUsuarioAction}" mostrar_opciones="false" />
+                <p:dataTable id="tbl" var="listGrupoUs" value="#{mPrivilegioUsuarioAction.listaDatos}" filteredValue="#{mPrivilegioUsuarioAction.filtroDatos}" widgetVar="listGrupoUsuario"   paginatorTemplate="{FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink}" paginatorPosition="top"
+                             paginator="true" rows="15" style="margin-bottom:20px" selectionMode="single" selection="#{mPrivilegioUsuarioAction.datoSeleccionado}" rowKey="#{listGrupoUs.idgrupousuario}">
+                    <f:facet name="header">
+                        #{mPrivilegioUsuarioAction.tituloHead}
+                    </f:facet>
+                    <p:column headerText="Codigo Grupo" style="width:30%;" filterBy="#{listGrupoUs.idgrupousuario}" filterMatchMode="contains" sortBy="#{listGrupoUs.idgrupousuario}">
+                        <h:outputText value="#{listGrupoUs.idgrupousuario}" />
+                    </p:column>
+                    <p:column headerText="Descipcion" style="width:30%;" filterBy="#{listGrupoUs.descripcion}" filterMatchMode="contains" sortBy="#{listGrupoUs.descripcion}">
+                        <h:outputText value="#{listGrupoUs.descripcion}" />
+                    </p:column>
+                    <p:column headerText="Administrador" style="width:30%;">
+                        <h:outputText value="#{listGrupoUs.BEs_administrador?'SI':'No'}" />
+                    </p:column>
+                </p:dataTable>
+            </p:panelGrid>
+            <p:growl id="growl" life="4000" showDetail="false"  />
+            <cmp:mDialogElimina_lst id="cmpDialog" bean="#{mPrivilegioUsuarioAction}" ventana="LST" />
+        </h:form>
+    </ui:define>
+</ui:composition>

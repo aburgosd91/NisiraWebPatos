@@ -1,0 +1,102 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:f="http://java.sun.com/jsf/core"
+                template="templatebanco.xhtml"
+                xmlns:pm="http://primefaces.org/mobile"
+                xmlns:cmp="http://java.sun.com/jsf/composite/cmp">
+    <ui:define name="metadata">
+    </ui:define>
+    <ui:define name="body">
+        <h:form id="datos">
+            #{dNFormaUbicacionAction.dDNFormaUbicacion()}
+            <cmp:barra_mnt bean="#{dNFormaUbicacionAction}"/>
+            <p:toolbar>
+                <f:facet name="left">
+                    <div style="color:#069; font-size: 14px; padding-top: 5px"><p:outputLabel  value="#{dNFormaUbicacionAction.ladd eq 2?'Edición de':'Nuevo'} Registro de Distribucón en Rack" /></div>                    
+                </f:facet>
+            </p:toolbar>
+            <div class="ui-grid" style="text-align: center; padding: 0px">
+                <p:messages id="messages" autoUpdate="true" closable="true" style="font-size:10px"/>
+                <div class="ui-grid-row">
+                    <div class="ui-grid-col-4">
+                        <h:panelGrid  columns="1" id="pnl_reprogramar" style="text-align: left; padding: 0px">
+                            <p:focus context="pnl_reprogramar"/>
+                            <h:panelGrid  columns="2">
+                                <p:outputLabel value="Id Almacen" escape="false" /> 
+                                <p:selectOneMenu id="idalmacen" required="true" rendered="true" style="width: 100%"  value="#{dNFormaUbicacionAction.datoEdicion.IDALMACEN}" disabled="#{dNFormaUbicacionAction.barraVista}"> 
+                                    <p:ajax listener="#{dNFormaUbicacionAction.onSelectionAlmacen()}" update="iddistribucion" />
+                                    <f:selectItems value="#{dNFormaUbicacionAction.listAlmacen}" var="almacen" itemLabel="#{almacen.DESCRIPCION}" itemValue="#{almacen.IDALMACEN}" />
+                                </p:selectOneMenu>
+
+                                <p:outputLabel value="Id Distribución" escape="false" /> 
+                                <p:selectOneMenu id="iddistribucion" required="true" rendered="true" style="width: 100%"  value="#{dNFormaUbicacionAction.datoEdicion.IDDISTRIBUCION}" disabled="#{dNFormaUbicacionAction.barraVista}"> 
+                                    <p:ajax listener="#{dNFormaUbicacionAction.onSelectionDistribucion()}" update="listaFilaxColumna" />
+                                    <f:selectItems value="#{dNFormaUbicacionAction.listDDistribucionUbicacion}" var="distribucion" itemLabel="#{distribucion.FECHAINICIO}" itemValue="#{distribucion.IDDISTRIBUCION}" />
+                                </p:selectOneMenu>
+
+                                <p:outputLabel value="Id Dist.Rack" escape="false" />
+                                <p:inputText maxlength="4" style="width: 100px !important;font-size: 11px" value="#{dNFormaUbicacionAction.datoEdicion.IDNFORMACIONUBICACION}" disabled="true">
+                                </p:inputText>
+
+                                <p:outputLabel value="Descripcion:" escape="false" />
+                                <p:inputTextarea style="width: 200px !important;font-size: 11px" value="#{dNFormaUbicacionAction.datoEdicion.DESCRIPCION}" disabled="#{!dNFormaUbicacionAction.edicion}">
+                                </p:inputTextarea>
+
+                                <p:outputLabel value="Filas:" escape="false" />
+                                <p:spinner id="filas" style="font-size: 11px" rendered="true" value="#{dNFormaUbicacionAction.datoEdicion.FILAS}" stepFactor="1" min="0" disabled="#{!dNFormaUbicacionAction.edicion}"/>
+
+                                <p:outputLabel value="Columnas:" escape="false" />
+                                <p:spinner id="columnas" style="font-size: 11px" rendered="true" value="#{dNFormaUbicacionAction.datoEdicion.COLUMNAS}" stepFactor="1" min="0" disabled="#{!dNFormaUbicacionAction.edicion}"/>
+                                
+                                <p:outputLabel value="Estado" escape="false" />  
+                                <p:outputLabel style="width: 100px !important;font-size: 11px; color: #{(dNFormaUbicacionAction.datoEdicion.ESTADO==1)? 'blue' : 'red'}; font-weight: bold" value="#{(dNFormaUbicacionAction.datoEdicion.ESTADO==1)? 'ACTIVO' : 'ANULADO'}" /> 
+
+                                <p:commandButton  actionListener="#{dNFormaUbicacionAction.newDDNFormaUbicacion()}" update="listDDNFormaUbicacion" icon="ui-icon-plus"  value="Generar" disabled="#{dNFormaUbicacionAction.barraVista}"/>
+                                <p:commandButton  icon="ui-icon-plus"  value="Quitar" actionListener="#{dNFormaUbicacionAction.delDRegla()}" update="listDDNFormaUbicacion" disabled="#{dNFormaUbicacionAction.barraVista}"/>
+                            </h:panelGrid>
+                        </h:panelGrid>
+                    </div>
+                    <div class="ui-grid-col-4">
+                        <h:panelGrid  columns="1">
+                            <p:fieldset legend="DIMENSIONES DE RACK POR ALMACEN" toggleable="true" toggleSpeed="300">
+                                <p:dataTable id="listaFilaxColumna" var="listaFilaxColumna" value="#{dNFormaUbicacionAction.listaFilaxColumna}" selection="#{dNFormaUbicacionAction.selectFilaxColumna}">
+                                    <p:column headerText="ID" style="text-align: center; width:30%">
+                                        <h:outputText value="#{listaFilaxColumna.ID}" />
+                                    </p:column>
+                                    <p:column headerText="DESCRIPCION" style="text-align: center; width: 30%">
+                                        <h:outputText value="#{listaFilaxColumna.DESCRIPCION}" />
+                                    </p:column>
+                                    <p:column style="text-align: center; width: 30%">
+                                        <p:commandButton value="Check" action="#{dNFormaUbicacionAction.onFilaxDistribucionChange()}" icon="ui-icon-search" title="Seleccionar  N° Filas y N° Columnas">
+                                            <f:setPropertyActionListener value="#{listaFilaxColumna}" target="#{dNFormaUbicacionAction.selectFilaxColumna}" />
+                                        </p:commandButton>
+                                    </p:column>
+                                </p:dataTable>
+                            </p:fieldset>
+                        </h:panelGrid>
+                    </div>
+                </div>
+                <div class="ui-grid-row">
+                    <h:panelGrid columns="1" styleClass="top-aligned-columns">
+                        <p:dataGrid var="listDDNFormaUbicacion" value="#{dNFormaUbicacionAction.listDDNFormaUbicacion}" columns="#{dNFormaUbicacionAction.datoEdicion.COLUMNAS}"
+                                    rows="#{dNFormaUbicacionAction.datoEdicion.FILAS * dNFormaUbicacionAction.datoEdicion.COLUMNAS}" paginator="true" id="listDDNFormaUbicacion" style="text-align:center;" 
+                            paginatorPosition="top">
+                            <p:panel id="cuadroNivel" header="POSICIÓN - #{listDDNFormaUbicacion.IDFILA} x #{listDDNFormaUbicacion.IDCOLUMNA}" style="alignment-adjust: central;text-align:center; background-color:#{listDDNFormaUbicacion.SELECCIONADO?'#FFAAAA':'#FFFFFF'};font-size: 10px">
+                                <h:panelGrid columns="1" style="width: 100%">
+                                    <h:outputText id="numerador" value="#{listDDNFormaUbicacion.PRIORIDAD}" style="font-weight: bold; font-size: 24px;color: #D8000C;visibility:#{listDDNFormaUbicacion.SELECCIONADO?'visible':'hidden'}"/>
+                                    <p:commandButton ajax="true" value="#{listDDNFormaUbicacion.SELECCIONADO?'check':'no-check'}" action="#{dNFormaUbicacionAction.filaColumnaSeleccionado()}">
+                                        <f:setPropertyActionListener value="#{listDDNFormaUbicacion}" target="#{dNFormaUbicacionAction.selectDDNFormaUbicacion}"/>
+                                    </p:commandButton>
+                                </h:panelGrid>
+                            </p:panel>
+                        </p:dataGrid>
+                    </h:panelGrid>
+                </div>
+            </div>
+            <p:growl id="growl" life="4000" showDetail="false"  />
+            <cmp:mDialogElimina_lst id="cmpDialog" bean="#{dNFormaUbicacionAction}" ventana="MNT" />
+        </h:form>
+    </ui:define>
+</ui:composition>

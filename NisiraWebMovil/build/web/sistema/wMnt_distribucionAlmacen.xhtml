@@ -1,0 +1,270 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:f="http://java.sun.com/jsf/core"
+                template="templatebanco.xhtml"
+                xmlns:pm="http://primefaces.org/mobile">
+    <ui:define name="metadata">
+    </ui:define>
+    <ui:define name="body">
+        #{almacenAction.loadDistribicionUbicacion()}
+        
+        <p:panelGrid id="principal" columns="2" columnClasses="no-border, no-border" style="width: 100%">
+            <h:form id="datosAlmacen">
+                <p:panelGrid columns="1" columnClasses="no-border, no-border" style="width: 100%">
+                     <p:fieldset legend="..:: PERIÓDO UBICACIÓN ALMACEN ::.." toggleable="true" toggleSpeed="500" style="font-size: 12px;">
+                        <p:panelGrid columns="2" columnClasses="no-border, no-border,no-border">
+                            <p:outputLabel for="idsucursal"  value="IDSUCURSAL: " />
+                            <p:panelGrid columns="7" columnClasses="no-border, no-border, no-border, no-border, no-border, no-border, no-border">
+                                <p:inputText id="idsucursal" size="10"  disabled="true" required="true" value="#{almacenAction.selectAlmacen.IDSUCURSAL}" />
+                                <p:outputLabel for="sucursal"  value="SUCURSAL: " />
+                                <p:inputText id="sucursal" size="40"  disabled="true" required="true" value="#{almacenAction.selectAlmacen.SUCURSAL}" />
+                                <p:outputLabel value="IDALMACEN: " />
+                                <p:inputText size="3" disabled="true" value="#{almacenAction.selectAlmacen.IDALMACEN}" />
+                                <p:outputLabel value="ALMACEN: " />
+                                <p:inputText size="40" disabled="true" value="#{almacenAction.selectAlmacen.DESCRIPCION}" />
+                            </p:panelGrid>
+                            <p:outputLabel for="cbofechainicio" value="Fecha :"  />
+                            <p:panelGrid columns="4" columnClasses="no-border, no-border, no-border, no-border">
+                                <p:selectOneMenu id="cbofechainicio" value="#{almacenAction.IDDISTRIBUCION}">
+                                    <f:selectItems value="#{almacenAction.listDDistribucionUbicacion}" var="fechaInicio" itemLabel="#{fechaInicio.FECHAINICIO}" itemValue="#{fechaInicio.IDDISTRIBUCION}"/>
+                                </p:selectOneMenu>
+                                <p:commandButton id="ibotonBuscar" value="Buscar" ajax="true" image="ui-icon-ver" actionListener="#{almacenAction.getConsultarDDistribucionUbicacion}" disabled="#{almacenAction.botonBuscar}"/>
+                            </p:panelGrid>
+                        </p:panelGrid>
+                    </p:fieldset>
+                    <p:toolbar>
+                        <f:facet name="left">
+                            <p:commandButton value="Regresar" process="@this" actionListener="#{almacenAction.getRegresarListaAlmacenSucursal()}" update="datosAlmacen" image="ui-icon-return">
+                                <p:resetInput target="datosAlmacen" />
+                            </p:commandButton>
+                            <p:commandButton id="ibotonPeriodo" value="Periódo" image="ui-icon-nuevo" onclick="PF('dlAlmacenDistribucionUbicacion').show()" update="FormularioAlmacenDistribucionUbicacion" disabled="#{almacenAction.botonPeriodo}"/>
+                            <p:commandButton id="ibotonGenerar" value="Generar" image="ui-icon-autogenerar" onclick="PF('dlGenerarAlmacenDistribucionUbicacion').show()" update="FormularioGenerarAlmacenDistribucionUbicacion" disabled="#{almacenAction.botonGenerar}"/>
+                            <p:commandButton id="ibotonClear" value="Vaciar" image="ui-icon-clear" actionListener="#{almacenAction.getVaciar()}" update="FormularioGenerarAlmacenDistribucionUbicacion" disabled="#{almacenAction.botonGenerar}"/>
+                        </f:facet>
+                        <f:facet name="right">
+                            <p:commandButton value="Grabar" ajax="true" actionListener="#{almacenAction.guardarDDistribucionUbicacion()}" image="ui-icon-grabar" />
+                            <p:commandButton value="Cancelar" process="@this" update="datosAlmacen" image="ui-icon-cancelar">
+                                <p:resetInput target="datosAlmacen" />
+                            </p:commandButton>
+                        </f:facet>
+                    </p:toolbar>
+                </p:panelGrid>
+                <div class="ui-grid">
+                    <div class="ui-grid-row">
+                        <div class="ui-grid-col-3">
+                            <p:dataTable id="tblRacks" var="listDAlmacen_Racks" value="#{almacenAction.listDAlmacen_Racks}" widgetVar="listDAlmacen_Racks" filteredValue="#{almacenAction.filterDAlmacen_Racks}"
+                            paginatorTemplate="{FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink}"
+                            paginator="true" paginatorPosition="top" rows="10" style="margin-bottom:20px" selectionMode="single" selection="#{almacenAction.selectdAlmacen_Racks}" rowKey="#{listDAlmacen_Racks.IDRACK}">
+                            <p:ajax event="rowSelect" listener="#{almacenAction.onRowSelectRack}"/>
+                            <f:facet name="header">
+                                <h:outputText value="..:: RACKS ::.." />
+                            </f:facet>
+                            <p:column style="width:10%;" filterBy="#{listDAlmacen_Racks.IDRACK}" filterMatchMode="contains">
+                               <f:facet name="header">
+                                   <h:outputText value="IDRACK" />
+                               </f:facet>
+                                <h:outputText value="#{listDAlmacen_Racks.IDRACK}" />
+                           </p:column>
+                            <p:column style="width:20%;" filterBy="#{listDAlmacen_Racks.IDUBICACION}" filterMatchMode="contains">
+                               <f:facet name="header" >
+                                   <h:outputText value="IDUBICACION" />
+                               </f:facet>
+                               <h:outputText value="#{listDAlmacen_Racks.IDUBICACION}" />
+                           </p:column>
+                        </p:dataTable>    
+                        </div>
+                        <div class="ui-grid-col-3">
+                            <p:dataTable id="tblPisos" var="listDAlmacen_Pisos" value="#{almacenAction.listDAlmacen_Pisos}" widgetVar="listDAlmacen_Pisos" filteredValue="#{almacenAction.filterDAlmacen_Pisos}"
+                                paginatorTemplate="{FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink}"
+                                paginator="true" paginatorPosition="top" rows="10" style="margin-bottom:20px" selectionMode="single" selection="#{almacenAction.selectdAlmacen_Pisos}" rowKey="#{listDAlmacen_Pisos}">
+                                <p:ajax event="rowSelect" listener="#{almacenAction.onRowSelectPiso}"/>
+                                <f:facet name="header">
+                                    <h:outputText value="..:: PISOS ::.." />
+                                </f:facet>
+                                <p:column style="width:10%;" filterBy="#{listDAlmacen_Pisos.IDPISO}" filterMatchMode="contains">
+                                   <f:facet name="header">
+                                       <h:outputText value="IDPISO" />
+                                   </f:facet>
+                                    <h:outputText value="#{listDAlmacen_Pisos.IDPISO}" />
+                               </p:column>
+                                <p:column style="width:20%;" filterBy="#{listDAlmacen_Pisos.IDUBICACION}" filterMatchMode="contains">
+                                   <f:facet name="header" >
+                                       <h:outputText value="IDUBICACION" />
+                                   </f:facet>
+                                   <h:outputText value="#{listDAlmacen_Pisos.IDUBICACION}" />
+                               </p:column>
+                            </p:dataTable>   
+                        </div>
+                        <div class="ui-grid-col-3">
+                            <p:dataTable id="tblFilas" var="listDAlmacen_Filas" value="#{almacenAction.listDAlmacen_Filas}" widgetVar="listDAlmacen_Filas" filteredValue="#{almacenAction.filterDAlmacen_Filas}"
+                                paginatorTemplate="{FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink}"
+                                paginator="true" paginatorPosition="top" rows="10" style="margin-bottom:20px" selectionMode="single" selection="#{almacenAction.selectdAlmacen_Filas}" rowKey="#{listDAlmacen_Filas.IDFILA}">
+                                <p:ajax event="rowSelect" listener="#{almacenAction.onRowSelectFila}"/>
+                                <f:facet name="header">
+                                    <h:outputText value="..:: FILAS ::.." />
+                                </f:facet>
+                                <p:column style="width:10%;" filterBy="#{listDAlmacen_Filas.IDFILA}" filterMatchMode="contains">
+                                   <f:facet name="header">
+                                       <h:outputText value="IDFILA" />
+                                   </f:facet>
+                                    <h:outputText value="#{listDAlmacen_Filas.IDFILA}" />
+                               </p:column>
+                                <p:column style="width:20%;" filterBy="#{listDAlmacen_Filas.IDUBICACION}" filterMatchMode="contains">
+                                   <f:facet name="header" >
+                                       <h:outputText value="IDUBICACION" />
+                                   </f:facet>
+                                   <h:outputText value="#{listDAlmacen_Filas.IDUBICACION}" />
+                               </p:column>
+                            </p:dataTable>
+                        </div>
+                        <div class="ui-grid-col-3">
+                            <p:dataTable id="tblColumnas" var="listDAlmacen_Columnas" value="#{almacenAction.listDAlmacen_Columnas}" widgetVar="listDAlmacen_Columnas" filteredValue="#{almacenAction.filterDAlmacen_Columnas}"
+                                paginatorTemplate="{FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink}"
+                                paginator="true" paginatorPosition="top" rows="10" style="margin-bottom:20px" selectionMode="single" selection="#{almacenAction.selectdAlmacen_Columnas}" rowKey="#{listDAlmacen_Columnas.IDCOLUMNA}">
+                                <p:ajax event="rowSelect" listener="#{almacenAction.onRowSelectColumna}"/>
+                                <f:facet name="header">
+                                    <h:outputText value="..:: COLUMNAS ::.." />
+                                </f:facet>
+                                <p:column style="width:10%;" filterBy="#{listDAlmacen_Columnas.IDCOLUMNA}" filterMatchMode="contains">
+                                   <f:facet name="header">
+                                       <h:outputText value="IDCOLUMNA" />
+                                   </f:facet>
+                                    <h:outputText value="#{listDAlmacen_Columnas.IDCOLUMNA}" />
+                               </p:column>
+                                <p:column style="width:20%;" filterBy="#{listDAlmacen_Columnas.IDUBICACION}" filterMatchMode="contains">
+                                   <f:facet name="header" >
+                                       <h:outputText value="IDUBICACION" />
+                                   </f:facet>
+                                   <h:outputText value="#{listDAlmacen_Columnas.IDUBICACION}" />
+                               </p:column>
+                            </p:dataTable>
+                        </div>
+                    </div>
+                </div>
+            </h:form>
+            <p:dialog id="dlAlmacenDistribucionUbicacion" header="..:: NUEVO PERIÓDO DE DISTRIBUCIÓN - ALMACEN  ::." widgetVar="dlAlmacenDistribucionUbicacion" modal="true" showEffect="popup" closable="false">
+                    <p:messages id="messages" autoUpdate="true" closable="true" style="font-size:10px"/>
+                    <h:form id="FormularioAlmacenDistribucionUbicacion">
+                        <p:panelGrid columns="2" columnClasses="no-border, no-border,no-border">    
+                            <p:outputLabel value="Id: " />
+                            <p:panelGrid columns="3" columnClasses="no-border, no-border, no-border">
+                                <p:inputText size="3" disabled="true" value="#{almacenAction.newDDistribucionUbicacion.IDDISTRIBUCION}" />
+                                <p:outputLabel for="empresa"  value="Empresa: " />
+                                <p:inputText id="empresa" size="20"  disabled="true" required="true" value="#{almacenAction.newDDistribucionUbicacion.IDEMPRESA}" />
+                            </p:panelGrid>
+                            <p:outputLabel for="sucursal"  value="Sucursal: " />
+                            <p:inputText id="sucursal" size="20"  disabled="true" required="true" value="#{almacenAction.newDDistribucionUbicacion.IDSUCURSAL}" />
+                            <p:outputLabel for="almacen"  value="Almacen: " />
+                            <p:inputText id="almacen" size="20"  disabled="true" required="true" value="#{almacenAction.newDDistribucionUbicacion.IDALMACEN}" />
+                            <p:outputLabel for="fechainicio" value="Fecha Inicio:" rendered="true"/>
+                            <p:calendar id="fechainicio" value="#{almacenAction.fechaInicio}" pattern="dd-MM-yyyy" mask="true" />
+                        </p:panelGrid>
+                        <br/>
+                        <p:toolbar>
+                            <f:facet name="right">
+                                <p:commandButton value="Grabar" ajax="true" actionListener="#{almacenAction.NuevoDDistribucionUbicacion()}" image="ui-icon-grabar" />
+                                <p:commandButton value="Cancelar" process="@this" update="FormularioAlmacenDistribucionUbicacion"  image="ui-icon-cancelar" onclick="PF('dlAlmacenDistribucionUbicacion').hide()">
+                                    <p:resetInput target="FormularioAlmacenDistribucionUbicacion" />
+                                </p:commandButton>
+                            </f:facet>
+                        </p:toolbar>
+                    </h:form>                 
+            </p:dialog>
+            <p:dialog id="dlGenerarAlmacenDistribucionUbicacion" header="..:: GENERAR DISTRIBUCIÓN - ALMACEN  ::." widgetVar="dlGenerarAlmacenDistribucionUbicacion" modal="true" showEffect="popup" closable="false" width="70%">
+                <h:form id="FormularioGenerarAlmacenDistribucionUbicacion">
+                    #{almacenAction.getTipoRacks()}
+                    <p:messages id="messages" autoUpdate="true" closable="true" style="font-size:10px"/>
+                    <p:panelGrid columns="2" columnClasses="no-border, no-border" >
+                        <h:outputText value="Tipo Generación: " />
+                        <p:selectBooleanButton id="checkGeneracion" value="#{almacenAction.parametroDistribucion}" onLabel="Homogenea" offLabel="Variada" onIcon="ui-icon-check" offIcon="ui-icon-close">
+                            <p:ajax update="FormularioGenerarAlmacenDistribucionUbicacion" listener="#{almacenAction.seleccionTipoDistribucion}"/>
+                        </p:selectBooleanButton>
+                    </p:panelGrid>
+                    <br/>
+                    <p:fieldset id="frmHomogenea" legend="ESTRUCTURA HOMOGENEA" toggleable="false" style="font-size: 12px;" collapsed="#{almacenAction.visibleHomogeneo}">
+                        <p:panelGrid columns="10" columnClasses="no-border, no-border, no-border,no-border, no-border, no-border, no-border, no-border">
+                            <p:outputLabel for="numRacks" value="N° Racks: " />
+                            <p:spinner id="numRacks" size="3" value="#{almacenAction.generacionDistribucion.numRacks}" required="true" min="0"/>
+                            <h:outputLabel for="tiporack" value="Tipo: " />
+                            <p:selectOneMenu id="tiporack" value="#{almacenAction.generacionDistribucion.idtiporacks}">
+                                <f:selectItem itemValue="0" itemLabel="Seleccionar"/>
+                                <f:selectItems value="#{almacenAction.listTipoRacks}" var="tiporacks" itemLabel="#{tiporacks.DESCRIPCION}" itemValue="#{tiporacks.VALOR}"/>
+                            </p:selectOneMenu>
+                            <h:outputLabel for="numPisos" value="N° Pisos: " />
+                            <p:spinner id="numPisos" size="3" value="#{almacenAction.generacionDistribucion.numPisos}" required="true" min="0"/>
+                            <h:outputLabel for="numFilas" value="N° Filas: " />
+                            <p:spinner id="numFilas" size="3" value="#{almacenAction.generacionDistribucion.numFilas}" required="true" min="0"/>
+                            <h:outputLabel for="numColumnas" value="N° Columnas: " />
+                            <p:spinner id="numColumnas" size="3" value="#{almacenAction.generacionDistribucion.numColumnas}" required="true" min="0"/>           
+                        </p:panelGrid>
+                    </p:fieldset>
+                    <br/>
+                    <p:fieldset id="frmVariada" legend="ESTRUCTURA VARIADA" toggleable="false" style="font-size: 12px" collapsed="#{almacenAction.visibleVariado}">
+                        <p:commandButton value="Agregar" ajax="true" image="ui-icon-nuevo" actionListener="#{almacenAction.agregarRowTablaGenerada()}"/>
+                        <p:commandButton value="Eliminar" ajax="true" image="ui-icon-eliminar" actionListener="#{almacenAction.eliminarRowTablaGenerada()}"/>
+                        <br/>
+                        <p:panelGrid columns="1" columnClasses="no-border">
+                            <p:dataTable id="tblGeneracionDistribucion" style="text-align: center;" var="listGeneracionDistribucion" value="#{almacenAction.listGeneracionDistribucion}" editable="true" editMode="cell" widgetVar="listGeneracionDistribucion">
+                                <p:ajax event="cellEdit" listener="#{almacenAction.onCellEdit}" update="tblGeneracionDistribucion" />
+                                <p:column headerText="Racks" style="width: 20%">
+                                    <p:cellEditor>
+                                        <f:facet name="output"><h:outputText value="#{listGeneracionDistribucion.numRacks}" /></f:facet>
+                                        <f:facet name="input">
+                                            <p:spinner label="Racks" id="tnumRacks" value="#{listGeneracionDistribucion.numRacks}" required="true" min="0" style="width:98%"/>
+                                        </f:facet>
+                                    </p:cellEditor>
+                                </p:column>
+                                <p:column headerText="Tipo Racks" style="width: 20%">
+                                    <p:cellEditor>
+                                        <f:facet name="output"><h:outputText value="#{listGeneracionDistribucion.idtiporacks}" /></f:facet>
+                                        <f:facet name="input">
+                                            <p:selectOneMenu id="tiporack2" value="#{listGeneracionDistribucion.idtiporacks}" style="width:98%">
+                                                <f:selectItem itemValue="0" itemLabel="Seleccionar"/>
+                                                <f:selectItems value="#{almacenAction.listTipoRacks}" var="tiporacks_" itemLabel="#{tiporacks_.DESCRIPCION}" itemValue="#{tiporacks_.VALOR}"/>
+                                            </p:selectOneMenu>
+                                        </f:facet>
+                                    </p:cellEditor>
+                                </p:column>
+                                <p:column headerText="Pisos" style="width: 20%">
+                                    <p:cellEditor>
+                                        <f:facet name="output"><h:outputText value="#{listGeneracionDistribucion.numPisos}" /></f:facet>
+                                        <f:facet name="input">
+                                            <p:spinner label="Pisos" id="tnumPisos" value="#{listGeneracionDistribucion.numPisos}" required="true" min="0"/>
+                                        </f:facet>
+                                    </p:cellEditor>
+                                </p:column>
+                                <p:column headerText="Filas" style="width: 20%">
+                                    <p:cellEditor>
+                                        <f:facet name="output"><h:outputText value="#{listGeneracionDistribucion.numFilas}" /></f:facet>
+                                        <f:facet name="input">
+                                            <p:spinner label="Filas" id="tnumFilas" value="#{listGeneracionDistribucion.numFilas}" required="true" min="0"/>
+                                        </f:facet>
+                                    </p:cellEditor>
+                                </p:column>
+                                <p:column headerText="Columnas" style="width: 20%">
+                                    <p:cellEditor>
+                                        <f:facet name="output"><h:outputText value="#{listGeneracionDistribucion.numColumnas}" /></f:facet>
+                                        <f:facet name="input">
+                                            <p:spinner label="Columnas" id="tnumColumnas" value="#{listGeneracionDistribucion.numColumnas}" required="true" min="0"/>
+                                        </f:facet>
+                                    </p:cellEditor>
+                                </p:column>
+                            </p:dataTable>
+                        </p:panelGrid>
+                    </p:fieldset>
+                    <br/>
+                    <p:toolbar>
+                        <f:facet name="right">
+                            <p:commandButton value="Grabar" actionListener="#{almacenAction.generarDDistribucionUbicacion()}" image="ui-icon-grabar" />
+                            <p:commandButton value="Cancelar" process="@this" update="FormularioGenerarAlmacenDistribucionUbicacion"  image="ui-icon-cancelar" onclick="PF('dlGenerarAlmacenDistribucionUbicacion').hide()">
+                                <p:resetInput target="FormularioGenerarAlmacenDistribucionUbicacion" />
+                            </p:commandButton>
+                        </f:facet>
+                    </p:toolbar>
+                </h:form>                 
+            </p:dialog>
+        </p:panelGrid>
+    </ui:define>
+</ui:composition>

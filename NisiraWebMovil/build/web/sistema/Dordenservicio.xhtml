@@ -1,0 +1,400 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+To change this template, choose Tools | Templates
+and open the template in the editor.
+-->
+<!DOCTYPE html>
+<f:view xmlns="http://www.w3.org/1999/xhtml"
+        xmlns:f="http://java.sun.com/jsf/core"
+        xmlns:h="http://java.sun.com/jsf/html"
+        xmlns:p="http://primefaces.org/ui"
+        xmlns:pm="http://primefaces.org/mobile"
+        contentType="text/html"
+        renderKitId="PRIMEFACES_MOBILE">
+
+
+    <pm:page title="Detalle Orden Servicio">
+
+        <pm:view id="deta" title="Detalles" swatch="c" >
+            <h:outputLabel value="#{ordenservicioAction.DetalleOrdenservicio()}" />
+            <pm:header title="Detalles" swatch="a" fixed="true">
+                <script type="text/javascript" src="../js/validadispositivo.js"></script>
+                
+                <link rel="stylesheet" type="text/css" href="../css/Style.css" />
+                <pm:navBar>
+                    <p:button  value="Atrás" icon="back" onclick="PrimeFaces.back()"/>
+                    <p:button value="Home" icon="home" href="/faces/sistema/menu.xhtml?faces-redirect=true" />
+                    <p:button value="Salir" icon="delete" onclick="dlg.show()" />
+                </pm:navBar>
+                <p:dialog header="Advertencia" widgetVar="dlg" modal="true">
+                    <f:attribute name="contentSwatch" value="a" />
+                    <p:outputPanel id="noteDetail" layout="block"  style="padding:4px 10px">
+                        <h:outputText value="Desea Salir?"/>
+                        <p:button value="Si" onclick="window.location = '#{facesContext.externalContext.requestContextPath}/faces/Sistema/CerrarSesion.xhtml';" icon="check"/>
+                    </p:outputPanel>
+                </p:dialog>
+            </pm:header>
+            
+            <pm:content>
+                <h:form id="detalles" style="width: 100%">
+                    <h:panelGrid columns="2" cellpadding="10" styleClass="ui-responsive">
+                        <p:panelGrid style="width: 100%" >
+                            <p:row>
+                                <p:column style="font-weight: bold;color: darkorange;width: 30%;">Documento:</p:column>  
+                                <p:column style="font-weight: bold;width: 75%">#{ordenservicioAction.ordenservicioSeleccionado.iddocumento}-#{ordenservicioAction.ordenservicioSeleccionado.serie}</p:column>  
+                            </p:row>
+                        </p:panelGrid>
+                        <p:panelGrid style="width: 100%" >
+                            <p:row>
+                                <p:column style="font-weight: bold;color: darkorange;width: 30%;">Proveedor</p:column>  
+                                <p:column style="font-weight: bold;width: 75%">#{ordenservicioAction.ordenservicioSeleccionado.idclieprov}</p:column>  
+                            </p:row>
+                        </p:panelGrid>
+                        <p:panelGrid style="width: 100%" >
+                            <p:row>
+                                <p:column style="font-weight: bold;color: darkorange;width: 27%;">Estado:</p:column>  
+                                <p:column style="font-weight: bold;width: 62%">#{ordenservicioAction.ordenservicioSeleccionado.idestado}</p:column>  
+                            </p:row>
+                        </p:panelGrid>
+                    </h:panelGrid>
+
+                    <p:accordionPanel activeIndex="-1" > 
+
+                        <p:tab title="Datos Generales" >  
+                            <h:panelGrid columns="2" cellpadding="10" styleClass="ui-responsive tablaaa">  
+
+                                <p:panelGrid style="width: 100%" >
+                                    <p:row> 
+                                        <p:column styleClass="sombreado1">Documento:</p:column>  
+                                        <p:column styleClass="sombreado2">#{ordenservicioAction.ordenservicioSeleccionado.iddocumento}-#{ordenservicioAction.ordenservicioSeleccionado.serie}</p:column>  
+                                    </p:row>   
+                                </p:panelGrid>
+                                <p:panelGrid style="width: 100%" >
+                                    <p:row> 
+                                        <p:column styleClass="sombreado1">Punto Emi.:</p:column>  
+                                        <p:column styleClass="sombreado2">#{ordenservicioAction.ordenservicioSeleccionado.idemisor}</p:column>  
+                                    </p:row>   
+                                </p:panelGrid>
+                                <p:panelGrid style="width: 100%" >
+                                    <p:row> 
+                                        <p:column styleClass="sombreado1">Fecha:</p:column>  
+                                        <p:column styleClass="sombreado2">
+                                            <h:outputText value="#{ordenservicioAction.ordenservicioSeleccionado.fecha}" >  
+                                                <f:convertDateTime pattern="dd/MM/yyyy" timeZone="EST" />  
+                                            </h:outputText>
+                                        </p:column>
+                                    </p:row>   
+                                </p:panelGrid>
+                                <p:panelGrid style="width: 100%" >
+                                    <p:row> 
+                                        <p:column styleClass="sombreado1">Sucursal: </p:column>  
+                                        <p:column styleClass="sombreado2">#{ordenservicioAction.ordenservicioSeleccionado.idsucursal}</p:column>  
+                                    </p:row>   
+                                </p:panelGrid>
+                                <p:panelGrid style="width: 100%" >
+                                    <p:row> 
+                                        <p:column styleClass="sombreado1">Almacen: </p:column>  
+                                        <p:column styleClass="sombreado2">#{ordenservicioAction.ordenservicioSeleccionado.idalmacen}</p:column>  
+                                    </p:row>   
+                                </p:panelGrid>
+                                <p:panelGrid style="width: 100%" >
+                                    <p:row> 
+                                        <p:column styleClass="sombreado1">Moneda: </p:column>  
+                                        <p:column styleClass="sombreado2">#{ordenservicioAction.ordenservicioSeleccionado.idmonedadesc}</p:column>  
+                                    </p:row>   
+                                </p:panelGrid>
+                                <p:panelGrid style="width: 100%" >
+                                    <p:row> 
+                                        <p:column styleClass="sombreado1">TCambio:</p:column>  
+                                        <p:column styleClass="sombreado2">#{ordenservicioAction.ordenservicioSeleccionado.tipocambio}</p:column>  
+                                    </p:row>   
+                                </p:panelGrid>
+                                <p:panelGrid style="width: 100%" >
+                                    <p:row> 
+                                        <p:column styleClass="sombreado1">O/C Cliente:</p:column>  
+                                        <p:column styleClass="sombreado2">#{ordenservicioAction.ordenservicioSeleccionado.oc_cliente}</p:column>  
+                                    </p:row>   
+                                </p:panelGrid>
+                                <p:panelGrid style="width: 100%" >
+                                    <p:row> 
+                                        <p:column styleClass="sombreado1">Fecha O/C:</p:column>  
+                                        <p:column styleClass="sombreado2">#{ordenservicioAction.ordenservicioSeleccionado.fecha_occliente}</p:column>  
+                                    </p:row>   
+                                </p:panelGrid>
+                                <p:panelGrid style="width: 100%" >
+                                    <p:row> 
+                                        <p:column styleClass="sombreado1">Área:</p:column>  
+                                        <p:column styleClass="sombreado2">#{ordenservicioAction.ordenservicioSeleccionado.idarea}</p:column>  
+                                    </p:row>   
+                                </p:panelGrid>
+                                <p:panelGrid style="width: 100%" >
+                                    <p:row> 
+                                        <p:column styleClass="sombreado1">Solicitante:</p:column>  
+                                        <p:column styleClass="sombreado2">#{ordenservicioAction.ordenservicioSeleccionado.solicitado}</p:column>  
+                                    </p:row>   
+                                </p:panelGrid>
+
+                                <p:panelGrid style="width: 100%" >
+                                    <p:row> 
+                                        <p:column styleClass="sombreado1">Plazo Entrega:</p:column>  
+                                        <p:column styleClass="sombreado2">#{ordenservicioAction.ordenservicioSeleccionado.plazo}</p:column>  
+                                    </p:row>   
+                                </p:panelGrid>
+                                <p:panelGrid style="width: 100%" >
+                                    <p:row> 
+                                        <p:column styleClass="sombreado1">Observaciones:</p:column>  
+                                        <p:column styleClass="sombreado2">#{ordenservicioAction.ordenservicioSeleccionado.nota}</p:column>  
+                                    </p:row>   
+                                </p:panelGrid>
+                                <p:panelGrid style="width: 100%" >
+                                    <p:row> 
+                                        <p:column styleClass="sombreado1">Técnico:</p:column>  
+                                        <p:column styleClass="sombreado2">#{ordenservicioAction.ordenservicioSeleccionado.tecnico}</p:column>  
+                                    </p:row>   
+                                </p:panelGrid>
+                                <p:panelGrid style="width: 100%" >
+                                    <p:row> 
+                                        <p:column styleClass="sombreado1">Fecha Inicio:</p:column>  
+                                        <p:column styleClass="sombreado2">#{ordenservicioAction.ordenservicioSeleccionado.fechainicio}</p:column>  
+                                    </p:row>   
+                                </p:panelGrid>
+                                <p:panelGrid style="width: 100%" >
+                                    <p:row> 
+                                        <p:column styleClass="sombreado1">Fecha Fin:</p:column>  
+                                        <p:column styleClass="sombreado2">#{ordenservicioAction.ordenservicioSeleccionado.fechafin}</p:column>  
+                                    </p:row>   
+                                </p:panelGrid>
+
+                            </h:panelGrid>  
+                        </p:tab> 
+
+                        <p:tab title="Datos Proveedor">  
+                            <h:panelGrid columns="2" cellpadding="10" styleClass="ui-responsive tablaaa">  
+                                <p:panelGrid style="width: 100%" >
+                                    <p:row> 
+                                        <p:column styleClass="sombreado1">Proveedor:</p:column>  
+                                        <p:column styleClass="sombreado2">#{ordenservicioAction.ordenservicioSeleccionado.idclieprov}</p:column>  
+                                    </p:row>   
+                                </p:panelGrid >
+
+                                <p:panelGrid style="width: 100%" >
+                                    <p:row> 
+                                        <p:column styleClass="sombreado1">Dirección:</p:column>  
+                                        <p:column styleClass="sombreado2">#{ordenservicioAction.ordenservicioSeleccionado.provdireccion}</p:column>  
+                                    </p:row>   
+                                </p:panelGrid>
+                                <p:panelGrid style="width: 100%" >
+                                    <p:row> 
+                                        <p:column styleClass="sombreado1">Teléfono:</p:column>  
+                                        <p:column styleClass="sombreado2">#{ordenservicioAction.ordenservicioSeleccionado.provtelefono}</p:column>  
+                                    </p:row>   
+                                </p:panelGrid>
+                                <p:panelGrid style="width: 100%" >
+                                    <p:row> 
+                                        <p:column styleClass="sombreado1">Fax: </p:column>  
+                                        <p:column styleClass="sombreado2">#{ordenservicioAction.ordenservicioSeleccionado.provfax}</p:column>  
+                                    </p:row>   
+                                </p:panelGrid>
+                                <p:panelGrid style="width: 100%" >
+                                    <p:row> 
+                                        <p:column styleClass="sombreado1">Contacto:</p:column>  
+                                        <p:column styleClass="sombreado2">#{ordenservicioAction.ordenservicioSeleccionado.provcontacto}</p:column>  
+                                    </p:row>   
+                                </p:panelGrid>
+                                <p:panelGrid style="width: 100%" >
+                                    <p:row> 
+                                        <p:column styleClass="sombreado1">Referencia:</p:column>  
+                                        <p:column styleClass="sombreado2">#{ordenservicioAction.ordenservicioSeleccionado.referencia}</p:column>  
+                                    </p:row>   
+                                </p:panelGrid>
+
+
+                            </h:panelGrid>   
+                        </p:tab> 
+                    </p:accordionPanel>
+
+
+                    <p:dataList var="orden" value="#{ordenservicioAction.listaDordenservicio}" style="width: 100%" type="inset"> 
+                        <p:column  style="width: 100%" >                              
+                            <p:accordionPanel activeIndex="-1">  
+                                <p:tab title="Item:#{orden.item} Total:#{ordenservicioAction.ordenservicioSeleccionado.idmoneda}#{orden.total} "> 
+                                    <h:panelGrid columns="2" cellpadding="10" styleClass="ui-responsive tablaaa">  
+
+                                        <p:panelGrid style="width: 100%" >
+                                            <p:row> 
+                                                <p:column styleClass="sombreado1">Descripcion:</p:column>  
+                                                <p:column styleClass="sombreado2"><h:outputText value="#{orden.descripcion}" /></p:column>  
+                                            </p:row>   
+                                        </p:panelGrid >
+                                        <p:panelGrid style="width: 100%" >
+                                            <p:row> 
+                                                <p:column styleClass="sombreado1">U.M.</p:column>  
+                                                <p:column styleClass="sombreado2"><h:outputText value="#{orden.idmedida}" /></p:column>  
+                                            </p:row>   
+                                        </p:panelGrid >
+                                        <p:panelGrid style="width: 100%" >
+                                            <p:row> 
+                                                <p:column styleClass="sombreado1">Cantidad:</p:column>  
+                                                <p:column styleClass="sombreado2"><h:outputText value="#{orden.cantidad}" /></p:column>  
+                                            </p:row>   
+                                        </p:panelGrid >
+                                        <p:panelGrid style="width: 100%" >
+                                            <p:row> 
+                                                <p:column styleClass="sombreado1">Cost.Mano de Obra:</p:column>  
+                                                <p:column styleClass="sombreado2"><h:outputText value="#{ordenservicioAction.ordenservicioSeleccionado.idmoneda}#{orden.precio}" /></p:column> 
+                                            </p:row>   
+                                        </p:panelGrid >
+                                        <p:panelGrid style="width: 100%" >
+                                            <p:row> 
+                                                <p:column styleClass="sombreado1">Subtotal:</p:column>  
+                                                <p:column styleClass="sombreado2"><h:outputText value="#{ordenservicioAction.ordenservicioSeleccionado.idmoneda}#{orden.total}" /></p:column>  
+                                            </p:row>   
+                                        </p:panelGrid >
+                                        <p:panelGrid style="width: 100%" >
+                                            <p:row> 
+                                                <p:column styleClass="sombreado1">Observaciones:</p:column>  
+                                                <p:column styleClass="sombreado2"><h:outputText value="#{orden.observaciones}" /></p:column>  
+                                            </p:row>   
+                                        </p:panelGrid >
+
+
+                                    </h:panelGrid>
+                                </p:tab>  
+                            </p:accordionPanel>  
+                        </p:column>  
+                        <p:column headerText="" style="width: 100%" >                              
+                        </p:column>  
+                    </p:dataList>             
+
+
+                    <h:panelGrid columns="2" cellpadding="0" styleClass="ui-responsive">
+                        <p:panelGrid style="width: 100%"  >
+                            <p:row> 
+                                <p:column styleClass="ultimo1">Mano de Obra:</p:column>  
+                                <p:column styleClass="ultimo2">
+                                    <p:dataList type="inset">
+                                        <h:outputText value="#{ordenservicioAction.ordenservicioSeleccionado.idmoneda}#{ordenservicioAction.ordenservicioSeleccionado.manoobra}" />
+                                    </p:dataList>
+                                </p:column>  
+
+                            </p:row>   
+                        </p:panelGrid >
+                        <p:panelGrid style="width: 100%" >
+                            <p:row> 
+                                <p:column styleClass="ultimo1">Accesorios:</p:column>  
+                                <p:column styleClass="ultimo2">
+                                    <p:dataList type="inset">
+                                        <h:outputText value="#{ordenservicioAction.ordenservicioSeleccionado.idmoneda}#{ordenservicioAction.ordenservicioSeleccionado.accesorios}" />
+                                    </p:dataList>
+                                </p:column>
+                            </p:row>   
+                        </p:panelGrid >
+                        <p:panelGrid style="width: 100%" >
+                            <p:row> 
+                                <p:column styleClass="ultimo1"><b>Gastos Adminis:</b></p:column>  
+                                <p:column styleClass="ultimo2">
+
+                                    <p:dataList type="inset">
+                                        <h:outputText  value="#{ordenservicioAction.ordenservicioSeleccionado.idmoneda}#{ordenservicioAction.ordenservicioSeleccionado.administra}" />
+                                    </p:dataList>
+
+                                </p:column>  
+                            </p:row>   
+                        </p:panelGrid >
+                        <p:panelGrid style="width: 100%" >
+                            <p:row> 
+                                <p:column styleClass="ultimo1"><b>Partida Presupuestal:</b></p:column>  
+                                <p:column styleClass="ultimo2">
+
+                                    <p:dataList type="inset">
+                                        <h:outputText  value="#{ordenservicioAction.ordenservicioSeleccionado.idpartidapstal}" />
+                                    </p:dataList>
+
+                                </p:column>  
+                            </p:row>   
+                        </p:panelGrid >
+                        <p:panelGrid style="width: 100%" >
+                            <p:row> 
+                                <p:column styleClass="ultimo1"><b>Impuesto:</b></p:column>  
+                                <p:column styleClass="ultimo2">
+
+                                    <p:dataList type="inset">
+                                        <h:outputText  value="#{ordenservicioAction.ordenservicioSeleccionado.pimpuesto}%" />
+                                    </p:dataList>
+
+                                </p:column>  
+                            </p:row>   
+                        </p:panelGrid >
+                        <p:panelGrid style="width: 100%" >
+                            <p:row> 
+                                <p:column styleClass="ultimo1"><b>Total Impuesto:</b></p:column>  
+                                <p:column styleClass="ultimo2">
+
+                                    <p:dataList type="inset">
+                                        <h:outputText  value="#{ordenservicioAction.ordenservicioSeleccionado.idmoneda}#{ordenservicioAction.ordenservicioSeleccionado.impuesto}" />
+                                    </p:dataList>
+
+                                </p:column>  
+                            </p:row>   
+                        </p:panelGrid >
+                        <p:panelGrid style="width: 100%" >
+                            <p:row> 
+                                <p:column styleClass="ultimo1"><b>Total:</b></p:column>  
+                                <p:column styleClass="ultimo2">
+
+                                    <p:dataList type="inset">
+                                        <h:outputText  value="#{ordenservicioAction.ordenservicioSeleccionado.idmoneda}#{ordenservicioAction.ordenservicioSeleccionado.total}" />
+                                    </p:dataList>
+
+                                </p:column>  
+                            </p:row>   
+                        </p:panelGrid >
+                    </h:panelGrid>  
+                    <center>
+                        <pm:field>
+                            <h:selectOneMenu value="#{ordenservicioAction.ordenservicioSeleccionado2.idestado}">  
+                                
+                                <f:selectItems value="#{ordenservicioAction.listaaprobar}"  />  
+                            </h:selectOneMenu>  
+
+                        </pm:field>
+                        <pm:buttonGroup orientation="horizontal">
+                            <p:commandButton value="Aceptar" oncomplete="confirmar.show()" update=":detalles:aprobar1" icon="check">
+                                <f:attribute name="swatch" value="b" />
+                            </p:commandButton> 
+
+                            <p:commandButton value="Cancelar" icon="delete" action="/faces/sistema/ordenservicio.xhtml?faces-redirect=true" update=":detalles">
+                                <f:attribute name="swatch" value="a" />
+                            </p:commandButton>
+                        </pm:buttonGroup>
+
+                    </center>
+                    <p:dialog id="aprobar" header="Advertencia" widgetVar="confirmar" modal="true">
+                        <f:attribute name="contentSwatch" value="a" />
+                        <p:outputPanel id="aprobar1" layout="block"  style="padding:4px 10px">
+
+                            <h:outputText style="font-weight: bold;" value="Está seguro de realizar esta operación? "/>
+                            <h:outputText style="font-weight: bold;" value="#{ordenservicioAction.ordenservicioSeleccionado2.idestado}"/>
+                            <center>
+                                <p:commandButton type="submit" value="Si" action="#{ordenservicioAction.aprobar}" update=":error"  icon="check">
+                                    <f:attribute name="swatch" value="b" />
+                                    
+                                </p:commandButton>
+                                
+                            </center>
+                        </p:outputPanel>
+
+                    </p:dialog>
+                </h:form>
+
+                <h:form id="error">
+                    <center> <h:outputLabel style="color: red" id="msjError" styleClass="errorMsje" value="#{ordenservicioAction.mensaje}"   /></center>
+                </h:form>
+                <br></br><br></br><br></br><br></br>
+            </pm:content>
+            <pm:footer swatch="a" fixed="true">
+                <h1 style="font-size: x-small" >© 2013 <img border="0" height="10px" src="../images/logoWeb.png"/> Nisira Systems SAC </h1>         
+            </pm:footer>  
+        </pm:view>
+    </pm:page>
+</f:view>

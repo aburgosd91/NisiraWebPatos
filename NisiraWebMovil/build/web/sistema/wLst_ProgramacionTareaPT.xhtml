@@ -1,0 +1,64 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:f="http://java.sun.com/jsf/core"
+                template="templatebanco.xhtml"
+                xmlns:pm="http://primefaces.org/mobile"
+                xmlns:cmp="http://java.sun.com/jsf/composite/cmp">
+    <ui:define name="metadata">
+    </ui:define>
+    <ui:define name="body">
+        <h:form id="datos"> 
+            #{ProgramacionTareaProductoTerminadoAction.buscarTodo()}  
+            <p:panelGrid id="principal" columns="1" columnClasses="no-border, no-border">
+                <cmp:barra_lst bean="#{ProgramacionTareaProductoTerminadoAction}" mostrar_opciones="true" />
+                <p:dataTable  id="tbl" var="listRl" value="#{ProgramacionTareaProductoTerminadoAction.listaDatos}" filteredValue="#{ProgramacionTareaProductoTerminadoAction.filtroDatos}"  widgetVar="listRl" paginatorTemplate="{FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink}" paginatorPosition="top"
+                              paginator="true" rows="15" style="margin-bottom:20px" selectionMode="single" selection="#{ProgramacionTareaProductoTerminadoAction.datoSeleccionado}" rowKey="#{listRl.idprogramaciontarea}" resizableColumns="true">
+                    <f:facet name="header">
+                        <h:outputText value="#{ProgramacionTareaVolcadoAction.tituloHead}" />
+                    </f:facet>                    
+                    <p:column headerText="Codigo Empresa" style="width:30%;" filterBy="#{listRl.idempresa}" filterMatchMode="contains" sortBy="#{listRl.idempresa}">
+                        <h:outputText value="#{listRl.idempresa}" />
+                    </p:column>
+                    <p:column headerText="Codigo Sucursal" style="width:30%;" filterBy="#{listRl.idsucursal}" filterMatchMode="contains" sortBy="#{listRl.idsucursal}">
+                        <h:outputText value="#{listRl.idsucursal}" />
+                    </p:column>
+                    <p:column headerText="Codigo Programacion" style="width:30%;" filterBy="#{listRl.idprogramaciontarea}" filterMatchMode="contains" sortBy="#{listRl.idprogramaciontarea}">
+                        <h:outputText value="#{listRl.idprogramaciontarea}" />
+                    </p:column>
+                    <p:column headerText="Codigo Proceso" style="width:30%;" filterBy="#{listRl.idproceso}" filterMatchMode="contains" sortBy="#{listRl.idproceso}">
+                        <h:outputText value="#{listRl.idproceso}" />
+                    </p:column>
+                    <p:column headerText="Documento" style="width:30%;" >
+                        <h:outputText value="#{listRl.iddocumento}-#{listRl.serie}-#{listRl.numero}" />
+                    </p:column>
+                    <p:column headerText="Observacion" style="width:30%;" filterBy="#{listRl.observacion}" filterMatchMode="contains" sortBy="#{listRl.observacion}">
+                        <h:outputText value="#{listRl.observacion}" />
+                    </p:column>
+                    <p:column headerText="Observacion" style="width:30%;" filterBy="#{listRl.observacion}" filterMatchMode="contains" sortBy="#{listRl.observacion}">
+                        <h:outputText value="#{listRl.observacion}" />
+                    </p:column>
+                    <p:column style="width:20%;" filterBy="#{listRl.estado}">
+                        <f:facet name="header">
+                            <h:outputText value="ESTADO"/>
+                        </f:facet>
+                        <f:facet name="filter">
+                            <p:selectOneButton onchange="PF('listRl').filter()">
+                                <f:selectItem  itemLabel="Activo" itemValue="#{1}"/>
+                                <f:selectItem itemLabel="Inactivo" itemValue="#{0}"/>
+                            </p:selectOneButton>
+                        </f:facet>
+                        <h:graphicImage value="../images/img/#{listRl.estado==1?'activo':'inactivo'}.png"/>
+                        <h:outputText value="#{listRl.estado==1?'Activo':'Inactivo'}" />
+                    </p:column>
+                    <p:column headerText="Usuario" style="width:30%;" filterBy="#{listRl.usrcreacion}" filterMatchMode="contains" sortBy="#{listRl.usrcreacion}">
+                        <h:outputText value="#{listRl.usrcreacion}" />
+                    </p:column>
+                </p:dataTable>
+            </p:panelGrid>
+            <p:growl id="growl" life="4000" showDetail="false"  />
+            <cmp:mDialogElimina_lst id="cmpDialog" bean="#{ProgramacionTareaProductoTerminadoAction}" ventana="LST" />
+        </h:form>
+    </ui:define>    
+</ui:composition>

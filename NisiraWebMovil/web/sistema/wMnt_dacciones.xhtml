@@ -1,0 +1,151 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:f="http://java.sun.com/jsf/core"
+                template="templatebanco.xhtml"
+                    
+                xmlns:cmp="http://xmlns.jcp.org/jsf/composite/cmp">
+    <ui:define name="metadata">
+    </ui:define>
+    <ui:define name="body">
+        <h:form id="programacion">
+            <p:toolbar>
+                <f:facet name="right">
+                    <p:commandButton value="Guardar" ajax="true" actionListener="#{daccionAction.guardarDetalle()}" image="ui-icon-grabar" />
+                    <p:commandButton value="Cancelar" process="@this" update="datos"  image="ui-icon-cancelar">
+                        <p:resetInput target="datos" />
+                    </p:commandButton>
+                </f:facet>
+            </p:toolbar>
+        </h:form>
+        <p:messages id="messages" showDetail="true" autoUpdate="true" closable="true" />
+        <div class="ui-grid ">
+            <div class="ui-grid-row">
+                <div class="ui-grid-col-5">
+                    <h:form id="datos">
+                        #{daccionAction.getRecordAcciones()}
+                        <p:panelGrid columns="2" columnClasses="no-border, no-border">
+                            <p:panelGrid columns="1" columnClasses="no-border">
+                                <p:fieldset id="informacion" legend="LISTA DE ACCIONES" toggleable="false" style="font-size: 14px;" >
+                                    <p:panelGrid columns="1" columnClasses="no-border">
+                                        <p:dataTable id="listAcciones" var="listAcciones" value="#{daccionAction.listAcciones}"
+                                                     selection="#{daccionAction.selectAcciones}" rowKey="#{listAcciones.idaccion}" 
+                                                     resizableColumns="true" resizeMode="expand" style="text-align: center;">
+                                            <p:ajax event="rowSelectRadio" listener="#{daccionAction.onCheck()}"/>
+                                            <!--p:ajax event="rowSelectCheckbox" immediate="true" listener="#{daccionAction.onCheck()}" process="@this" /-->
+                                            <!--p:ajax event="rowUnselectCheckbox" immediate="true" listener="#{daccionAction.onCheck()}" process="@this" /-->
+                                            <!--f:facet name="header">
+                                                REGLAS DE DISTRIBUCIÓN
+                                            </f:facet-->
+                                            <p:column headerText="ID">
+                                                <h:outputText value="#{listAcciones.idaccion}" />
+                                            </p:column>
+                                            <p:column headerText="DESCRIPCION">
+                                                <h:outputText value="#{listAcciones.descripcion}" />
+                                            </p:column>
+                                            <p:column selectionMode="single" style="width:16px;text-align:center"/>
+                                        </p:dataTable>
+                                    </p:panelGrid>
+                                </p:fieldset>
+                            </p:panelGrid>
+                        </p:panelGrid>
+                    </h:form>
+                </div>
+                <div class="ui-grid-col-2"></div>
+                <div class="ui-grid-col-5">
+                    <h:form id="datos2">
+                        #{daccionAction.getRecordActividades()}
+                        <p:growl id="msgs" showDetail="true" />
+                        <p:panelGrid columns="1" columnClasses="no-border,no-border">
+                            <p:fieldset id="informacion" legend="LISTA DE ACTIVIDADES" toggleable="false" style="font-size: 14px;">
+                                <p:dataTable id="listActividades" var="listActividades" value="#{daccionAction.listActividades}"
+                                             selection="#{daccionAction.selectListActividades}" rowKey="#{listActividades.idactividades}" 
+                                                    resizableColumns="true" resizeMode="expand" style="text-align: center;">
+                                    <p:ajax event="rowSelectCheckbox" immediate="true" listener="#{daccionAction.onCheck_()}" process="@this" />
+                                    <p:ajax event="rowUnselectCheckbox" immediate="true" listener="#{daccionAction.onCheck_()}" process="@this" />
+                                   <p:column selectionMode="multiple" style="width:16px;text-align:center"/>
+                                   <p:column headerText="ID">
+                                       <h:outputText value="#{listActividades.idactividades}" />
+                                   </p:column>
+                                   <p:column headerText="DESCRIPCION">
+                                       <h:outputText value="#{listActividades.descripcion}" />
+                                   </p:column>
+                               </p:dataTable>
+                            </p:fieldset>
+                        </p:panelGrid>
+                    </h:form>
+                </div>
+            </div>
+            <div class="ui-grid-row">
+                <h:form id="datos3">
+                    <p:growl id="msgs" showDetail="true" />
+                    <p:panelGrid columns="1" columnClasses="no-border,no-border">
+                        <p:fieldset id="informacion" legend="DETALLE ACCIONES - ACTIVIDADES" toggleable="false" style="font-size: 14px;">
+                            <p:toolbar>
+                                <f:facet name="left">
+                                    <p:commandButton value="Sincronizar" ajax="true" image="ui-icon-sincronizar" actionListener="#{daccionAction.agregarDetalle()}"/>
+                                    <p:commandButton value="Subir" ajax="true" image="ui-icon-subir" actionListener="#{daccionAction.subirDetalle()}" />                           
+                                    <p:commandButton value="Bajar" ajax="true" image="ui-icon-bajar" actionListener="#{daccionAction.bajarDetalle()}" />
+                                </f:facet> 
+                            </p:toolbar>
+                            <p:dataTable id="listDAcciones" var="listDAcciones" value="#{daccionAction.listDAcciones}" selectionMode="single"
+                                         selection="#{daccionAction.selectDAcciones}" rowKey="#{listDAcciones.idactividades}" 
+                                                resizableColumns="true" style="text-align: center;" editable="true">
+                               <!--f:facet name="header">
+                                   LISTA DE ACCIONES - ACTIVIDADES
+                               </f:facet-->
+                               <p:ajax event="rowSelect" listener="#{daccionAction.onSelectDAcciones()}"/>
+                               <p:ajax event="rowEdit" listener="#{daccionAction.onRowEdit}"/>
+                               <p:ajax event="rowEditCancel" listener="#{daccionAction.onRowCancel}"/>
+                               <p:column headerText="#Orden" sortBy="#{listDAcciones.orden}">
+                                   <h:outputText value="#{listDAcciones.orden}" />
+                               </p:column>
+                               <p:column headerText="ACCION">
+                                   <h:outputText value="#{listDAcciones.accion}" />
+                               </p:column>
+                               <p:column headerText="ACTIVIDAD">
+                                   <h:outputText value="#{listDAcciones.actividades}" />
+                               </p:column>
+                               <p:column headerText="DATOS">
+                                    <p:cellEditor>
+                                        <f:facet name="output">
+                                            <h:outputText value="#{listDAcciones.datos}" /></f:facet>
+                                        <f:facet name="input">
+                                            <p:selectOneMenu value="#{listDAcciones.datos}" style="width:96%">
+                                                <f:selectItem itemValue="0" itemLabel="No"/>
+                                                <f:selectItem itemValue="1" itemLabel="Si"/>
+                                            </p:selectOneMenu>
+                                        </f:facet>
+                                    </p:cellEditor>
+                                </p:column>
+                               <p:column headerText="MÉTODO AUTOMÁTICO">
+                                    <p:cellEditor>
+                                        <f:facet name="output">
+                                            <h:outputText value="#{listDAcciones.METHODAUT}" /></f:facet>
+                                        <f:facet name="input">
+                                            <h:inputText value="#{listDAcciones.METHODAUT}" style="width:96%"/>
+                                        </f:facet>
+                                    </p:cellEditor>
+                                </p:column>
+                               <p:column headerText="MÉTODO MANUAL">
+                                    <p:cellEditor>
+                                        <f:facet name="output">
+                                            <h:outputText value="#{listDAcciones.METHODMAN}" /></f:facet>
+                                        <f:facet name="input">
+                                            <h:inputText value="#{listDAcciones.METHODMAN}" style="width:96%"/>
+                                        </f:facet>
+                                    </p:cellEditor>
+                                </p:column>
+                               <p:column style="width:10%">
+                                    <p:rowEditor />
+                                </p:column>
+                           </p:dataTable>
+                        </p:fieldset>
+                    </p:panelGrid>
+                </h:form>
+                
+            </div>
+        </div>
+    </ui:define>    
+</ui:composition>

@@ -1,0 +1,70 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:f="http://java.sun.com/jsf/core"
+                template="templatebanco.xhtml"
+                xmlns:pm="http://primefaces.org/mobile"
+                xmlns:cmp="http://java.sun.com/jsf/composite/cmp">
+    <ui:define name="metadata">
+    </ui:define>
+    <ui:define name="body">
+        <h:form id="datos">
+            <cmp:barra_mnt bean="#{mUsuarioAction}"/>
+            <p:panelGrid style="width: 100%" id="principal" columns="1" columnClasses="no-border, no-border">    
+                <f:facet name="header">
+                    <p:outputLabel value="#{mUsuarioAction.tituloHead}"/>
+                </f:facet>
+                <p:panelGrid columns="2" columnClasses="no-border, no-border">
+                    <p:outputLabel value ="Codigo Usuario"/>
+                    <p:panelGrid columns="2" columnClasses="no-border, no-border">
+                        <p:inputText value="#{mUsuarioAction.datoEdicion.idusuario}" disabled="true"/>
+                        <p:commandButton disabled="#{!mUsuarioAction.edicion}" styleClass="boton_buscar" ajax="true" onclick="PF('frmUsu').show()"  icon="ui-icon-search"/>
+                    </p:panelGrid>
+                    <p:outputLabel value ="Nombres"/>
+                    <p:panelGrid id="cntOperario" columns="2" columnClasses="no-border, no-border,no-border">
+                        <p:inputText size="41" readonly="true" value="#{mUsuarioAction.datoEdicion.nombres}" />
+                        <p:commandButton styleClass="boton_buscar" ajax="true" actionListener="#{mUsuarioAction.verCntOperario()}" disabled="#{!mUsuarioAction.edicion}"  icon="ui-icon-search">
+                            <p:ajax event="dialogReturn" listener="#{mUsuarioAction.llenarOperario}" update="cntOperario"/>
+                        </p:commandButton>
+                    </p:panelGrid>
+                    <p:outputLabel value ="Clave"/>
+                    <p:inputText value="#{mUsuarioAction.datoEdicion.clave}" disabled="true"/>
+                    <p:outputLabel value ="Codigo Grupo"/>
+                    <p:panelGrid columns="2" columnClasses="no-border, no-border">
+                        <p:inputText value="#{mUsuarioAction.datoEdicion.idgrupousuario}" disabled="true"/>
+                        <p:commandButton disabled="#{!mUsuarioAction.edicion}" styleClass="boton_buscar" ajax="true" onclick="PF('frmdialog').show()"  icon="ui-icon-search"/>
+                    </p:panelGrid>
+                    <p:outputLabel value="Estado"/>
+                    <p:selectBooleanCheckbox value="#{mUsuarioAction.datoEdicion.BEstado}"/>                    
+                </p:panelGrid>
+            </p:panelGrid>
+            <p:dialog id="frmdialog" widgetVar="frmdialog"  closable="true" closeOnEscape="true" draggable="true" modal="true">
+                <p:dataTable id="tbl" var="listgu" value="#{mUsuarioAction.lstgu}" widgetVar="listGrupoUs" paginatorTemplate="{FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink}" paginatorPosition="top"
+                             paginator="true" rows="15" style="margin-bottom:20px" selectionMode="single" selection="#{mUsuarioAction.gu}" rowKey="#{listgu.idgrupousuario}">
+                    <p:ajax event="rowDblselect"  update=":datos:principal" listener="#{mUsuarioAction.selectFrm()}" oncomplete="PF('frmdialog').hide()"/>
+                    <p:column headerText="Codigo Grupo" style="width:30%;" filterBy="#{listgu.idgrupousuario}" filterMatchMode="contains" sortBy="#{listgu.idgrupousuario}">
+                        <h:outputText value="#{listgu.idgrupousuario}" />
+                    </p:column>
+                    <p:column headerText="Descipcion" style="width:30%;" filterBy="#{listgu.descripcion}" filterMatchMode="contains" sortBy="#{listgu.descripcion}">
+                        <h:outputText value="#{listgu.descripcion}" />
+                    </p:column>
+                    <p:column headerText="Administrador" style="width:30%;">
+                        <h:outputText value="#{listgu.BEs_administrador?'SI':'No'}" />
+                    </p:column>
+                </p:dataTable>
+            </p:dialog>
+            <p:dialog id="frmUsu" widgetVar="frmUsu"  closable="true" closeOnEscape="true" draggable="true" modal="true">
+                <p:dataTable id="tbl2" var="listusu" value="#{mUsuarioAction.lstUsuario}" widgetVar="listusu" paginatorTemplate="{FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink}" paginatorPosition="top"
+                             paginator="true" rows="15" style="margin-bottom:20px" selectionMode="single" selection="#{mUsuarioAction.slcUsu}" rowKey="#{listusu.IDUSUARIO}">
+                    <p:ajax event="rowDblselect"  update=":datos:principal" listener="#{mUsuarioAction.selectUsu()}" oncomplete="PF('frmUsu').hide()"/>
+                    <p:column headerText="Usuario" style="width:30%;" filterBy="#{listusu.IDUSUARIO}" filterMatchMode="contains" sortBy="#{listusu.IDUSUARIO}">
+                        <h:outputText value="#{listusu.IDUSUARIO}" />
+                    </p:column>
+                </p:dataTable>
+            </p:dialog>
+            <p:growl id="growl" life="4000" showDetail="false"  />
+            <cmp:mDialogElimina_lst id="cmpDialog" bean="#{mUsuarioAction}" ventana="MNT" />
+        </h:form>
+    </ui:define>
+</ui:composition>

@@ -1,0 +1,45 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:f="http://java.sun.com/jsf/core"
+                template="templatebanco.xhtml"
+                xmlns:pm="http://primefaces.org/mobile"
+                xmlns:cmp="http://java.sun.com/jsf/composite/cmp">
+    <ui:define name="metadata">
+    </ui:define>
+    <ui:define name="body">
+        <h:form id="datos">            
+            #{MotivoAction.buscarTodo()}  
+            <p:panelGrid id="principal" columns="1" columnClasses="no-border, no-border">
+                <cmp:barra_lst bean="#{MotivoAction}" mostrar_opciones="false" />
+                <p:dataTable id="tbl" var="listreglas" value="#{MotivoAction.listaDatos}" widgetVar="listTipoZona" paginatorTemplate="{FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink}" paginatorPosition="top"
+                             paginator="true" rows="15" style="margin-bottom:20px" selectionMode="single" selection="#{MotivoAction.datoSeleccionado}" rowKey="#{listreglas.IDMOTIVO}">
+
+                    <p:column headerText="Codigo Empresa" style="width:30%;" filterBy="#{listreglas.IDEMPRESA}" filterMatchMode="contains" sortBy="#{listreglas.IDEMPRESA}">
+                        <h:outputText value="#{listreglas.IDEMPRESA}" />
+                    </p:column>
+                    <p:column headerText="Codigo Motivo" style="width:30%;" filterBy="#{listreglas.IDMOTIVO}" filterMatchMode="contains" sortBy="#{listreglas.IDMOTIVO}">
+                        <h:outputText value="#{listreglas.IDMOTIVO}" />
+                    </p:column>
+                    <p:column headerText="Descripcion" style="width:30%;" filterBy="#{listreglas.DESCRIPCION}" filterMatchMode="contains" sortBy="#{listreglas.DESCRIPCION}">
+                        <h:outputText value="#{listreglas.DESCRIPCION}" />
+                    </p:column>
+                    <p:column headerText="Codigo Eqquivalente" style="width:30%;" filterBy="#{listreglas.CODIGOEQUIVALENTE}" filterMatchMode="contains" sortBy="#{listreglas.CODIGOEQUIVALENTE}">
+                        <h:outputText value="#{listreglas.CODIGOEQUIVALENTE}" />
+                    </p:column>
+                    <p:column headerText="Fecha Creacion" style="width:30%;" filterBy="#{listreglas.FECHACREACION}" filterMatchMode="contains" sortBy="#{listreglas.FECHACREACION}">
+                        <h:outputText value="#{listreglas.FECHACREACION}" />
+                    </p:column>
+                    <p:column headerText="Estado" style="width:30%;" filterBy="#{listreglas.ESTADO}" filterMatchMode="contains" sortBy="#{listreglas.ESTADO}">
+                        <h:outputText value="#{listreglas.BEstado?'Activo':'Inactivo'}" />
+                    </p:column>
+                </p:dataTable>
+            </p:panelGrid>
+            <p:growl id="growl" life="4000" showDetail="false"  />
+            <cmp:mDialogElimina_lst id="cmpDialog" bean="#{MotivoAction}" ventana="LST" />
+
+        </h:form>
+    </ui:define>
+</ui:composition>
+

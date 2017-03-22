@@ -1,0 +1,90 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:f="http://java.sun.com/jsf/core"
+                template="templatebanco.xhtml"
+                xmlns:cmp="http://java.sun.com/jsf/composite/cmp">
+    <ui:define name="metadata">
+    </ui:define>
+    <ui:define name="body">          
+        <h:form id="datos">
+            #{antenaAction.buscarTodo()}  
+            <p:panelGrid id="principal" columns="1" columnClasses="no-border, no-border">
+                <cmp:barra_lst bean="#{antenaAction}" mostrar_opciones="false" />
+                <p:dataTable id="tbl" var="listAntena" value="#{antenaAction.listaDatos}" filteredValue="#{antenaAction.filtroDatos}" widgetVar="listAntena" 
+                             paginatorTemplate="{FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink}" paginatorPosition="top"
+                             paginator="true" rows="15" style="margin-bottom:20px" selectionMode="single" selection="#{antenaAction.datoSeleccionado}" rowKey="#{listAntena.idantena}" resizableColumns="true">
+                    <f:facet name="header">
+                        <h:outputText value="#{cpumovilAction.tituloHead}" />
+                    </f:facet>
+                    <p:column style="width:15%;" filterBy="#{listAntena.idantena}" filterMatchMode="contains" sortBy="#{listAntena.idantena}">
+                        <f:facet name="header">
+                            <h:outputText value="ID" />
+                        </f:facet>
+                        <h:outputText value="#{listAntena.idantena}"/>
+                    </p:column>
+                    <p:column style="width:20%;" filterBy="#{listAntena.descripcion}" filterMatchMode="contains" sortBy="#{listAntena.descripcion}">
+                        <f:facet name="header" >
+                            <h:outputText value="DESCRIPCIÓN" />
+                        </f:facet>
+                        <h:outputText value="#{listAntena.descripcion}" />
+                    </p:column>
+                    <p:column style="width:20%;" filterBy="#{listAntena.modelo}" filterMatchMode="contains" sortBy="#{listAntena.modelo}">
+                        <f:facet name="header" >
+                            <h:outputText value="MODELO" />
+                        </f:facet>
+                        <h:outputText value="#{listAntena.modelo}" />
+                    </p:column>
+                    <p:column style="width:20%;" filterBy="#{listAntena.modelo}" filterMatchMode="contains" sortBy="#{listAntena.modelo}">
+                        <f:facet name="header" >
+                            <h:outputText value="MARCA" />
+                        </f:facet>
+                        <h:outputText value="#{listAntena.marca}" />
+                    </p:column>
+                    <p:column style="width:20%;" filterBy="#{listAntena.estado}">
+                        <f:facet name="header">
+                            <h:outputText value="ESTADO"/>
+                        </f:facet>
+                        <f:facet name="filter">
+                            <p:selectOneButton onchange="PF('listAntena').filter()">
+                                <f:selectItem  itemLabel="Activo" itemValue="#{1}"/>
+                                <f:selectItem itemLabel="Inactivo" itemValue="#{0}"/>
+                            </p:selectOneButton>
+                        </f:facet>
+                        <h:graphicImage value="../images/img/#{listAntena.estado == 1?'activo':'inactivo'}.png"/>
+                        <h:outputText value="#{listAntena.estado == 1?'Activo':'Inactivo'}" />
+                    </p:column>
+                </p:dataTable>  
+            </p:panelGrid>
+            <p:dialog id="dlGuardarAntena" header="..:: MANTENEDOR ANTENA ::." widgetVar="dlGuardarAntena" modal="true" showEffect="popup" closable="false">
+                <p:messages id="messages" autoUpdate="true" closable="true" style="font-size:10px"/>
+                <p:panelGrid columns="2" columnClasses="no-border, no-border,no-border">
+                    <p:outputLabel value="Id: " />
+                    <p:inputText value="#{antenaAction.datoEdicion.idantena}" disabled="true" readonly="#{!antenaAction.edicion}"/>
+                    <p:outputLabel for="descripcion" value="Descripción: " />
+                    <p:inputTextarea id="descripcion" cols="40" rows="2"  value="#{antenaAction.datoEdicion.descripcion}" onkeyup="javascript:this.value = this.value.toUpperCase();" disabled="#{!antenaAction.edicion}"/>
+                    <p:outputLabel for="nroserie" value="N°Serie: " />
+                    <p:inputText id="nroserie" value="#{antenaAction.datoEdicion.nroserie}" readonly="#{!antenaAction.edicion}"/>
+                    <p:outputLabel for="modelo" value="Modelo: " />
+                    <p:inputText id="modelo" value="#{antenaAction.datoEdicion.modelo}" readonly="#{!antenaAction.edicion}"/>
+                    <p:outputLabel for="marca" value="Marca: " />
+                    <p:inputText id="marca" value="#{antenaAction.datoEdicion.marca}" readonly="#{!antenaAction.edicion}"/>
+                    <p:outputLabel for="frecuencia" value="Frecuencia: " />
+                    <p:inputText id="frecuencia" value="#{antenaAction.datoEdicion.frecuencia}" readonly="#{!antenaAction.edicion}"/>
+                    <h:outputText value="Estado?:" />
+                    <p:selectBooleanCheckbox value="#{antenaAction.estado}" disabled="#{!antenaAction.edicion}"/>
+                </p:panelGrid>
+                <br/>
+                <p:toolbar>
+                    <f:facet name="right">
+                        <p:commandButton id="buttonGuardar" value="Grabar" ajax="true" actionListener="#{antenaAction.grabar()}" image="ui-icon-grabar" />
+                        <p:commandButton id="buttonCancelar" value="Cancelar" image="ui-icon-cancelar" onclick="PF('dlGuardarAntena').hide()"/>
+                    </f:facet>
+                </p:toolbar>          
+            </p:dialog> 
+            <p:growl id="growl" life="4000" showDetail="false"  />
+            <cmp:mDialogElimina_lst id="cmpDialog" bean="#{antenaAction}" ventana="LST" />
+        </h:form>
+    </ui:define>
+</ui:composition>

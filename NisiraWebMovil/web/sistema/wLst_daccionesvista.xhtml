@@ -1,0 +1,33 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:f="http://java.sun.com/jsf/core"
+                template="templatebanco.xhtml"
+                xmlns:pm="http://primefaces.org/mobile"
+                xmlns:cmp="http://java.sun.com/jsf/composite/cmp">
+    <ui:define name="metadata">
+    </ui:define>
+    <ui:define name="body">
+        <h:form id="datos">            
+            #{dAccionesVistasAction.buscarTodo()}  
+            <p:panelGrid id="principal" columns="1" columnClasses="no-border, no-border">
+                <cmp:barra_lst bean="#{dAccionesVistasAction}" mostrar_opciones="true" />
+                <p:dataTable  id="tbl" var="listRl" value="#{dAccionesVistasAction.listaDatos}" widgetVar="listRl" paginatorTemplate="{FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink}" paginatorPosition="top"
+                              paginator="true" rows="15" style="margin-bottom:20px" selectionMode="single" selection="#{dAccionesVistasAction.datoSeleccionado}" rowKey="#{listRl.IDACCION}">
+                    <f:facet name="header">
+                        <h:outputText value="..:: Lista de Vistas ::.." />
+                    </f:facet>
+                    <p:column headerText="Código" style="width:30%;" filterBy="#{listRl.IDACCION}" filterMatchMode="contains" sortBy="#{listRl.IDACCION}">
+                        <h:outputText value="#{listRl.IDACCION}" />
+                    </p:column>
+                    <p:column headerText="Vista" style="width:30%;" filterBy="#{listRl.VISTA}" filterMatchMode="contains" sortBy="#{listRl.VISTA}">
+                        <h:outputText value="#{listRl.VISTA}" />
+                    </p:column>
+                </p:dataTable>
+            </p:panelGrid>
+            <p:growl id="growl" life="4000" showDetail="false"  />
+            <cmp:mDialogElimina_lst id="cmpDialog" bean="#{dAccionesVistasAction}" ventana="LST" />
+        </h:form>
+    </ui:define>    
+</ui:composition>

@@ -1,0 +1,48 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:pm="http://primefaces.org/mobile"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
+    <f:view renderKitId="PRIMEFACES_MOBILE" />  
+
+    <h:head>
+        <f:loadBundle basename="titulos" var="titulos" />
+    </h:head>
+    <h:body>
+    <pm:page title="Ingresar Pallet a Tunel o Camara" id="page1">
+        <pm:header title="Ingresar Pallet a Tunel o Camara" fixed="true" >
+                <f:facet name="left">
+                    <h:form>
+                        <p:commandButton ajax="true" value="Atrás" icon="back"  onclick=" window.location = '#{facesContext.externalContext.requestContextPath}/faces/sistema/menu.xhtml?faces-redirect=true'"/>
+                    </h:form>
+                </f:facet>
+                <f:facet name="right">
+                    <h:form>
+                        <p:commandButton ajax="true" value="Salir" icon="delete" onclick="PF('dlg').show()" />
+                    </h:form>
+                </f:facet>
+
+            <script type="text/javascript" >
+                function setFocus(id){
+                    $(id).focus();
+                    //document.getElementById(id).focus();
+                }
+            </script>
+        </pm:header>
+        <pm:content >
+            <h:form id="Formmovubicacionpaleta">
+               <ui:include src="../live_w_locator.html" /> 
+            </h:form>
+                
+            <br></br><br></br><br></br><br></br><br></br><br></br><br></br><br></br>
+        </pm:content>
+        <pm:footer fixed="true">
+            <h1 style="font-size: x-small" >© 2015 <img border="0" height="10px" src="../images/logoWeb.png"/> Nisira Systems SAC </h1>         
+
+        </pm:footer>  
+    </pm:page>
+ </h:body> 
+</html>

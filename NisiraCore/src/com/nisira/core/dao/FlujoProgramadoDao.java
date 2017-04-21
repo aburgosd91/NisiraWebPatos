@@ -46,6 +46,7 @@ public class FlujoProgramadoDao extends EntityDao<FlujoProgramado>{
         }
         return l;
     }
+    
     @Override
     public List<FlujoProgramado> findAll(Object e) throws Exception {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.

@@ -12,41 +12,41 @@
             #{flujoprogramadoAction.buscarTodo()}  
             <p:panelGrid id="principal" columns="1" columnClasses="no-border, no-border">
                 <cmp:barra_lst bean="#{flujoprogramadoAction}" mostrar_opciones="false" />
-                <p:dataTable id="tbl" var="listAccion" value="#{flujoprogramadoAction.listaDatos}" filteredValue="#{flujoprogramadoAction.filtroDatos}" widgetVar="listAccion" 
+                <p:dataTable id="tbl" var="listFlujoProgramado" value="#{flujoprogramadoAction.listaDatos}" filteredValue="#{flujoprogramadoAction.filtroDatos}" widgetVar="listFlujoProgramado" 
                              paginatorTemplate="{FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink}" paginatorPosition="top"
-                             paginator="true" rows="15" style="margin-bottom:20px" selectionMode="single" selection="#{flujoprogramadoAction.datoSeleccionado}" rowKey="#{listAccion.idaccion}" resizableColumns="true">
+                             paginator="true" rows="15" style="margin-bottom:20px" selectionMode="single" selection="#{flujoprogramadoAction.datoSeleccionado}" rowKey="#{listFlujoProgramado.idaccion}" resizableColumns="true">
                     <f:facet name="header">
                         <h:outputText value="#{flujoprogramadoAction.tituloHead}" />
                     </f:facet>
-                    <p:column style="width:15%;" filterBy="#{listAccion.idaccion}" filterMatchMode="contains">
+                    <p:column style="width:15%;" filterBy="#{listFlujoProgramado.idaccion}" filterMatchMode="contains">
                         <f:facet name="header">
                             <h:outputText value="ID" />
                         </f:facet>
-                        <h:outputText value="#{listAccion.idaccion}"/>
+                        <h:outputText value="#{listFlujoProgramado.idaccion}"/>
                     </p:column>
-                    <p:column style="width:20%;" filterBy="#{listAccion.orden}" filterMatchMode="contains">
+                    <p:column style="width:20%;" filterBy="#{listFlujoProgramado.orden}" filterMatchMode="contains">
                         <f:facet name="header" >
                             <h:outputText value="ORDEN" />
                         </f:facet>
-                        <h:outputText value="#{listAccion.orden}" />
+                        <h:outputText value="#{listFlujoProgramado.orden}" />
                     </p:column>
-                    <p:column style="width:20%;" filterBy="#{listAccion.estado}">
+                    <p:column style="width:20%;" filterBy="#{listFlujoProgramado.estado}">
                         <f:facet name="header">
                             <h:outputText value="ESTADO"/>
                         </f:facet>
                         <f:facet name="filter">
-                            <p:selectOneButton onchange="PF('listAccion').filter()">
+                            <p:selectOneButton onchange="PF('listFlujoProgramado').filter()">
                                 <f:converter converterId="javax.faces.Boolean" />
                                 <f:selectItem  itemLabel="Activo" itemValue="#{1}"/>
                                 <f:selectItem itemLabel="Inactivo" itemValue="#{0}"/>
                             </p:selectOneButton>
                         </f:facet>
-                        <h:graphicImage value="../images/img/#{listAccion.estado == 1?'activo':'inactivo'}.png"/>
-                        <h:outputText value="#{listAccion.estado == 1?'Activo':'Inactivo'}" />
+                        <h:graphicImage value="../images/img/#{listFlujoProgramado.estado == 1?'activo':'inactivo'}.png"/>
+                        <h:outputText value="#{listFlujoProgramado.estado == 1?'Activo':'Inactivo'}" />
                     </p:column>
                 </p:dataTable>  
             </p:panelGrid>
-            <p:dialog id="dlGuardarAccion" header="..:: MANTENEDOR ACCIONES ::." widgetVar="dlGuardarAccion" modal="true" showEffect="popup" closable="false">
+            <p:dialog id="dlGuardarAccion" header="..:: MANTENEDOR Acciones vs Proceso ::." widgetVar="dlGuardarAccion" modal="true" showEffect="popup" closable="false">
                 <p:messages id="messages" autoUpdate="true" closable="true" style="font-size:10px"/>
                 <p:panelGrid columns="2" columnClasses="no-border, no-border,no-border">
                     <p:outputLabel value="Id: " />
@@ -55,6 +55,11 @@
                         <p:outputLabel for="descripcion" value="Descripción: " />
                         <p:inputTextarea id="descripcion" cols="40" rows="1"  value="#{flujoprogramadoAction.datoEdicion.descripcion}" onkeyup="javascript:this.value = this.value.toUpperCase();" disabled="#{!flujoprogramadoAction.edicion}">
                         </p:inputTextarea>
+                         <p:outputLabel for="proceso"  value="Proceso:" />
+                        <p:selectOneMenu id="proceso" value="#{flujoprogramadoAction.datoEdicion.idproceso}" disabled="#{!flujoprogramadoAction.edicion}"> 
+                            <f:selectItem itemLabel="Seleccione Proceso" itemValue=""/>                        
+                            <f:selectItems value="#{programacioLlenadoAction.lstPro}" var="tipoProceso" itemLabel="#{tipoProceso.descripcion}" itemValue="#{tipoProceso.idproceso}" />
+                        </p:selectOneMenu>
                     </p:panelGrid>
                     <h:outputText value="Estado?:" />
                     <p:selectBooleanCheckbox value="#{flujoprogramadoAction.estado}" disabled="#{!flujoprogramadoAction.edicion}"/>

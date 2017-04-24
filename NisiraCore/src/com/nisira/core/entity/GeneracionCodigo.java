@@ -21,8 +21,8 @@ public class GeneracionCodigo {
     private int TIPO;
     @XStreamAlias("DESCRIPCION")
     private String DESCRIPCION;
-    @XStreamAlias("NUMDIGITOTOTAL")
-    private int NUMDIGITOTOTAL;
+    @XStreamAlias("BARCODETOTAL")
+    private int BARCODETOTAL;
     @XStreamAlias("FECHACREACION")
     private String FECHACREACION;
     @XStreamAlias("ESTADO")
@@ -66,12 +66,12 @@ public class GeneracionCodigo {
         this.DESCRIPCION = DESCRIPCION;
     }
 
-    public int getNUMDIGITOTOTAL() {
-        return NUMDIGITOTOTAL;
+    public int getBARCODETOTAL() {
+        return BARCODETOTAL;
     }
 
-    public void setNUMDIGITOTOTAL(int NUMDIGITOTOTAL) {
-        this.NUMDIGITOTOTAL = NUMDIGITOTOTAL;
+    public void setBARCODETOTAL(int BARCODETOTAL) {
+        this.BARCODETOTAL = BARCODETOTAL;
     }
 
     public int getESTADO() {

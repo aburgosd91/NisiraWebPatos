@@ -29,10 +29,8 @@ public class DGeneracionCodigoDao extends EntityDao<DGeneracionCodigo>{
                 cl.setString(i++,dGeneracionCodigo.getIDEMPRESA());
                 cl.setString(i++,dGeneracionCodigo.getIDGENERACION());
                 cl.setString(i++,dGeneracionCodigo.getIDREGISTROCODIGO());
-                cl.setInt(i++,dGeneracionCodigo.getIDPARAMETRO());
                 cl.setInt(i++,dGeneracionCodigo.getNUMDIGITO());
                 
-                cl.setInt(i++,dGeneracionCodigo.getNUMDIGITOTOTAL());
                 cl.setInt(i++,dGeneracionCodigo.getSINCRONIZADO());
                 rs = cl.executeQuery();
                 while (rs.next()) {
@@ -85,9 +83,7 @@ public class DGeneracionCodigoDao extends EntityDao<DGeneracionCodigo>{
                 cl.setString(i++,dGeneracionCodigo.getIDEMPRESA());
                 cl.setString(i++,dGeneracionCodigo.getIDGENERACION());
                 cl.setString(i++,dGeneracionCodigo.getIDREGISTROCODIGO());
-                cl.setInt(i++,dGeneracionCodigo.getIDPARAMETRO());
                 cl.setInt(i++,dGeneracionCodigo.getNUMDIGITO());
-                cl.setInt(i++,dGeneracionCodigo.getNUMDIGITOTOTAL());
                 cl.setInt(i++,dGeneracionCodigo.getSINCRONIZADO());
                 rs = cl.executeQuery();
                 while (rs.next()) {
@@ -110,9 +106,7 @@ public class DGeneracionCodigoDao extends EntityDao<DGeneracionCodigo>{
                 cl.setString(i++,dGeneracionCodigo.getIDEMPRESA());
                 cl.setString(i++,dGeneracionCodigo.getIDGENERACION());
                 cl.setString(i++,dGeneracionCodigo.getIDREGISTROCODIGO());
-                cl.setInt(i++,dGeneracionCodigo.getIDPARAMETRO());
                 cl.setInt(i++,dGeneracionCodigo.getNUMDIGITO());
-                cl.setInt(i++,dGeneracionCodigo.getNUMDIGITOTOTAL());
                 cl.setInt(i++,dGeneracionCodigo.getSINCRONIZADO());
                 
                 rs = cl.executeQuery();
@@ -139,9 +133,7 @@ public class DGeneracionCodigoDao extends EntityDao<DGeneracionCodigo>{
                 oDGeneracionCodigo.setIDEMPRESA(rs.getString("IDEMPRESA"));
                 oDGeneracionCodigo.setIDGENERACION(rs.getString("IDGENERACION"));
                 oDGeneracionCodigo.setIDREGISTROCODIGO(rs.getString("IDREGISTROCODIGO"));
-                oDGeneracionCodigo.setIDPARAMETRO(rs.getInt("IDPARAMETRO"));
                 oDGeneracionCodigo.setNUMDIGITO(rs.getInt("NUMDIGITO"));
-                oDGeneracionCodigo.setNUMDIGITOTOTAL(rs.getInt("NUMDIGITOTOTAL"));
                 oDGeneracionCodigo.setSINCRONIZADO(rs.getInt("SINCRONIZADO"));
                 oDGeneracionCodigo.setPARAMETRO(rs.getString("PARAMETRO"));
                 listaDGeneracionCodigo.add(oDGeneracionCodigo);
@@ -184,9 +176,7 @@ public class DGeneracionCodigoDao extends EntityDao<DGeneracionCodigo>{
                 oDGeneracionCodigo.setIDEMPRESA(rs.getString("IDEMPRESA"));
                 oDGeneracionCodigo.setIDGENERACION(rs.getString("IDGENERACION"));
                 oDGeneracionCodigo.setIDREGISTROCODIGO(rs.getString("IDREGISTROCODIGO"));
-                oDGeneracionCodigo.setIDPARAMETRO(rs.getInt("IDPARAMETRO"));
                 oDGeneracionCodigo.setNUMDIGITO(rs.getInt("NUMDIGITO"));
-                oDGeneracionCodigo.setNUMDIGITOTOTAL(rs.getInt("NUMDIGITOTOTAL"));
                 oDGeneracionCodigo.setSINCRONIZADO(rs.getInt("SINCRONIZADO"));
                 oDGeneracionCodigo.setPARAMETRO(rs.getString("PARAMETRO"));
                 oDGeneracionCodigo.setFECHACREACION(rs.getString("FECHACREACION"));

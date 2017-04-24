@@ -20,12 +20,8 @@ public class DGeneracionCodigo {
     private String IDGENERACION;
     @XStreamAlias("IDREGISTROCODIGO")
     private String IDREGISTROCODIGO;
-    @XStreamAlias("IDPARAMETRO")
-    private int IDPARAMETRO;
     @XStreamAlias("NUMDIGITO")
     private int NUMDIGITO;
-    @XStreamAlias("NUMDIGITOTOTAL")
-    private int NUMDIGITOTOTAL;
     @XStreamAlias("SINCRONIZADO")
     private int SINCRONIZADO;
     @XStreamAlias("GENERACIONCODIGO")
@@ -81,20 +77,6 @@ public class DGeneracionCodigo {
     }
 
     /**
-     * @return the IDPARAMETRO
-     */
-    public int getIDPARAMETRO() {
-        return IDPARAMETRO;
-    }
-
-    /**
-     * @param IDPARAMETRO the IDPARAMETRO to set
-     */
-    public void setIDPARAMETRO(int IDPARAMETRO) {
-        this.IDPARAMETRO = IDPARAMETRO;
-    }
-
-    /**
      * @return the NUMDIGITO
      */
     public int getNUMDIGITO() {
@@ -134,14 +116,6 @@ public class DGeneracionCodigo {
      */
     public void setPARAMETRO(String PARAMETRO) {
         this.PARAMETRO = PARAMETRO;
-    }
-
-    public int getNUMDIGITOTOTAL() {
-        return NUMDIGITOTOTAL;
-    }
-
-    public void setNUMDIGITOTOTAL(int NUMDIGITOTOTAL) {
-        this.NUMDIGITOTOTAL = NUMDIGITOTOTAL;
     }
 
     public int getSINCRONIZADO() {

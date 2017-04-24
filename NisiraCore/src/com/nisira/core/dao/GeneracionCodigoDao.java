@@ -36,7 +36,7 @@ public class GeneracionCodigoDao extends EntityDao<GeneracionCodigo> {
             cl.setInt(i++, generacionCodigo.getIDGENERACION());
             cl.setInt(i++, generacionCodigo.getTIPO());
             cl.setString(i++, generacionCodigo.getDESCRIPCION());
-            cl.setInt(i++, generacionCodigo.getNUMDIGITOTOTAL());
+            cl.setInt(i++, generacionCodigo.getBARCODETOTAL());
             cl.setInt(i++, generacionCodigo.getESTADO());
             cl.setString(i++, "");
             cl.setString(i++, "");
@@ -81,7 +81,7 @@ public class GeneracionCodigoDao extends EntityDao<GeneracionCodigo> {
             cl.setInt(i++, generacionCodigo.getIDGENERACION());
             cl.setInt(i++, generacionCodigo.getTIPO());
             cl.setString(i++, generacionCodigo.getDESCRIPCION());
-            cl.setInt(i++, generacionCodigo.getNUMDIGITOTOTAL());
+            cl.setInt(i++, generacionCodigo.getBARCODETOTAL());
             cl.setInt(i++, generacionCodigo.getESTADO());
             cl.setString(i++, "");
             cl.setString(i++, "");
@@ -109,7 +109,7 @@ public class GeneracionCodigoDao extends EntityDao<GeneracionCodigo> {
             cl.setInt(i++, generacionCodigo.getIDGENERACION());
             cl.setInt(i++, generacionCodigo.getTIPO());
             cl.setString(i++, generacionCodigo.getDESCRIPCION());
-            cl.setInt(i++, generacionCodigo.getNUMDIGITOTOTAL());
+            cl.setInt(i++, generacionCodigo.getBARCODETOTAL());
             cl.setInt(i++, generacionCodigo.getESTADO());
             rs = cl.executeQuery();
             while (rs.next()) {
@@ -139,7 +139,7 @@ public class GeneracionCodigoDao extends EntityDao<GeneracionCodigo> {
                 oGeneracionCodigo.setIDGENERACION(rs.getInt("IDGENERACION"));
                 oGeneracionCodigo.setTIPO(rs.getInt("TIPO"));
                 oGeneracionCodigo.setDESCRIPCION(rs.getString("DESCRIPCION"));
-                oGeneracionCodigo.setNUMDIGITOTOTAL(rs.getInt("NUMDIGITOTOTAL"));
+                oGeneracionCodigo.setBARCODETOTAL(rs.getInt("BARCODETOTAL"));
                 oGeneracionCodigo.setESTADO(rs.getInt("ESTADO"));
 //                oGeneracionCodigo.setFECHACREACION("04-02-2016");
                 oGeneracionCodigo.setSINCRONIZADO(0);
@@ -186,7 +186,7 @@ public class GeneracionCodigoDao extends EntityDao<GeneracionCodigo> {
                 oGeneracionCodigo.setIDGENERACION(rs.getInt("IDGENERACION"));
                 oGeneracionCodigo.setTIPO(rs.getInt("TIPO"));
                 oGeneracionCodigo.setDESCRIPCION(rs.getString("DESCRIPCION"));
-                oGeneracionCodigo.setNUMDIGITOTOTAL(rs.getInt("NUMDIGITOTOTAL"));
+                oGeneracionCodigo.setBARCODETOTAL(rs.getInt("BARCODETOTAL"));
                 oGeneracionCodigo.setESTADO(rs.getInt("ESTADO"));
                 oGeneracionCodigo.setFECHACREACION(rs.getString("FECHACREACION"));
                 oGeneracionCodigo.setSINCRONIZADO(0);
@@ -221,7 +221,7 @@ public class GeneracionCodigoDao extends EntityDao<GeneracionCodigo> {
                 oGeneracionCodigo.setIDGENERACION(rs.getInt("IDGENERACION"));
                 oGeneracionCodigo.setTIPO(rs.getInt("TIPO"));
                 oGeneracionCodigo.setDESCRIPCION(rs.getString("DESCRIPCION"));
-                oGeneracionCodigo.setNUMDIGITOTOTAL(rs.getInt("NUMDIGITOTOTAL"));
+                oGeneracionCodigo.setBARCODETOTAL(rs.getInt("BARCODETOTAL"));
                 oGeneracionCodigo.setESTADO(rs.getInt("ESTADO"));
 //                oGeneracionCodigo.setFECHACREACION("04-02-2016");
                 oGeneracionCodigo.setSINCRONIZADO(0);
@@ -248,7 +248,7 @@ public class GeneracionCodigoDao extends EntityDao<GeneracionCodigo> {
                 rl.setIDGENERACION(rs.getInt("IDGENERACION"));
                 rl.setTIPO(rs.getInt("TIPO"));
                 rl.setDESCRIPCION(rs.getString("DESCRIPCION"));
-                rl.setNUMDIGITOTOTAL(rs.getInt("NUMDIGITOTOTAL"));
+                rl.setBARCODETOTAL(rs.getInt("BARCODETOTAL"));
                 rl.setESTADO(rs.getInt("ESTADO"));
 //                oGeneracionCodigo.setFECHACREACION("04-02-2016");
                 rl.setSINCRONIZADO(0);

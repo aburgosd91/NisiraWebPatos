@@ -30,6 +30,12 @@
                         </f:facet>
                         <h:outputText value="#{listFlujoProgramado.orden}" />
                     </p:column>
+                    <p:column style="width:20%;" filterBy="#{listFlujoProgramado.descripcion}" filterMatchMode="contains">
+                        <f:facet name="header" >
+                            <h:outputText value="DESCRIPCION" />
+                        </f:facet>
+                        <h:outputText value="#{listFlujoProgramado.descripcion}" />
+                    </p:column>
                     <p:column style="width:20%;" filterBy="#{listFlujoProgramado.estado}">
                         <f:facet name="header">
                             <h:outputText value="ESTADO"/>
@@ -55,12 +61,17 @@
                         <p:outputLabel for="descripcion" value="Descripción: " />
                         <p:inputTextarea id="descripcion" cols="40" rows="1"  value="#{flujoprogramadoAction.datoEdicion.descripcion}" onkeyup="javascript:this.value = this.value.toUpperCase();" disabled="#{!flujoprogramadoAction.edicion}">
                         </p:inputTextarea>
-                         <p:outputLabel for="proceso"  value="Proceso:" />
+                    </p:panelGrid>
+                    <p:outputLabel for="proceso"  value="Procesos:" />
                         <p:selectOneMenu id="proceso" value="#{flujoprogramadoAction.datoEdicion.idproceso}" disabled="#{!flujoprogramadoAction.edicion}"> 
                             <f:selectItem itemLabel="Seleccione Proceso" itemValue=""/>                        
-                            <f:selectItems value="#{programacioLlenadoAction.lstPro}" var="tipoProceso" itemLabel="#{tipoProceso.descripcion}" itemValue="#{tipoProceso.idproceso}" />
+                            <f:selectItems value="#{flujoprogramadoAction.lstproceso}" var="tipoProceso" itemLabel="#{tipoProceso.descripcion}" itemValue="#{tipoProceso.idproceso}" />
                         </p:selectOneMenu>
-                    </p:panelGrid>
+                    <p:outputLabel for="accion"  value="Acciones:" />
+                    <p:selectOneMenu id="accion" value="#{flujoprogramadoAction.datoEdicion.idaccion}" disabled="#{!flujoprogramadoAction.edicion}"> 
+                            <f:selectItem itemLabel="Seleccione Acción" itemValue=""/>                        
+                            <f:selectItems value="#{flujoprogramadoAction.lstacciones}" var="tipoProceso" itemLabel="#{tipoProceso.descripcion}" itemValue="#{tipoProceso.idaccion}" />
+                        </p:selectOneMenu>
                     <h:outputText value="Estado?:" />
                     <p:selectBooleanCheckbox value="#{flujoprogramadoAction.estado}" disabled="#{!flujoprogramadoAction.edicion}"/>
                 </p:panelGrid>

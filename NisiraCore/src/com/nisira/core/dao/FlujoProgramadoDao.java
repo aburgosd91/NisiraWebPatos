@@ -36,6 +36,7 @@ public class FlujoProgramadoDao extends EntityDao<FlujoProgramado>{
                 a.setIdempresa(rs.getInt("IDEMPRESA"));
                 a.setIdaccion(rs.getInt("IDACCION"));
                 a.setIdproceso(rs.getInt("IDPROCESO"));
+                a.setDescripcion(rs.getString("DESCRIPCION"));
                 a.setOrden(rs.getInt("ORDEN"));
                 a.setFecha(rs.getString("FECHACREACION"));
                 a.setEstado((rs.getInt("ESTADO")));
@@ -55,15 +56,17 @@ public class FlujoProgramadoDao extends EntityDao<FlujoProgramado>{
         String resultado="";
         try {
             int i=1;
-            String sql = "SP_ACCIONES";
+            String sql = "SP_FlujoProgramado";
             cn = obtenerConexionJTDS();
-            cl = cn.prepareCall("{CALL " + sql + "(?,?,?,?,?,?,?,?)}");
+            cl = cn.prepareCall("{CALL " + sql + "(?,?,?,?,?,?,?,?,?,?)}");
             cl.setObject(i++, 1);/*tipo*/
             cl.setObject(i++, "");/*QUERY*/
             cl.setObject(i++, "");/*XML_ACCION */
             cl.setObject(i++, a.getIdempresa());
             cl.setObject(i++, a.getIdaccion());
+            cl.setObject(i++, a.getIdproceso());
             cl.setObject(i++, a.getDescripcion());
+            cl.setObject(i++, a.getOrden());
             cl.setObject(i++, "");
             cl.setObject(i++, a.getEstado());
             rs = cl.executeQuery();
@@ -79,15 +82,17 @@ public class FlujoProgramadoDao extends EntityDao<FlujoProgramado>{
         String resultado="";
         try {
             int i=1;
-            String sql = "SP_ACCIONES";
+            String sql = "SP_FlujoProgramado";
             cn = obtenerConexionJTDS();
-            cl = cn.prepareCall("{CALL " + sql + "(?,?,?,?,?,?,?,?)}");
+            cl = cn.prepareCall("{CALL " + sql + "(?,?,?,?,?,?,?,?,?,?)}");
             cl.setObject(i++, 2);/*tipo*/
             cl.setObject(i++, "");/*QUERY*/
             cl.setObject(i++, "");/*XML_ACCION */
             cl.setObject(i++, a.getIdempresa());
             cl.setObject(i++, a.getIdaccion());
+            cl.setObject(i++, a.getIdproceso());
             cl.setObject(i++, a.getDescripcion());
+            cl.setObject(i++, a.getOrden());
             cl.setObject(i++, "");
             cl.setObject(i++, a.getEstado());
             rs = cl.executeQuery();
@@ -104,14 +109,15 @@ public class FlujoProgramadoDao extends EntityDao<FlujoProgramado>{
         String resultado="";
         try {
             int i=1;
-            String sql = "SP_ACCIONES";
+            String sql = "SP_FlujoProgramado";
             cn = obtenerConexionJTDS();
-            cl = cn.prepareCall("{CALL " + sql + "(?,?,?,?,?)}");
+            cl = cn.prepareCall("{CALL " + sql + "(?,?,?,?,?,?)}");
             cl.setObject(i++, 3);/*tipo*/
             cl.setObject(i++, "");/*QUERY*/
             cl.setObject(i++, "");/*XML_ACCION */
             cl.setObject(i++, a.getIdempresa());
             cl.setObject(i++, a.getIdaccion());
+            cl.setObject(i++, a.getIdproceso());
             rs = cl.executeQuery();
             while (rs.next()) {
                 resultado = (rs.getString("mensaje"));                
@@ -125,7 +131,7 @@ public class FlujoProgramadoDao extends EntityDao<FlujoProgramado>{
         String resultado="";
         try {
             int i=1;
-            String sql = "SP_ACCIONES";
+            String sql = "SP_FlujoProgramado";
             cn = obtenerConexionJTDS();
             cl = cn.prepareCall("{CALL " + sql + "(?,?,?,?,?)}");
             cl.setObject(i++, 4);/*tipo*/

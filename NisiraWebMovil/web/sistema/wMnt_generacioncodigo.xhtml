@@ -31,8 +31,7 @@
                     <p:outputLabel value="Parametro" escape="false" />
                     <p:inputText value="#{generacionCodigoAction.datoEdicion.PARAMETRO}"  disabled="#{!generacionCodigoAction.edicion}"/>
                     <p:outputLabel for="numdigitototal"  value="N° Dígito Total:" />                    
-                    <p:spinner id="numdigitototal"  value="#{generacionCodigoAction.datoEdicion.NUMDIGITOTOTAL}" min="0"   disabled="#{!generacionCodigoAction.edicion}">
-                        <p:ajax update="datos:dlgnew_dgeneracioncodigo" listener="#{generacionCodigoAction.calcularDigitosDisponibles()}"/>
+                    <p:spinner id="numdigitototal"  value="#{generacionCodigoAction.datoEdicion.BARCODETOTAL}" min="0"   disabled="#{!generacionCodigoAction.edicion}">
                     </p:spinner>
                     <p:outputLabel for="proceso"  value="Proceso:" />
                     <p:selectOneMenu  id="proceso" value="#{generacionCodigoAction.datoEdicion.IDPROCESO}" style="width: 100%"  disabled="#{!generacionCodigoAction.edicion}"> 
@@ -80,23 +79,10 @@
             </p:fieldset>
             <p:dialog id="dlgnew_dgeneracioncodigo" header="..::Nuevo Item::." widgetVar="dlgnew_dgeneracioncodigo" modal="true" showEffect="popup" closable="false">
                 <p:messages id="messagesNewAlmacen" autoUpdate="true" closable="true" style="font-size:10px"/>
-                <p:panelGrid columns="1" columnClasses="no-border">
-                    <p:panelGrid columns="2" columnClasses="no-border,no-border">
-                        <h:outputText  value="Digitos Disponibles: " />
-                        <h:outputText id="digdisp" value="#{generacionCodigoAction.digitosDisponibles}" style="font-weight: bold;color: #008200"/>
-                    </p:panelGrid>
-                    <p:panelGrid columns="2" columnClasses="no-border,no-border">
-                        <h:outputText value="Total de Digitos: "/>
-                        <h:outputText value="#{generacionCodigoAction.datoEdicion.NUMDIGITOTOTAL}" style="font-weight: bold;color: red"/>  
-                    </p:panelGrid>
-                </p:panelGrid>
                 <p:panelGrid columns="1" columnClasses="no-border" style="width: 400px">
                     <p:panelGrid columns="2" columnClasses="no-border, no-border" style="width: 100%">
-                        <p:outputLabel for="cboparametro" value="Tipo Parametro"  />
-                        <h:selectOneMenu id="cboparametro" value="#{generacionCodigoAction.nuDGeneracionCodigo.IDPARAMETRO}" style="width: 100%" > 
-                            <f:selectItem itemLabel="Seleccione Parámetro" itemValue=""/>                        
-                            <f:selectItems value="#{generacionCodigoAction.listMultitabla}" var="tipoParametro" itemLabel="#{tipoParametro.DESCRIPCION}" itemValue="#{tipoParametro.VALOR}"/>
-                        </h:selectOneMenu>
+                        <p:outputLabel value="Tipo Parametro"  />
+                        <p:inputText value="#{generacionCodigoAction.nuDGeneracionCodigo.PARAMETRO}"/>
                         <p:outputLabel for="numdigito"  value="N° Dígito:" />
                         <p:spinner id="numdigito" value="#{generacionCodigoAction.nuDGeneracionCodigo.NUMDIGITO}" min="0"/>
                         <p:outputLabel for="tipovalor"  value="Tipo Valor:" />

@@ -109,7 +109,7 @@ public class GeneracionCodigoAction extends AbstactListAction<GeneracionCodigo> 
         try {
             listDGeneracionCodigo = dgeneracioncodigoService.getRecordGeneracionCodigo(getDatoEdicion().getIDEMPRESA(), getDatoEdicion().getIDGENERACION());
             fillDGeneracionCodigo = listDGeneracionCodigo;
-            calcularDigitosDisponibles();
+          //  calcularDigitosDisponibles();
             setBotonEditarDGeneracionCodigo(true);
             setBotonCodigoEliminarDGeneracion(true);
             listMultitabla = multitablaService.getRecordParametroGeneracionCodigo(user.getIDEMPRESA());
@@ -126,22 +126,22 @@ public class GeneracionCodigoAction extends AbstactListAction<GeneracionCodigo> 
         }
     }
 
-    public void calcularDigitosDisponibles() {
-        try {
-            int cont = 0;
-            for (int i = 0; i < listDGeneracionCodigo.size(); i++) {
-                cont += listDGeneracionCodigo.get(i).getNUMDIGITO();
-                depurarListaMultitabla(listDGeneracionCodigo.get(i).getIDPARAMETRO());
-            }
-            digitosDisponibles = getDatoEdicion().getNUMDIGITOTOTAL() - cont;
-            RequestContext.getCurrentInstance().update("datos:cboparametro");
-            RequestContext.getCurrentInstance().update("datos:digdisp");
-            return;
-        } catch (Exception ex) {
-            this.setMensaje(ex.toString());
-            return;
-        }
-    }
+//    public void calcularDigitosDisponibles() {
+//        try {
+//            int cont = 0;
+//            for (int i = 0; i < listDGeneracionCodigo.size(); i++) {
+//                cont += listDGeneracionCodigo.get(i).getNUMDIGITO();
+//                depurarListaMultitabla(listDGeneracionCodigo.get(i).getIDPARAMETRO());
+//            }
+//            digitosDisponibles = getDatoEdicion().getNUMDIGITOTOTAL() - cont;
+//            RequestContext.getCurrentInstance().update("datos:cboparametro");
+//            RequestContext.getCurrentInstance().update("datos:digdisp");
+//            return;
+//        } catch (Exception ex) {
+//            this.setMensaje(ex.toString());
+//            return;
+//        }
+//    }
 
     public void depurarListaMultitabla(int idparametro) {
         int i;
@@ -181,7 +181,7 @@ public class GeneracionCodigoAction extends AbstactListAction<GeneracionCodigo> 
         setDatoEdicion(new GeneracionCodigo());
         getDatoEdicion().setIDEMPRESA(Integer.parseInt(user.getIDEMPRESA()));
         getDatoEdicion().setESTADO(1);
-        getDatoEdicion().setNUMDIGITOTOTAL(0);
+        getDatoEdicion().setBARCODETOTAL(0);
         getDatoEdicion().setSINCRONIZADO(1);
         doctEst = 1;
         botonGuardarDGeneracionCodigo = true;
@@ -189,22 +189,20 @@ public class GeneracionCodigoAction extends AbstactListAction<GeneracionCodigo> 
 
     public void agregarDGeneracionCodigo() {
         try {
-            if (digitosDisponibles >= NuDGeneracionCodigo.getNUMDIGITO()) {
+            //if (digitosDisponibles >= NuDGeneracionCodigo.getNUMDIGITO()) {
                 NuDGeneracionCodigo.setIDREGISTROCODIGO(WebUtil.idGeneradoTres(listDGeneracionCodigo.size()));
                 NuDGeneracionCodigo.setIDGENERACION(String.valueOf(getDatoEdicion().getIDGENERACION()));
                 NuDGeneracionCodigo.setIDEMPRESA(String.valueOf(getDatoEdicion().getIDEMPRESA()));
-                NuDGeneracionCodigo.setPARAMETRO(listMultitabla.get(buscarDescripcionParametro(NuDGeneracionCodigo.getIDPARAMETRO())).getDESCRIPCION());
-                NuDGeneracionCodigo.setNUMDIGITOTOTAL(getDatoEdicion().getNUMDIGITOTOTAL());
                 NuDGeneracionCodigo.setSINCRONIZADO(1);
                 listDGeneracionCodigo.add(NuDGeneracionCodigo);
                 NuDGeneracionCodigo = new DGeneracionCodigo();
-                calcularDigitosDisponibles();
+       //         calcularDigitosDisponibles();
                 RequestContext.getCurrentInstance().update("datos:tbl");
                 return;
-            } else {
-                WebUtil.MensajeError("Sobrepasa la cantidad disponible");
-                return;
-            }
+//            } else {
+//                WebUtil.MensajeError("Sobrepasa la cantidad disponible");
+//                return;
+//            }
         } catch (Exception ex) {
             return;
         }
@@ -227,7 +225,7 @@ public class GeneracionCodigoAction extends AbstactListAction<GeneracionCodigo> 
             listDGeneracionCodigo.remove(pos);
             fillDGeneracionCodigo = listDGeneracionCodigo;
             listMultitabla = multitablaService.getRecordParametroGeneracionCodigo(user.getIDEMPRESA());
-            calcularDigitosDisponibles();
+//            calcularDigitosDisponibles();
             RequestContext.getCurrentInstance().update("datos:tbl");
             return;
         } catch (Exception ex) {

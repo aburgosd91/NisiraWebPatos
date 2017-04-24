@@ -5,7 +5,10 @@
  */
 package com.pe.nisira.movil.view.action;
 
+import com.nisira.core.dao.AccionesDao;
 import com.nisira.core.dao.FlujoProgramadoDao;
+import com.nisira.core.dao.ProcesosDao;
+import com.nisira.core.entity.Acciones;
 import com.nisira.core.entity.FlujoProgramado;
 import com.nisira.core.entity.Procesos;
 import com.pe.nisira.movil.view.bean.UsuarioBean;
@@ -13,6 +16,7 @@ import com.pe.nisira.movil.view.util.Constantes;
 import com.pe.nisira.movil.view.util.WebUtil;
 import java.io.IOException;
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -38,20 +42,24 @@ public class FlujoProgramadoAction extends AbstactListAction<FlujoProgramado> im
     private int nuevod;
     private boolean estado;
     private List<Procesos> lstproceso;
+    private List<Acciones> lstacciones;
     public FlujoProgramadoAction() {
         mensaje = "";
         accionesDao = new FlujoProgramadoDao();
         user = (UsuarioBean) WebUtil.getObjetoSesion(Constantes.SESION_USUARIO);
-        actualiza_ventana("wMnt_accion");
+        lstproceso = new ArrayList<Procesos>();
+        lstacciones = new ArrayList<Acciones>();
+        actualiza_ventana("wMnt_flujoprogramado");
     }
 
     @Override
     public void buscarTodo() {
         try {
             getIniciar();
-            actualiza_ventana("wMnt_accion");
-            setListaDatos(getFlujoProgramadoDao().findAll(user.getIDEMPRESA()));
+            actualiza_ventana("wMnt_flujoprogramado");
+            setListaDatos(getFlujoProgramadoDao().findAll(user.getIDEMPRESA()));            
             RequestContext.getCurrentInstance().update("datos:tbl");
+            
         } catch (Exception ex) {
             this.setMensaje(ex.toString());
         }
@@ -74,6 +82,8 @@ public class FlujoProgramadoAction extends AbstactListAction<FlujoProgramado> im
             getDatoEdicion().setEstado(1);
             estado=true;
             nuevod = 1;
+            lstproceso = (new ProcesosDao()).findAll(getDatoEdicion().getIdempresa());
+            setLstacciones((new AccionesDao()).findAll(getDatoEdicion().getIdempresa()));
             RequestContext.getCurrentInstance().update("datos:dlGuardarAccion");
             RequestContext.getCurrentInstance().execute("PF('dlGuardarAccion').show()");
 
@@ -99,9 +109,6 @@ public class FlujoProgramadoAction extends AbstactListAction<FlujoProgramado> im
                     if (!mensaje.equals("")) {
                         WebUtil.info("FlujoProgramado " + getDatoEdicion().getIdaccion()+ " registrado con éxito.");
                     }
-                    setDatoEdicion(new FlujoProgramado());
-                    getDatoEdicion().setIdempresa(Integer.parseInt(user.getIDEMPRESA()));
-                    getDatoEdicion().setEstado(1);
                     RequestContext.getCurrentInstance().update("FormularioGrabarFlujoProgramado");
                 } else if (nuevod == 2) {//Modificar
                     getDatoEdicion().setEstado(estado?1:0);
@@ -198,6 +205,28 @@ public class FlujoProgramadoAction extends AbstactListAction<FlujoProgramado> im
      */
     public void setEstado(boolean estado) {
         this.estado = estado;
+    }
+
+    public List<Procesos> getLstproceso() {
+        return lstproceso;
+    }
+
+    public void setLstproceso(List<Procesos> lstproceso) {
+        this.lstproceso = lstproceso;
+    }
+
+    /**
+     * @return the lstacciones
+     */
+    public List<Acciones> getLstacciones() {
+        return lstacciones;
+    }
+
+    /**
+     * @param lstacciones the lstacciones to set
+     */
+    public void setLstacciones(List<Acciones> lstacciones) {
+        this.lstacciones = lstacciones;
     }
 
 }

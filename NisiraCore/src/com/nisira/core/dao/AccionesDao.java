@@ -47,7 +47,30 @@ public class AccionesDao extends EntityDao<Acciones>{
     }
     @Override
     public List<Acciones> findAll(Object e) throws Exception {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        List<Acciones> l = new ArrayList<Acciones>();
+        try {
+            String sql = "SP_Acciones";
+            int i=1;
+            cn = obtenerConexionJTDS();
+            cl = cn.prepareCall("{CALL " + sql + "(?,?,?,?)}");
+            cl.setObject(i++, 5);/*tipo*/
+            cl.setObject(i++, "");/*QUERY*/
+            cl.setObject(i++, "");/*XML_ACCION */
+            cl.setObject(i++, e);
+            rs = cl.executeQuery();
+            while (rs.next()) {
+                Acciones a = new Acciones();
+                a.setIdempresa(rs.getInt("IDEMPRESA"));
+                a.setIdaccion(rs.getInt("IDACCION"));
+                a.setDescripcion(rs.getString("DESCRIPCION"));
+                a.setFecha(rs.getString("FECHACREACION"));
+                a.setEstado((rs.getInt("ESTADO")));
+                l.add(a);
+            }
+        } finally {
+            cerrar(cn, cl, rs);
+        }
+        return l;//To change body of generated methods, choose Tools | Templates.
     }
     public String grabar(Acciones a) throws Exception {
         String resultado="";
